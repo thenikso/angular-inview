@@ -48,3 +48,7 @@ indicating which part of the DOM element is visible.
 
 An additional attribute `in-view-offset` can be speficied to add a virtual
 offset to the element that will anticipate or delay the in view event.
+
+## Testing
+
+To run tests, [install Karma](http://karma-runner.github.io/) and run: `karma start`.
