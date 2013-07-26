@@ -33,7 +33,7 @@ angular.module('angular-inview', [])
 			checkInViewItems.push item
 			do checkInViewDebounced
 			scope.$on '$destroy', ->
-				checkInViewItems = checkInViewItems.filter (i) -> i != item
+				removeInViewItem item
 
 getScrollTop = ->
 	window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
@@ -64,6 +64,8 @@ offsetTop = (el) ->
 # 	callback: <funciton taking 2 parameters: $inview and $inviewpart>
 # }
 checkInViewItems = []
+removeInViewItem = (item) ->
+	checkInViewItems = checkInViewItems.filter (i) -> i != item
 
 checkInView = ->
 	viewportTop = getScrollTop()
