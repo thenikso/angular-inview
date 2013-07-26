@@ -3,7 +3,11 @@
   "version": "1.0.2",
   "main": "./angular-inview.js",
   "dependencies": {
-    "angular": ">= 1.0.7"
+    "angular": "~1.0.7"
+  },
+  "devDependencies": {
+    "jquery": "~2.0.3",
+    "angular-scenario": "~1.0.7"
   },
   "readme": "angular-inview\n======================\n\nbower repo for angular-inview.js",
   "readmeFilename": "README.md",
