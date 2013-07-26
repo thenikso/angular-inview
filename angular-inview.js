@@ -82,7 +82,7 @@
     for (_i = 0, _len = checkInViewItems.length; _i < _len; _i++) {
       item = checkInViewItems[_i];
       elementTop = offsetTop(item.element[0]);
-      elementHeight = item.element.height();
+      elementHeight = item.element[0].offsetHeight;
       elementBottom = elementTop + elementHeight;
       inView = elementTop > viewportTop && elementBottom < viewportBottom;
       isBottomVisible = elementBottom + item.offset > viewportTop && elementTop < viewportTop;

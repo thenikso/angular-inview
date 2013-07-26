@@ -71,7 +71,7 @@ checkInView = ->
 
 	for item in checkInViewItems
 		elementTop = offsetTop item.element[0]
-		elementHeight = item.element.height()
+		elementHeight = item.element[0].offsetHeight
 		elementBottom = elementTop + elementHeight
 		inView = elementTop > viewportTop and elementBottom < viewportBottom
 		isBottomVisible = elementBottom + item.offset > viewportTop and elementTop < viewportTop
