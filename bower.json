@@ -1,13 +1,13 @@
 {
   "name": "angular-inview",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./angular-inview.js",
   "dependencies": {
     "angular": ">= 1.0.7"
   },
   "readme": "angular-inview\n======================\n\nbower repo for angular-inview.js",
   "readmeFilename": "README.md",
-  "_id": "angular-inview@1.0.0",
+  "_id": "angular-inview@1.0.1",
   "description": "bower-angular-inview ======================",
   "repository": {
     "type": "git",
