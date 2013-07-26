@@ -19,8 +19,8 @@ bower install angular-inview
 In your document include this scripts:
 
 ```
-<script src="/components/angular/angular.js"></script>
-<script src="/components/angular-inview/angular-inview.js"></script>
+<script src="/bower_components/angular/angular.js"></script>
+<script src="/bower_components/angular-inview/angular-inview.js"></script>
 ```
 
 In your AngularJS app, you'll need to import the `angular-inview` module:
