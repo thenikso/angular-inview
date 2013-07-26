@@ -25,7 +25,7 @@ angular.module('angular-inview', [])
 				offset: 0
 				callback: ($inview, $inviewpart) ->
 					$inviewpart = "'#{$inviewpart}'" if $inviewpart
-					scope.$eval "$inview=#{$inview};$inviewpart=#{$inviewpart};#{attrs.inView}"
+					scope.$apply "$inview=#{$inview};$inviewpart=#{$inviewpart};#{attrs.inView}"
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
 					item.offset = offset

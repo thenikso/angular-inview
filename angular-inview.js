@@ -20,7 +20,7 @@
             if ($inviewpart) {
               $inviewpart = "'" + $inviewpart + "'";
             }
-            return scope.$eval("$inview=" + $inview + ";$inviewpart=" + $inviewpart + ";" + attrs.inView);
+            return scope.$apply("$inview=" + $inview + ";$inviewpart=" + $inviewpart + ";" + attrs.inView);
           }
         };
         if (attrs.inViewOffset != null) {
