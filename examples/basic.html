@@ -34,7 +34,7 @@
 
 	<div id="hud">
 		<ul>
-			<li ng-repeat="l in inviewLogs" ng-bind-html-unsafe="l"></li>
+			<li ng-repeat="l in inviewLogs" ng-bind-html="l.message"></li>
 		</ul>
 	</div>
 
@@ -45,15 +45,19 @@
 	<script src="../bower_components/angular/angular.js"></script>
 	<script src="../angular-inview.js"></script>
 	<script type="text/javascript">
-	angular.module('basicApp', ['angular-inview']).controller('basicCtrl', function basicCtrl ($scope) {
-		$scope.testLines = new Array(20);
+	angular.module('basicApp', ['angular-inview']).controller('basicCtrl', function basicCtrl ($scope, $sce) {
+		var logId = 0;
+		$scope.testLines = [];
+		for (var i = 20; i >= 0; i--) {
+			$scope.testLines.push(i);
+		};
 		$scope.inviewLogs = [];
 		$scope.lineInView = function(index, inview, inviewpart) {
 			var inViewReport = inview ? '<strong>enters</strong>' : '<strong>exit</strong>';
 			if (typeof(inviewpart) != 'undefined') {
 				inViewReport = '<strong>' + inviewpart + '</strong> part ' + inViewReport;
 			}
-			$scope.inviewLogs.unshift('Line <em>#' + index + '</em>: ' + inViewReport);
+			$scope.inviewLogs.unshift({ id: logId++, message: $sce.trustAsHtml('Line <em>#' + index + '</em>: ' + inViewReport) });
 		}
 	});
 	</script>

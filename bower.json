@@ -3,11 +3,12 @@
   "version": "1.0.2",
   "main": "./angular-inview.js",
   "dependencies": {
-    "angular": "~1.0.7"
+    "angular": "1.2.0-rc.2"
   },
   "devDependencies": {
     "jquery": "~2.0.3",
-    "angular-scenario": "~1.0.7"
+    "angular-mocks": "1.2.0-rc.2",
+    "angular-scenario": "1.2.0-rc.2"
   },
   "readme": "angular-inview\n======================\n\nbower repo for angular-inview.js",
   "readmeFilename": "README.md",
