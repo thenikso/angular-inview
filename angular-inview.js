@@ -3,24 +3,27 @@
   'use strict';
   var checkInView, checkInViewDebounced, checkInViewItems, getScrollTop, getViewportHeight, offsetTop, removeInViewItem;
 
-  angular.module('angular-inview', []).directive('inView', function() {
+  angular.module('angular-inview', []).directive('inView', function($parse) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        var item;
+        var inViewFunc, item;
 
         if (!attrs.inView) {
           return;
         }
+        inViewFunc = $parse(attrs.inView);
         item = {
           element: element,
           wasInView: false,
           offset: 0,
           callback: function($inview, $inviewpart) {
-            if ($inviewpart) {
-              $inviewpart = "'" + $inviewpart + "'";
-            }
-            return scope.$apply("$inview=" + $inview + ";$inviewpart=" + $inviewpart + ";" + attrs.inView);
+            return scope.$apply(function() {
+              return inViewFunc(scope, {
+                '$inview': $inview,
+                '$inviewpart': $inviewpart
+              });
+            });
           }
         };
         if (attrs.inViewOffset != null) {

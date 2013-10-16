@@ -15,17 +15,19 @@ angular.module('angular-inview', [])
 	# that will displace the inView calculation.
 	# Usage:
 	# <any in-view="{expression}" [in-view-offset="{number}"]></any>
-	.directive 'inView', ->
+	.directive 'inView', ($parse)->
 		restrict: 'A'
 		link: (scope, element, attrs) ->
 			return unless attrs.inView
+			inViewFunc = $parse(attrs.inView)
 			item =
 				element: element
 				wasInView: no
 				offset: 0
-				callback: ($inview, $inviewpart) ->
-					$inviewpart = "'#{$inviewpart}'" if $inviewpart
-					scope.$apply "$inview=#{$inview};$inviewpart=#{$inviewpart};#{attrs.inView}"
+				callback: ($inview, $inviewpart) -> scope.$apply ->
+					inViewFunc scope,
+						'$inview': $inview
+						'$inviewpart': $inviewpart
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
 					item.offset = offset
