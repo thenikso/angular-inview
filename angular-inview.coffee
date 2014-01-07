@@ -5,6 +5,23 @@
 
 angular.module('angular-inview', [])
 
+	# inViewContainer
+	.directive 'inViewContainer', ->
+		restrict: 'AC'
+		controller: ($scope) ->
+			@items = []
+			@addItem = (item) ->
+				item.scope = $scope
+				@items.push item
+			@removeItem = (item) ->
+				@items = (i for i in @items when i isnt item)
+			@
+		link: (scope, element, attrs, controller) ->
+			check = debounce -> checkInView controller.items
+			element.bind 'scroll', check
+			scope.$on '$destroy', ->
+				element.unbind 'scroll', check
+
 	# inView
 	# Evaluate the expression passet to the attribute `in-view` when the DOM
 	# element is visible in the viewport.
@@ -15,19 +32,22 @@ angular.module('angular-inview', [])
 	# that will displace the inView calculation.
 	# Usage:
 	# <any in-view="{expression}" [in-view-offset="{number}"]></any>
-	.directive 'inView', ($parse)->
+	.directive 'inView', ($parse) ->
 		restrict: 'A'
-		link: (scope, element, attrs) ->
+		require: '?^inViewContainer'
+		link: (scope, element, attrs, container) ->
 			return unless attrs.inView
 			inViewFunc = $parse(attrs.inView)
 			item =
 				element: element
 				wasInView: no
 				offset: 0
-				callback: ($inview, $inviewpart) -> scope.$apply ->
-					inViewFunc scope,
+				scope: scope
+				callback: ($inview, $inviewpart) -> @scope.$apply =>
+					inViewFunc @scope,
 						'$inview': $inview
 						'$inviewpart': $inviewpart
+			container?.addItem item
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
 					item.offset = offset
@@ -35,10 +55,8 @@ angular.module('angular-inview', [])
 			checkInViewItems.push item
 			do checkInViewDebounced
 			scope.$on '$destroy', ->
+				container?.removeItem item
 				removeInViewItem item
-
-getScrollTop = ->
-	window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop
 
 getViewportHeight = ->
 	height = window.innerHeight
@@ -52,11 +70,15 @@ getViewportHeight = ->
 	height
 
 offsetTop = (el) ->
-	curtop = 0
+	result = 0
+	parent = el.parentElement
 	while el
-		curtop += el.offsetTop
+		result += el.offsetTop
 		el = el.offsetParent
-	curtop
+	while parent
+		result -= parent.scrollTop if parent.scrollTop?
+		parent = parent.parentElement
+	result
 
 # Object items are:
 # {
@@ -67,13 +89,13 @@ offsetTop = (el) ->
 # }
 checkInViewItems = []
 removeInViewItem = (item) ->
-	checkInViewItems = checkInViewItems.filter (i) -> i != item
+	checkInViewItems = (i for i in checkInViewItems when i isnt item)
 
-checkInView = ->
-	viewportTop = getScrollTop()
+checkInView = (items) ->
+	viewportTop = 0
 	viewportBottom = viewportTop + getViewportHeight()
 
-	for item in checkInViewItems
+	for item in items
 		elementTop = offsetTop item.element[0]
 		elementHeight = item.element[0].offsetHeight
 		elementBottom = elementTop + elementHeight
@@ -90,10 +112,12 @@ checkInView = ->
 			item.wasInView = no
 			item.callback no
 
-checkInViewDebounced = do ->
+debounce = (f, t) ->
 	timer = null
 	->
 		clearTimeout timer if timer?
-		timer = setTimeout checkInView, 100
+		timer = setTimeout f, (t ? 100)
+
+checkInViewDebounced = debounce -> checkInView checkInViewItems
 
 angular.element(window).bind 'checkInView click ready scroll resize', checkInViewDebounced
