@@ -106,21 +106,8 @@
   };
 
   offsetTop = function(el) {
-    var parent, result;
-
-    result = 0;
-    parent = el.parentElement;
-    while (el) {
-      result += el.offsetTop;
-      el = el.offsetParent;
-    }
-    while (parent) {
-      if (parent.scrollTop != null) {
-        result -= parent.scrollTop;
-      }
-      parent = parent.parentElement;
-    }
-    return result;
+    var rect = el.getBoundingClientRect();
+    return rect.top;
   };
 
   checkInViewItems = [];
