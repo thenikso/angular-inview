@@ -75,7 +75,7 @@
         }
         if (attrs.inViewOffset != null) {
           attrs.$observe('inViewOffset', function(offset) {
-            item.offset = scope.$eval(offset);
+            item.offset = offset;
             return checkInViewDebounced();
           });
         }
@@ -106,8 +106,21 @@
   };
 
   offsetTop = function(el) {
-    var rect = el.getBoundingClientRect();
-    return rect.top;
+    var parent, result;
+
+    result = 0;
+    parent = el.parentElement;
+    while (el) {
+      result += el.offsetTop;
+      el = el.offsetParent;
+    }
+    while (parent) {
+      if (parent.scrollTop != null) {
+        result -= parent.scrollTop;
+      }
+      parent = parent.parentElement;
+    }
+    return result;
   };
 
   checkInViewItems = [];

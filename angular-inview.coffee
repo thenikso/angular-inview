@@ -50,7 +50,7 @@ angular.module('angular-inview', [])
 			container?.addItem item
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
-					item.offset = @scope.$eval(offset)
+					item.offset = offset
 					do checkInViewDebounced
 			checkInViewItems.push item
 			do checkInViewDebounced
