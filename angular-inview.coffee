@@ -53,7 +53,7 @@ angular.module('angular-inview', [])
 				attrs.$observe 'inViewOffset', (offset) ->
 					item.offset = offset
 					do checkInViewDebounced
-			checkInViewItems.push item
+			addInViewItem item
 			do checkInViewDebounced
 			scope.$on '$destroy', ->
 				container?.removeItem item
@@ -89,9 +89,15 @@ offsetTop = (el) ->
 # 	wasInView: <bool>,
 # 	callback: <funciton taking 2 parameters: $inview and $inviewpart>
 # }
-checkInViewItems = []
+_checkInViewItems = []
+addInViewItem = (item) ->
+	if _checkInViewItems.length is 0
+		angular.element(window).bind 'checkInView click ready scroll resize', checkInViewDebounced
+	_checkInViewItems.push item
 removeInViewItem = (item) ->
-	checkInViewItems = (i for i in checkInViewItems when i isnt item)
+	_checkInViewItems = (i for i in _checkInViewItems when i isnt item)
+	if _checkInViewItems.length is 0
+		angular.element(window).unbind 'checkInView click ready scroll resize', checkInViewDebounced
 
 checkInView = (items) ->
 	viewportTop = 0
@@ -120,6 +126,4 @@ debounce = (f, t) ->
 		clearTimeout timer if timer?
 		timer = setTimeout f, (t ? 100)
 
-checkInViewDebounced = debounce -> checkInView checkInViewItems
-
-angular.element(window).bind 'checkInView click ready scroll resize', checkInViewDebounced
+checkInViewDebounced = debounce -> checkInView _checkInViewItems
