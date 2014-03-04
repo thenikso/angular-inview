@@ -75,7 +75,7 @@
         }
         if (attrs.inViewOffset != null) {
           attrs.$observe('inViewOffset', function(offset) {
-            item.offset = offset;
+            item.offset = scope.$eval(offset);
             return checkInViewDebounced();
           });
         }
