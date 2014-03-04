@@ -8,15 +8,13 @@ angular.module('angular-inview', [])
 	# inViewContainer
 	.directive 'inViewContainer', ->
 		restrict: 'AC'
-		controller: ['$scope', ($scope) ->
+		controller: ->
 			@items = []
 			@addItem = (item) ->
-				item.scope = $scope
 				@items.push item
 			@removeItem = (item) ->
 				@items = (i for i in @items when i isnt item)
 			@
-		]
 		link: (scope, element, attrs, controller) ->
 			check = debounce -> checkInView controller.items
 			element.bind 'scroll', check
@@ -43,9 +41,8 @@ angular.module('angular-inview', [])
 				element: element
 				wasInView: no
 				offset: 0
-				scope: scope
-				callback: ($inview, $inviewpart) -> @scope.$apply =>
-					inViewFunc @scope,
+				callback: ($inview, $inviewpart) -> scope.$apply =>
+					inViewFunc scope,
 						'$inview': $inview
 						'$inviewpart': $inviewpart
 			container?.addItem item
