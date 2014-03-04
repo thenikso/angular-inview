@@ -6,31 +6,33 @@
   angular.module('angular-inview', []).directive('inViewContainer', function() {
     return {
       restrict: 'AC',
-      controller: function($scope) {
-        this.items = [];
-        this.addItem = function(item) {
-          item.scope = $scope;
-          return this.items.push(item);
-        };
-        this.removeItem = function(item) {
-          var i;
+      controller: [
+        '$scope', function($scope) {
+          this.items = [];
+          this.addItem = function(item) {
+            item.scope = $scope;
+            return this.items.push(item);
+          };
+          this.removeItem = function(item) {
+            var i;
 
-          return this.items = (function() {
-            var _i, _len, _ref, _results;
+            return this.items = (function() {
+              var _i, _len, _ref, _results;
 
-            _ref = this.items;
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              i = _ref[_i];
-              if (i !== item) {
-                _results.push(i);
+              _ref = this.items;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                i = _ref[_i];
+                if (i !== item) {
+                  _results.push(i);
+                }
               }
-            }
-            return _results;
-          }).call(this);
-        };
-        return this;
-      },
+              return _results;
+            }).call(this);
+          };
+          return this;
+        }
+      ],
       link: function(scope, element, attrs, controller) {
         var check;
 
@@ -43,53 +45,55 @@
         });
       }
     };
-  }).directive('inView', function($parse) {
-    return {
-      restrict: 'A',
-      require: '?^inViewContainer',
-      link: function(scope, element, attrs, container) {
-        var inViewFunc, item;
+  }).directive('inView', [
+    '$parse', function($parse) {
+      return {
+        restrict: 'A',
+        require: '?^inViewContainer',
+        link: function(scope, element, attrs, container) {
+          var inViewFunc, item;
 
-        if (!attrs.inView) {
-          return;
-        }
-        inViewFunc = $parse(attrs.inView);
-        item = {
-          element: element,
-          wasInView: false,
-          offset: 0,
-          scope: scope,
-          callback: function($inview, $inviewpart) {
-            var _this = this;
+          if (!attrs.inView) {
+            return;
+          }
+          inViewFunc = $parse(attrs.inView);
+          item = {
+            element: element,
+            wasInView: false,
+            offset: 0,
+            scope: scope,
+            callback: function($inview, $inviewpart) {
+              var _this = this;
 
-            return this.scope.$apply(function() {
-              return inViewFunc(_this.scope, {
-                '$inview': $inview,
-                '$inviewpart': $inviewpart
+              return this.scope.$apply(function() {
+                return inViewFunc(_this.scope, {
+                  '$inview': $inview,
+                  '$inviewpart': $inviewpart
+                });
               });
+            }
+          };
+          if (container != null) {
+            container.addItem(item);
+          }
+          if (attrs.inViewOffset != null) {
+            attrs.$observe('inViewOffset', function(offset) {
+              item.offset = offset;
+              return checkInViewDebounced();
             });
           }
-        };
-        if (container != null) {
-          container.addItem(item);
-        }
-        if (attrs.inViewOffset != null) {
-          attrs.$observe('inViewOffset', function(offset) {
-            item.offset = offset;
-            return checkInViewDebounced();
+          checkInViewItems.push(item);
+          checkInViewDebounced();
+          return scope.$on('$destroy', function() {
+            if (container != null) {
+              container.removeItem(item);
+            }
+            return removeInViewItem(item);
           });
         }
-        checkInViewItems.push(item);
-        checkInViewDebounced();
-        return scope.$on('$destroy', function() {
-          if (container != null) {
-            container.removeItem(item);
-          }
-          return removeInViewItem(item);
-        });
-      }
-    };
-  });
+      };
+    }
+  ]);
 
   getViewportHeight = function() {
     var height, mode, _ref;

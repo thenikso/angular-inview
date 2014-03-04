@@ -8,7 +8,7 @@ angular.module('angular-inview', [])
 	# inViewContainer
 	.directive 'inViewContainer', ->
 		restrict: 'AC'
-		controller: ($scope) ->
+		controller: ['$scope', ($scope) ->
 			@items = []
 			@addItem = (item) ->
 				item.scope = $scope
@@ -16,6 +16,7 @@ angular.module('angular-inview', [])
 			@removeItem = (item) ->
 				@items = (i for i in @items when i isnt item)
 			@
+		]
 		link: (scope, element, attrs, controller) ->
 			check = debounce -> checkInView controller.items
 			element.bind 'scroll', check
@@ -32,7 +33,7 @@ angular.module('angular-inview', [])
 	# that will displace the inView calculation.
 	# Usage:
 	# <any in-view="{expression}" [in-view-offset="{number}"]></any>
-	.directive 'inView', ($parse) ->
+	.directive 'inView', ['$parse', ($parse) ->
 		restrict: 'A'
 		require: '?^inViewContainer'
 		link: (scope, element, attrs, container) ->
@@ -57,6 +58,7 @@ angular.module('angular-inview', [])
 			scope.$on '$destroy', ->
 				container?.removeItem item
 				removeInViewItem item
+	]
 
 getViewportHeight = ->
 	height = window.innerHeight
