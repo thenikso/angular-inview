@@ -45,6 +45,7 @@ available in the expression:
 - `$inview` is a boolean value indicating if the DOM element is in view
 - `$inviewpart` is undefined or a string either `top`, `bottom` or `both`
 indicating which part of the DOM element is visible.
+- `$element` is the DOM element that changed its visibility status.
 
 An additional attribute `in-view-offset` can be speficied to add a virtual
 offset to the element that will anticipate or delay the in view event.
