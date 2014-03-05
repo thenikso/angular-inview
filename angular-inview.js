@@ -74,6 +74,12 @@
           }
           if (attrs.inViewOffset != null) {
             attrs.$observe('inViewOffset', function(offset) {
+              if (!angular.isNumber(offset)) {
+                offset = parseInt(offset);
+                if (isNaN(offset)) {
+                  offset = 0;
+                }
+              }
               item.offset = offset;
               return checkInViewDebounced();
             });
@@ -153,19 +159,19 @@
   };
 
   checkInView = function(items) {
-    var elementBottom, elementHeight, elementTop, inView, inViewWithOffset, inviewpart, isBottomVisible, isTopVisible, item, viewportBottom, viewportTop, _i, _len, _results;
+    var elementBottom, elementHeight, elementTop, inView, inViewWithOffset, inviewpart, isBottomVisible, isTopVisible, item, viewportBottom, viewportTop, _i, _len, _ref, _results;
 
     viewportTop = 0;
     viewportBottom = viewportTop + getViewportHeight();
     _results = [];
     for (_i = 0, _len = items.length; _i < _len; _i++) {
       item = items[_i];
-      elementTop = offsetTop(item.element[0]);
+      elementTop = offsetTop(item.element[0]) + ((_ref = item.offset) != null ? _ref : 0);
       elementHeight = item.element[0].offsetHeight;
       elementBottom = elementTop + elementHeight;
       inView = elementTop > viewportTop && elementBottom < viewportBottom;
-      isBottomVisible = elementBottom + item.offset > viewportTop && elementTop < viewportTop;
-      isTopVisible = elementTop - item.offset < viewportBottom && elementBottom > viewportBottom;
+      isBottomVisible = elementBottom > viewportTop && elementTop < viewportTop;
+      isTopVisible = elementTop < viewportBottom && elementBottom > viewportBottom;
       inViewWithOffset = inView || isBottomVisible || isTopVisible || (elementTop < viewportTop && elementBottom > viewportBottom);
       if (inViewWithOffset) {
         inviewpart = (isTopVisible && 'top') || (isBottomVisible && 'bottom') || 'both';

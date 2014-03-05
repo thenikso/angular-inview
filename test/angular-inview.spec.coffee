@@ -41,7 +41,7 @@ describe 'Directive: inView', ->
 	test = createTestView """
 		<div id="zero" in-view="inviewSpy(0, $inview, $inviewpart)" style="height:0"></div>
 		<div id="one" in-view="inviewSpy(1, $inview, $inviewpart)" style="height:100%">one</div>
-		<div id="two" in-view="inviewSpy(2, $inview, $inviewpart)" style="height:100%">two</div>
+		<div id="two" in-view="inviewSpy(2, $inview, $inviewpart)" style="height:100%" in-view-offset="{{twoOffset}}">two</div>
 		<div id="three" in-view="inviewSpy(3, $inview, $inviewpart)" in-view-offset="{{threeOffset}}" style="height:100%">three</div>
 	"""
 
@@ -63,6 +63,15 @@ describe 'Directive: inView', ->
 				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, false, undefined)
 				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'bottom')
 				expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'top')
+
+	it 'should consider offset', ->
+		test.scope.twoOffset = window.innerHeight
+		test.scope.$digest()
+		test.scrollAndWaitInView window.innerHeight / 2, ->
+			expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(2, true, 'top')
+
+			test.scrollAndWaitInView window.innerHeight * 2, ->
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
 
 describe 'Directive: inViewContainer', ->
 	beforeEach module 'angular-inview'

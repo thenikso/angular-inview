@@ -48,6 +48,9 @@ angular.module('angular-inview', [])
 			container?.addItem item
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
+					unless angular.isNumber offset
+						offset = parseInt offset
+						offset = 0 if isNaN offset
 					item.offset = offset
 					do checkInViewDebounced
 			addInViewItem item
@@ -101,12 +104,12 @@ checkInView = (items) ->
 	viewportBottom = viewportTop + getViewportHeight()
 
 	for item in items
-		elementTop = offsetTop item.element[0]
+		elementTop = offsetTop(item.element[0]) + (item.offset ? 0)
 		elementHeight = item.element[0].offsetHeight
 		elementBottom = elementTop + elementHeight
 		inView = elementTop > viewportTop and elementBottom < viewportBottom
-		isBottomVisible = elementBottom + item.offset > viewportTop and elementTop < viewportTop
-		isTopVisible = elementTop - item.offset < viewportBottom and elementBottom > viewportBottom
+		isBottomVisible = elementBottom > viewportTop and elementTop < viewportTop
+		isTopVisible = elementTop < viewportBottom and elementBottom > viewportBottom
 		inViewWithOffset = inView or isBottomVisible or isTopVisible or (elementTop < viewportTop and elementBottom > viewportBottom)
 		if inViewWithOffset
 			inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
