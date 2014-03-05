@@ -43,6 +43,7 @@ angular.module('angular-inview', [])
 				offset: 0
 				callback: ($inview, $inviewpart) -> scope.$apply =>
 					inViewFunc scope,
+						'$element': element[0]
 						'$inview': $inview
 						'$inviewpart': $inviewpart
 			container?.addItem item

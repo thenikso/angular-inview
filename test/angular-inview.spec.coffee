@@ -38,40 +38,53 @@ createTestView = (elemHtml, bef, aft) ->
 describe 'Directive: inView', ->
 	beforeEach module 'angular-inview'
 
-	test = createTestView """
-		<div id="zero" in-view="inviewSpy(0, $inview, $inviewpart)" style="height:0"></div>
-		<div id="one" in-view="inviewSpy(1, $inview, $inviewpart)" style="height:100%">one</div>
-		<div id="two" in-view="inviewSpy(2, $inview, $inviewpart)" style="height:100%" in-view-offset="{{twoOffset}}">two</div>
-		<div id="three" in-view="inviewSpy(3, $inview, $inviewpart)" in-view-offset="{{threeOffset}}" style="height:100%">three</div>
-	"""
+	describe 'local variables', ->
 
-	it 'should initially execute the expression only for visible elements', ->
-		runs ->
-			expect(test.scope.inviewSpy.calls.length).toEqual(2)
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'both')
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
+		test = createTestView """
+			<div id="zero" in-view="inviewSpy($element, $inview, $inviewpart)" style="height:0"></div>
+		"""
 
-	it 'should change the inview status on scrolling', ->
-		test.scrollAndWaitInView window.innerHeight / 2, ->
-			expect(test.scope.inviewSpy.calls.length - test.spyCalls).toEqual(3)
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, false, undefined)
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'bottom')
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
+		it 'should define local variables `$element`, `$inview` and `$inviewpart`', ->
+			runs ->
+				expect(test.scope.inviewSpy.calls.length).toEqual(1)
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(test.elem[0], true, 'both')
 
-			test.scrollAndWaitInView window.innerHeight * 2, ->
+	describe 'scrolling behaviour', ->
+
+		test = createTestView """
+			<div id="zero" in-view="inviewSpy(0, $inview, $inviewpart)" style="height:0"></div>
+			<div id="one" in-view="inviewSpy(1, $inview, $inviewpart)" style="height:100%">one</div>
+			<div id="two" in-view="inviewSpy(2, $inview, $inviewpart)" style="height:100%" in-view-offset="{{twoOffset}}">two</div>
+			<div id="three" in-view="inviewSpy(3, $inview, $inviewpart)" in-view-offset="{{threeOffset}}" style="height:100%">three</div>
+		"""
+
+		it 'should initially execute the expression only for visible elements', ->
+			runs ->
+				expect(test.scope.inviewSpy.calls.length).toEqual(2)
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'both')
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
+
+		it 'should change the inview status on scrolling', ->
+			test.scrollAndWaitInView window.innerHeight / 2, ->
 				expect(test.scope.inviewSpy.calls.length - test.spyCalls).toEqual(3)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, false, undefined)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'bottom')
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'top')
-
-	it 'should consider offset', ->
-		test.scope.twoOffset = window.innerHeight
-		test.scope.$digest()
-		test.scrollAndWaitInView window.innerHeight / 2, ->
-			expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(2, true, 'top')
-
-			test.scrollAndWaitInView window.innerHeight * 2, ->
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, false, undefined)
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'bottom')
 				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
+
+				test.scrollAndWaitInView window.innerHeight * 2, ->
+					expect(test.scope.inviewSpy.calls.length - test.spyCalls).toEqual(3)
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, false, undefined)
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'bottom')
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'top')
+
+		it 'should consider offset', ->
+			test.scope.twoOffset = window.innerHeight
+			test.scope.$digest()
+			test.scrollAndWaitInView window.innerHeight / 2, ->
+				expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(2, true, 'top')
+
+				test.scrollAndWaitInView window.innerHeight * 2, ->
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
 
 describe 'Directive: inViewContainer', ->
 	beforeEach module 'angular-inview'

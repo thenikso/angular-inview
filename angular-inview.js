@@ -63,6 +63,7 @@
 
               return scope.$apply(function() {
                 return inViewFunc(scope, {
+                  '$element': element[0],
                   '$inview': $inview,
                   '$inviewpart': $inviewpart
                 });
