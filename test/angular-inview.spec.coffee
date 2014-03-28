@@ -86,6 +86,28 @@ describe 'Directive: inView', ->
 				test.scrollAndWaitInView window.innerHeight * 2, ->
 					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
 
+	describe 'element positioning behaviours', ->
+
+		test = createTestView """
+			<div id="one" in-view="inviewSpy(0, $inview, $inviewpart)" style="height:100%">zero</div>
+			<div id="one" in-view="inviewSpy(1, $inview, $inviewpart)" style="height:100%" ng-show="showSpacer">one</div>
+			<div id="two" in-view="inviewSpy(2, $inview, $inviewpart)" style="height:10%">two</div>
+			<div id="one" in-view="inviewSpy(3, $inview, $inviewpart)" style="height:100%">three</div>
+		"""
+
+		it 'should resend identical notification if inview item changed its position between debounces', ->
+			test.scrollAndWaitInView window.innerHeight, ->
+				expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(1, true, 'top')
+				expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(1, true, 'bottom')
+				expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(1, true, 'both')
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
+
+				test.scope.inviewSpy = jasmine.createSpy 'inviewSpy'
+				test.scope.showSpacer = true
+				test.scope.$digest()
+				test.scrollAndWaitInView window.innerHeight * 2, ->
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
+
 describe 'Directive: inViewContainer', ->
 	beforeEach module 'angular-inview'
 

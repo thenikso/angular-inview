@@ -160,15 +160,16 @@
   };
 
   checkInView = function(items) {
-    var elementBottom, elementHeight, elementTop, inView, inViewWithOffset, inviewpart, isBottomVisible, isTopVisible, item, viewportBottom, viewportTop, _i, _len, _ref, _results;
+    var element, elementBottom, elementHeight, elementTop, inView, inViewWithOffset, inviewpart, isBottomVisible, isTopVisible, item, viewportBottom, viewportTop, _i, _len, _ref, _results;
 
     viewportTop = 0;
     viewportBottom = viewportTop + getViewportHeight();
     _results = [];
     for (_i = 0, _len = items.length; _i < _len; _i++) {
       item = items[_i];
-      elementTop = offsetTop(item.element[0]) + ((_ref = item.offset) != null ? _ref : 0);
-      elementHeight = item.element[0].offsetHeight;
+      element = item.element[0];
+      elementTop = offsetTop(element) + ((_ref = item.offset) != null ? _ref : 0);
+      elementHeight = element.offsetHeight;
       elementBottom = elementTop + elementHeight;
       inView = elementTop > viewportTop && elementBottom < viewportBottom;
       isBottomVisible = elementBottom > viewportTop && elementTop < viewportTop;
@@ -176,7 +177,8 @@
       inViewWithOffset = inView || isBottomVisible || isTopVisible || (elementTop < viewportTop && elementBottom > viewportBottom);
       if (inViewWithOffset) {
         inviewpart = (isTopVisible && 'top') || (isBottomVisible && 'bottom') || 'both';
-        if (!(item.wasInView && item.wasInView === inviewpart)) {
+        if (!(item.wasInView && item.wasInView === inviewpart && element.offsetTop === item.lastOffsetTop)) {
+          item.lastOffsetTop = element.offsetTop;
           item.wasInView = inviewpart;
           _results.push(item.callback(true, inviewpart));
         } else {

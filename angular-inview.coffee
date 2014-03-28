@@ -105,8 +105,9 @@ checkInView = (items) ->
 	viewportBottom = viewportTop + getViewportHeight()
 
 	for item in items
-		elementTop = offsetTop(item.element[0]) + (item.offset ? 0)
-		elementHeight = item.element[0].offsetHeight
+		element = item.element[0]
+		elementTop = offsetTop(element) + (item.offset ? 0)
+		elementHeight = element.offsetHeight
 		elementBottom = elementTop + elementHeight
 		inView = elementTop > viewportTop and elementBottom < viewportBottom
 		isBottomVisible = elementBottom > viewportTop and elementTop < viewportTop
@@ -114,7 +115,8 @@ checkInView = (items) ->
 		inViewWithOffset = inView or isBottomVisible or isTopVisible or (elementTop < viewportTop and elementBottom > viewportBottom)
 		if inViewWithOffset
 			inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
-			unless item.wasInView and item.wasInView == inviewpart
+			unless item.wasInView and item.wasInView == inviewpart and element.offsetTop == item.lastOffsetTop
+				item.lastOffsetTop = element.offsetTop
 				item.wasInView = inviewpart
 				item.callback yes, inviewpart
 		else if not inView and item.wasInView
