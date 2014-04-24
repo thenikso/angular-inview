@@ -3,7 +3,7 @@
 A directive to evaluate an expression if a DOM element is or not in the current
 visible browser viewport.
 
-The directive is directly derived from the [jQuery.inview](https://github.com/zuk/jquery.inview)
+The directive is inspired by the [jQuery.inview](https://github.com/zuk/jquery.inview)
 plugin. However this implementation has no dependency on jQuery.
 
 ## Intallation
@@ -31,10 +31,12 @@ angular.module('myModule', ['angular-inview']);
 
 ## Usage
 
-This module will define a single directive `inView` that may be used as an attribute.
+This module will define two directives: `in-view` and `in-view-container`.
+
+### InView
 
 ```
-<any in-view="{expression}" in-view-offset="{number}"></any>
+<any in-view="{expression using $inview}" in-view-offset="{number}"></any>
 ```
 
 The `in-view` attribute must contain a valid [AngularJS expression](http://docs.angularjs.org/guide/expression)
@@ -50,6 +52,18 @@ indicating which part of the DOM element is visible.
 An additional attribute `in-view-offset` can be speficied to add a virtual
 offset to the element that will anticipate or delay the in view event.
 
-## Testing
+### InViewContainer
 
-To run tests, [install Karma](http://karma-runner.github.io/) and run: `karma start`.
+Use `in-view-container` when you have a scollable container that contains `in-view`
+elements. When an `in-view` element is inside such container, it will properly
+trigger callbacks when the container scrolls as well as when the window scrolls.
+
+```
+<div style="height: 150px; overflow-y: scroll; position: fixed;" in-view-container>
+	<div style="height:300px" in-view="{expression using $inview}"></li>
+</div>
+```
+
+## License
+
+MIT

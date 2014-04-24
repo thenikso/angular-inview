@@ -8,18 +8,21 @@ angular.module('angular-inview', [])
 	# inViewContainer
 	.directive 'inViewContainer', ->
 		restrict: 'AC'
-		controller: ->
+		controller: ($element) ->
 			@items = []
 			@addItem = (item) ->
 				@items.push item
 			@removeItem = (item) ->
 				@items = (i for i in @items when i isnt item)
+			@checkInViewDebounced = debounce =>
+				checkInView @items, $element[0]
 			@
 		link: (scope, element, attrs, controller) ->
-			check = debounce -> checkInView controller.items
-			element.bind 'scroll', check
+			element.bind 'scroll', controller.checkInViewDebounced
+			trackInViewContainer controller
 			scope.$on '$destroy', ->
-				element.unbind 'scroll', check
+				element.unbind 'scroll', controller.checkInViewDebounced
+				untrackInViewContainer controller
 
 	# inView
 	# Evaluate the expression passet to the attribute `in-view` when the DOM
@@ -34,7 +37,7 @@ angular.module('angular-inview', [])
 	.directive 'inView', ['$parse', ($parse) ->
 		restrict: 'A'
 		require: '?^inViewContainer'
-		link: (scope, element, attrs, container) ->
+		link: (scope, element, attrs, containerController) ->
 			return unless attrs.inView
 			inViewFunc = $parse(attrs.inView)
 			item =
@@ -46,20 +49,113 @@ angular.module('angular-inview', [])
 						'$element': element[0]
 						'$inview': $inview
 						'$inviewpart': $inviewpart
-			container?.addItem item
+			# Add item to proper list
+			performCheckDebounced = windowCheckInViewDebounced
+			if containerController?
+				containerController.addItem item
+				performCheckDebounced = containerController.checkInViewDebounced
+			else
+				addWindowInViewItem item
+			# Perform initial check
+			do performCheckDebounced
+			# Check for offset
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
 					unless angular.isNumber offset
 						offset = parseInt offset
 						offset = 0 if isNaN offset
 					item.offset = offset
-					do checkInViewDebounced
-			addInViewItem item
-			do checkInViewDebounced
+					do performCheckDebounced
+			# Handle element removal
 			scope.$on '$destroy', ->
-				container?.removeItem item
-				removeInViewItem item
+				containerController?.removeItem item
+				removeWindowInViewItem item
 	]
+
+# Window inview items management
+# Object items are:
+# {
+# 	element: <angular.element>,
+# 	offset: <number>,
+# 	wasInView: <bool>,
+# 	callback: <funciton taking 2 parameters: $inview and $inviewpart>
+# }
+_windowInViewItems = []
+addWindowInViewItem = (item) ->
+	_windowInViewItems.push item
+	do bindWindowEvents
+removeWindowInViewItem = (item) ->
+	_windowInViewItems = (i for i in _windowInViewItems when i isnt item)
+	do unbindWindowEvents
+
+# List of containers controllers
+_containersControllers = []
+trackInViewContainer = (controller) ->
+	_containersControllers.push controller
+	do bindWindowEvents
+untrackInViewContainer = (container) ->
+	_containersControllers = (c for c in _containersControllers when c isnt container)
+	do unbindWindowEvents
+
+# Window events handler management
+_windowEventsHandlerBinded = no
+windowEventsHandler = ->
+	do c.checkInViewDebounced for c in _containersControllers
+	do windowCheckInViewDebounced if _windowInViewItems.length
+bindWindowEvents = ->
+	return if _windowEventsHandlerBinded
+	_windowEventsHandlerBinded = yes
+	angular.element(window).bind 'checkInView click ready scroll resize', windowEventsHandler
+unbindWindowEvents = ->
+	return unless _windowEventsHandlerBinded
+	return if _windowInViewItems.length or _containersControllers.length
+	_windowEventsHandlerBinded = no
+	angular.element(window).unbind 'checkInView click ready scroll resize', windowEventsHandler
+
+# Perform inview expression if neccessary
+triggerInViewCallback = (item, inview, isTopVisible, isBottomVisible) ->
+	if inview
+		el = item.element[0]
+		inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
+		unless item.wasInView and item.wasInView == inviewpart and el.offsetTop == item.lastOffsetTop
+			item.lastOffsetTop = el.offsetTop
+			item.wasInView = inviewpart
+			item.callback yes, inviewpart
+	else if item.wasInView
+		item.wasInView = no
+		item.callback no
+
+# Check if items are inview and perform callbacks
+checkInView = (items, container) ->
+	# Calculate viewport
+	viewport =
+		top: 0
+		bottom: getViewportHeight()
+	# Restrict viewport if a container is specified
+	if container and container isnt window
+		bounds = getBoundingClientRect container
+		# Shortcut to all item not in view if container isn't itself
+		if bounds.top > viewport.bottom or bounds.bottom < viewport.top
+			triggerInViewCallback(item, false) for item in items
+			return
+		# Actual viewport restriction
+		viewport.top = bounds.top if bounds.top > viewport.top
+		viewport.bottom = bounds.bottom if bounds.bottom < viewport.bottom
+	# Calculate inview status for each item
+	for item in items
+		# Get the bounding top and bottom of the element in the viewport
+		element = item.element[0]
+		bounds = getBoundingClientRect element
+		# Apply offset
+		bounds.top += item.offset ? 0
+		bounds.bottom += item.offset ? 0
+		# Calculate parts in view
+		if bounds.top < viewport.bottom and bounds.bottom >= viewport.top
+			triggerInViewCallback(item, true, bounds.bottom > viewport.bottom, bounds.top < viewport.top)
+		else
+			triggerInViewCallback(item, false)
+
+# Utility functions
 
 getViewportHeight = ->
 	height = window.innerHeight
@@ -72,56 +168,21 @@ getViewportHeight = ->
 
 	height
 
-offsetTop = (el) ->
-	result = 0
-	parent = el.parentElement
+getBoundingClientRect = (element) ->
+	# return element.getBoundingClientRect() if element.getBoundingClientRect?
+	top = 0
+	el = element
 	while el
-		result += el.offsetTop
+		top += el.offsetTop
 		el = el.offsetParent
+	parent = element.parentElement
 	while parent
-		result -= parent.scrollTop if parent.scrollTop?
+		top -= parent.scrollTop if parent.scrollTop?
 		parent = parent.parentElement
-	result
-
-# Object items are:
-# {
-# 	element: <angular.element>,
-# 	offset: <number>,
-# 	wasInView: <bool>,
-# 	callback: <funciton taking 2 parameters: $inview and $inviewpart>
-# }
-_checkInViewItems = []
-addInViewItem = (item) ->
-	if _checkInViewItems.length is 0
-		angular.element(window).bind 'checkInView click ready scroll resize', checkInViewDebounced
-	_checkInViewItems.push item
-removeInViewItem = (item) ->
-	_checkInViewItems = (i for i in _checkInViewItems when i isnt item)
-	if _checkInViewItems.length is 0
-		angular.element(window).unbind 'checkInView click ready scroll resize', checkInViewDebounced
-
-checkInView = (items) ->
-	viewportTop = 0
-	viewportBottom = viewportTop + getViewportHeight()
-
-	for item in items
-		element = item.element[0]
-		elementTop = offsetTop(element) + (item.offset ? 0)
-		elementHeight = element.offsetHeight
-		elementBottom = elementTop + elementHeight
-		inView = elementTop > viewportTop and elementBottom < viewportBottom
-		isBottomVisible = elementBottom > viewportTop and elementTop < viewportTop
-		isTopVisible = elementTop < viewportBottom and elementBottom > viewportBottom
-		inViewWithOffset = inView or isBottomVisible or isTopVisible or (elementTop < viewportTop and elementBottom > viewportBottom)
-		if inViewWithOffset
-			inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
-			unless item.wasInView and item.wasInView == inviewpart and element.offsetTop == item.lastOffsetTop
-				item.lastOffsetTop = element.offsetTop
-				item.wasInView = inviewpart
-				item.callback yes, inviewpart
-		else if not inView and item.wasInView
-			item.wasInView = no
-			item.callback no
+	return {
+		top: top
+		bottom: top + element.offsetHeight
+	}
 
 debounce = (f, t) ->
 	timer = null
@@ -129,4 +190,4 @@ debounce = (f, t) ->
 		clearTimeout timer if timer?
 		timer = setTimeout f, (t ? 100)
 
-checkInViewDebounced = debounce -> checkInView _checkInViewItems
+windowCheckInViewDebounced = debounce -> checkInView _windowInViewItems
