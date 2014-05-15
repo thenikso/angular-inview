@@ -82,13 +82,7 @@
           performCheckDebounced();
           if (attrs.inViewOffset != null) {
             attrs.$observe('inViewOffset', function(offset) {
-              if (!angular.isNumber(offset)) {
-                offset = parseInt(offset);
-                if (isNaN(offset)) {
-                  offset = 0;
-                }
-              }
-              item.offset = offset;
+              item.offset = scope.$eval(offset) || 0;
               return performCheckDebounced();
             });
           }
@@ -204,7 +198,7 @@
   };
 
   checkInView = function(items, container) {
-    var bounds, element, item, viewport, _i, _j, _len, _len1, _ref, _ref1, _results;
+    var bounds, element, item, viewport, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
 
     viewport = {
       top: 0,
@@ -231,8 +225,8 @@
       item = items[_j];
       element = item.element[0];
       bounds = getBoundingClientRect(element);
-      bounds.top += (_ref = item.offset) != null ? _ref : 0;
-      bounds.bottom += (_ref1 = item.offset) != null ? _ref1 : 0;
+      bounds.top += (_ref = (_ref1 = item.offset) != null ? _ref1[0] : void 0) != null ? _ref : item.offset;
+      bounds.bottom += (_ref2 = (_ref3 = item.offset) != null ? _ref3[1] : void 0) != null ? _ref2 : item.offset;
       if (bounds.top < viewport.bottom && bounds.bottom >= viewport.top) {
         _results.push(triggerInViewCallback(item, true, bounds.bottom > viewport.bottom, bounds.top < viewport.top));
       } else {

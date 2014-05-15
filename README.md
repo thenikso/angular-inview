@@ -51,6 +51,12 @@ indicating which part of the DOM element is visible.
 
 An additional attribute `in-view-offset` can be speficied to add a virtual
 offset to the element that will anticipate or delay the in view event.
+The offset can be:
+
+- a number: indicating how much to move down (or up if negative) the top
+position of the element for the purpose of inview testing;
+- an array of two numbers representing the top and bottom offset respectively;
+this may virtually change the height of the element for inview testing.
 
 ### InViewContainer
 

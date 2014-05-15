@@ -33,7 +33,7 @@ angular.module('angular-inview', [])
 	# An additional `in-view-offset` attribute can be specified to set an offset
 	# that will displace the inView calculation.
 	# Usage:
-	# <any in-view="{expression}" [in-view-offset="{number}"]></any>
+	# <any in-view="{expression}" [in-view-offset="{number|array}"]></any>
 	.directive 'inView', ['$parse', ($parse) ->
 		restrict: 'A'
 		require: '?^inViewContainer'
@@ -61,10 +61,7 @@ angular.module('angular-inview', [])
 			# Check for offset
 			if attrs.inViewOffset?
 				attrs.$observe 'inViewOffset', (offset) ->
-					unless angular.isNumber offset
-						offset = parseInt offset
-						offset = 0 if isNaN offset
-					item.offset = offset
+					item.offset = scope.$eval(offset) or 0
 					do performCheckDebounced
 			# Handle element removal
 			scope.$on '$destroy', ->
@@ -147,8 +144,8 @@ checkInView = (items, container) ->
 		element = item.element[0]
 		bounds = getBoundingClientRect element
 		# Apply offset
-		bounds.top += item.offset ? 0
-		bounds.bottom += item.offset ? 0
+		bounds.top += item.offset?[0] ? item.offset
+		bounds.bottom += item.offset?[1] ? item.offset
 		# Calculate parts in view
 		if bounds.top < viewport.bottom and bounds.bottom >= viewport.top
 			triggerInViewCallback(item, true, bounds.bottom > viewport.bottom, bounds.top < viewport.top)

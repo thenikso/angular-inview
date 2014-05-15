@@ -82,9 +82,11 @@ describe 'Directive: inView', ->
 			test.scrollAndWaitInView 0, ->
 
 				test.scope.twoOffset = window.innerHeight
+				test.scope.threeOffset = [-window.innerHeight, -window.innerHeight*2]
 				test.scope.$digest()
 				test.scrollAndWaitInView window.innerHeight / 2, ->
 					expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(2, true, 'top')
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'both')
 
 					test.scrollAndWaitInView window.innerHeight * 2, ->
 						expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
