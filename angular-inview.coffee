@@ -8,7 +8,7 @@ angular.module('angular-inview', [])
 	# inViewContainer
 	.directive 'inViewContainer', ->
 		restrict: 'AC'
-		controller: ($element) ->
+		controller: ['$element', ($element) ->
 			@items = []
 			@addItem = (item) ->
 				@items.push item
@@ -17,6 +17,7 @@ angular.module('angular-inview', [])
 			@checkInViewDebounced = debounce =>
 				checkInView @items, $element[0]
 			@
+		]
 		link: (scope, element, attrs, controller) ->
 			element.bind 'scroll', controller.checkInViewDebounced
 			trackInViewContainer controller
