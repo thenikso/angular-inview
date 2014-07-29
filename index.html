@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Angular-Inview</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="angular-inview">Angular-Inview</h1>
+<ul>
+<li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
+<li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-string">'use strict'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>An <a href="https://angularjs.org">angular.js</a> directive to evaluate an expression if
+a DOM element is or not in the current visible browser viewport.
+Use it in your Angular.js app by including the javascript and requireing it:</p>
+<p><code>angular.module(&#39;myApp&#39;, [&#39;angular-inview&#39;])</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">'angular-inview'</span>, [])</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="in-view-directive">in-view directive</h2>
+<p><strong>Usage</strong></p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">any</span> <span class="hljs-attribute">in-view</span>=<span class="hljs-value">"{expression}"</span> [<span class="hljs-attribute">in-view-offset</span>=<span class="hljs-value">"{number|array}"</span><span class="hljs-value">]</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">any</span>&gt;</span>
+</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	.directive <span class="hljs-string">'inView'</span>, [<span class="hljs-string">'$parse'</span>, <span class="hljs-function"><span class="hljs-params">($parse)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Evaluate the expression passet to the attribute <code>in-view</code> when the DOM
+element is visible in the viewport.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">restrict</span>: <span class="hljs-string">'A'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>If the <code>in-view</code> element is contained in a scrollable view other than the
+window, that containing element should be <a href="#in-view-container-directive">marked as a container</a>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">require</span>: <span class="hljs-string">'?^inViewContainer'</span>
+		<span class="hljs-attribute">link</span>: <span class="hljs-function"><span class="hljs-params">(scope, element, attrs, containerController)</span> -&gt;</span>
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> attrs.inView
+			inViewFunc = $parse(attrs.inView)
+			item =
+				<span class="hljs-attribute">element</span>: element
+				<span class="hljs-attribute">wasInView</span>: <span class="hljs-literal">no</span>
+				<span class="hljs-attribute">offset</span>: <span class="hljs-number">0</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>In the callback expression, the following variables will be provided:</p>
+<ul>
+<li><code>$element</code>: the DOM element</li>
+<li><code>$inview</code>: boolean indicating if the element is in view</li>
+<li><code>$inviewpart</code>: string either ‘top’, ‘bottom’ or ‘both’</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($inview, $inviewpart)</span> -&gt;</span> scope.$apply<span class="hljs-function"> =&gt;</span>
+					inViewFunc scope,
+						<span class="hljs-string">'$element'</span>: element[<span class="hljs-number">0</span>]
+						<span class="hljs-string">'$inview'</span>: $inview
+						<span class="hljs-string">'$inviewpart'</span>: $inviewpart</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>A series of checks are set up to verify the status of the element visibility.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			performCheckDebounced = windowCheckInViewDebounced
+			<span class="hljs-keyword">if</span> containerController?
+				containerController.addItem item
+				performCheckDebounced = containerController.checkInViewDebounced
+			<span class="hljs-keyword">else</span>
+				addWindowInViewItem item</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>This checks will be performed immediatly and when a relevant measure changes.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>An additional <code>in-view-offset</code> attribute can be specified to set an offset
+that will displace the inView calculation.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> attrs.inViewOffset?
+				attrs.$observe <span class="hljs-string">'inViewOffset'</span>, <span class="hljs-function"><span class="hljs-params">(offset)</span> -&gt;</span>
+					item.offset = scope.$eval(offset) <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
+					<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>When the element is removed, all the logic behind in-view is removed.
+One might want to use <code>in-view</code> in conjunction with <code>ng-if</code> when using
+the directive for lazy loading.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			scope.$<span class="hljs-literal">on</span> <span class="hljs-string">'$destroy'</span>,<span class="hljs-function"> -&gt;</span>
+				containerController?.removeItem item
+				removeWindowInViewItem item
+	]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h2 id="in-view-container-directive">in-view-container directive</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	.directive <span class="hljs-string">'inViewContainer'</span>,<span class="hljs-function"> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Use this as an attribute or a class to mark a scrollable container holding
+<code>in-view</code> directives as children.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">restrict</span>: <span class="hljs-string">'AC'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>This directive will track child <code>in-view</code> elements.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">controller</span>: [<span class="hljs-string">'$element'</span>, <span class="hljs-function"><span class="hljs-params">($element)</span> -&gt;</span>
+			<span class="hljs-property">@items</span> = []
+			<span class="hljs-property">@addItem</span> = <span class="hljs-function"><span class="hljs-params">(item)</span> -&gt;</span>
+				<span class="hljs-property">@items</span>.push item
+			<span class="hljs-property">@removeItem</span> = <span class="hljs-function"><span class="hljs-params">(item)</span> -&gt;</span>
+				<span class="hljs-property">@items</span> = (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> i <span class="hljs-keyword">isnt</span> item)
+			<span class="hljs-property">@checkInViewDebounced</span> = debounce<span class="hljs-function"> =&gt;</span>
+				checkInView <span class="hljs-property">@items</span>, $element[<span class="hljs-number">0</span>]
+			@
+		]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Custom checks on child <code>in-view</code> elements will be triggered when the
+<code>in-view-container</code> scrolls.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">link</span>: <span class="hljs-function"><span class="hljs-params">(scope, element, attrs, controller)</span> -&gt;</span>
+			element.bind <span class="hljs-string">'scroll'</span>, controller.checkInViewDebounced
+			trackInViewContainer controller
+			scope.$<span class="hljs-literal">on</span> <span class="hljs-string">'$destroy'</span>,<span class="hljs-function"> -&gt;</span>
+				element.unbind <span class="hljs-string">'scroll'</span>, controller.checkInViewDebounced
+				untrackInViewContainer controller</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h2 id="utilities">Utilities</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h3 id="items-management">items management</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>The collectin of all in-view items. Items are object with the structure:</p>
+<pre><code>{
+    <span class="hljs-attribute">element</span>: &lt;angular.element&gt;,
+    <span class="hljs-attribute">offset</span>: &lt;number&gt;,
+    <span class="hljs-attribute">wasInView</span>: &lt;bool&gt;,
+    <span class="hljs-attribute">callback</span>: &lt;funciton&gt;
+}
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>_windowInViewItems = []
+<span class="hljs-function"><span class="hljs-title">addWindowInViewItem</span> = <span class="hljs-params">(item)</span> -&gt;</span>
+	_windowInViewItems.push item
+	<span class="hljs-keyword">do</span> bindWindowEvents
+<span class="hljs-function"><span class="hljs-title">removeWindowInViewItem</span> = <span class="hljs-params">(item)</span> -&gt;</span>
+	_windowInViewItems = (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> i <span class="hljs-keyword">isnt</span> item)
+	<span class="hljs-keyword">do</span> unbindWindowEvents</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>List of containers controllers</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>_containersControllers = []
+<span class="hljs-function"><span class="hljs-title">trackInViewContainer</span> = <span class="hljs-params">(controller)</span> -&gt;</span>
+	_containersControllers.push controller
+	<span class="hljs-keyword">do</span> bindWindowEvents
+<span class="hljs-function"><span class="hljs-title">untrackInViewContainer</span> = <span class="hljs-params">(container)</span> -&gt;</span>
+	_containersControllers = (c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers <span class="hljs-keyword">when</span> c <span class="hljs-keyword">isnt</span> container)
+	<span class="hljs-keyword">do</span> unbindWindowEvents</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h3 id="events-handler-management">Events handler management</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
+<span class="hljs-function"><span class="hljs-title">windowEventsHandler</span> = -&gt;</span>
+	<span class="hljs-keyword">do</span> c.checkInViewDebounced <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers
+	<span class="hljs-keyword">do</span> windowCheckInViewDebounced <span class="hljs-keyword">if</span> _windowInViewItems.length
+<span class="hljs-function"><span class="hljs-title">bindWindowEvents</span> = -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>The bind to window events will be added only if actually needed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> _windowEventsHandlerBinded
+	_windowEventsHandlerBinded = <span class="hljs-literal">yes</span>
+	angular.element(<span class="hljs-built_in">window</span>).bind <span class="hljs-string">'checkInView click ready scroll resize'</span>, windowEventsHandler
+<span class="hljs-function"><span class="hljs-title">unbindWindowEvents</span> = -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>All the window bindings will be removed if no directive requires to be checked.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> _windowEventsHandlerBinded
+	<span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> _windowInViewItems.length <span class="hljs-keyword">or</span> _containersControllers.length
+	_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
+	angular.element(<span class="hljs-built_in">window</span>).unbind <span class="hljs-string">'checkInView click ready scroll resize'</span>, windowEventsHandler</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <h3 id="inview-checks">InView checks</h3>
+<p>This method will call the user defined callback with the proper parameters if neccessary.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">triggerInViewCallback</span> = <span class="hljs-params">(item, inview, isTopVisible, isBottomVisible)</span> -&gt;</span>
+	<span class="hljs-keyword">if</span> inview
+		el = item.element[<span class="hljs-number">0</span>]
+		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span>
+		<span class="hljs-keyword">unless</span> item.wasInView <span class="hljs-keyword">and</span> item.wasInView == inviewpart <span class="hljs-keyword">and</span> el.offsetTop == item.lastOffsetTop
+			item.lastOffsetTop = el.offsetTop
+			item.wasInView = inviewpart
+			item.callback <span class="hljs-literal">yes</span>, inviewpart
+	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> item.wasInView
+		item.wasInView = <span class="hljs-literal">no</span>
+		item.callback <span class="hljs-literal">no</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>The main function to check if the given items are in view relative to the provided container.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">checkInView</span> = <span class="hljs-params">(items, container)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>It first calculate the viewport.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	viewport =
+		<span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>
+		<span class="hljs-attribute">bottom</span>: getViewportHeight()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Restrict viewport if a container is specified.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">if</span> container <span class="hljs-keyword">and</span> container <span class="hljs-keyword">isnt</span> <span class="hljs-built_in">window</span>
+		bounds = getBoundingClientRect container</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Shortcut to all item not in view if container isn’t itself.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> bounds.top &gt; viewport.bottom <span class="hljs-keyword">or</span> bounds.bottom &lt; viewport.top
+			triggerInViewCallback(item, <span class="hljs-literal">false</span>) <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> items
+			<span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Actual viewport restriction.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		viewport.top = bounds.top <span class="hljs-keyword">if</span> bounds.top &gt; viewport.top
+		viewport.bottom = bounds.bottom <span class="hljs-keyword">if</span> bounds.bottom &lt; viewport.bottom</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Calculate inview status for each item.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> items</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Get the bounding top and bottom of the element in the viewport.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		element = item.element[<span class="hljs-number">0</span>]
+		bounds = getBoundingClientRect element</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Apply offset.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		bounds.top += item.offset?[<span class="hljs-number">0</span>] ? item.offset
+		bounds.bottom += item.offset?[<span class="hljs-number">1</span>] ? item.offset</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Calculate parts in view.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> bounds.top &lt; viewport.bottom <span class="hljs-keyword">and</span> bounds.bottom &gt;= viewport.top
+			triggerInViewCallback(item, <span class="hljs-literal">true</span>, bounds.bottom &gt; viewport.bottom, bounds.top &lt; viewport.top)
+		<span class="hljs-keyword">else</span>
+			triggerInViewCallback(item, <span class="hljs-literal">false</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <h3 id="utility-functions">Utility functions</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Returns the height of the window viewport</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getViewportHeight</span> = -&gt;</span>
+	height = <span class="hljs-built_in">window</span>.innerHeight
+	<span class="hljs-keyword">return</span> height <span class="hljs-keyword">if</span> height
+	mode = <span class="hljs-built_in">document</span>.compatMode
+	<span class="hljs-keyword">if</span> mode <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> $?.support?.boxModel
+		height = <span class="hljs-keyword">if</span> mode <span class="hljs-keyword">is</span> <span class="hljs-string">'CSS1Compat'</span> <span class="hljs-keyword">then</span> <span class="hljs-built_in">document</span>.documentElement.clientHeight <span class="hljs-keyword">else</span> <span class="hljs-built_in">document</span>.body.clientHeight
+	height</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Polyfill for <code>getBoundingClientRect</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getBoundingClientRect</span> = <span class="hljs-params">(element)</span> -&gt;</span>
+	<span class="hljs-keyword">return</span> element.getBoundingClientRect() <span class="hljs-keyword">if</span> element.getBoundingClientRect?
+	top = <span class="hljs-number">0</span>
+	el = element
+	<span class="hljs-keyword">while</span> el
+		top += el.offsetTop
+		el = el.offsetParent
+	parent = element.parentElement
+	<span class="hljs-keyword">while</span> parent
+		top -= parent.scrollTop <span class="hljs-keyword">if</span> parent.scrollTop?
+		parent = parent.parentElement
+	<span class="hljs-keyword">return</span> {
+		<span class="hljs-attribute">top</span>: top
+		<span class="hljs-attribute">bottom</span>: top + element.offsetHeight
+	}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Debounce a function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">debounce</span> = <span class="hljs-params">(f, t)</span> -&gt;</span>
+	timer = <span class="hljs-literal">null</span><span class="hljs-function">
+	-&gt;</span>
+		clearTimeout timer <span class="hljs-keyword">if</span> timer?
+		timer = setTimeout f, (t ? <span class="hljs-number">100</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>The main funciton to perform in-view checks on all items.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>windowCheckInViewDebounced = debounce<span class="hljs-function"> -&gt;</span> checkInView _windowInViewItems</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
