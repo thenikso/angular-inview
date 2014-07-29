@@ -3,48 +3,7 @@
   'use strict';
   var addWindowInViewItem, bindWindowEvents, checkInView, debounce, getBoundingClientRect, getViewportHeight, removeWindowInViewItem, trackInViewContainer, triggerInViewCallback, unbindWindowEvents, untrackInViewContainer, windowCheckInViewDebounced, windowEventsHandler, _containersControllers, _windowEventsHandlerBinded, _windowInViewItems;
 
-  angular.module('angular-inview', []).directive('inViewContainer', function() {
-    return {
-      restrict: 'AC',
-      controller: [
-        '$element', function($element) {
-          this.items = [];
-          this.addItem = function(item) {
-            return this.items.push(item);
-          };
-          this.removeItem = function(item) {
-            var i;
-            return this.items = (function() {
-              var _i, _len, _ref, _results;
-              _ref = this.items;
-              _results = [];
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                i = _ref[_i];
-                if (i !== item) {
-                  _results.push(i);
-                }
-              }
-              return _results;
-            }).call(this);
-          };
-          this.checkInViewDebounced = debounce((function(_this) {
-            return function() {
-              return checkInView(_this.items, $element[0]);
-            };
-          })(this));
-          return this;
-        }
-      ],
-      link: function(scope, element, attrs, controller) {
-        element.bind('scroll', controller.checkInViewDebounced);
-        trackInViewContainer(controller);
-        return scope.$on('$destroy', function() {
-          element.unbind('scroll', controller.checkInViewDebounced);
-          return untrackInViewContainer(controller);
-        });
-      }
-    };
-  }).directive('inView', [
+  angular.module('angular-inview', []).directive('inView', [
     '$parse', function($parse) {
       return {
         restrict: 'A',
@@ -94,7 +53,48 @@
         }
       };
     }
-  ]);
+  ]).directive('inViewContainer', function() {
+    return {
+      restrict: 'AC',
+      controller: [
+        '$element', function($element) {
+          this.items = [];
+          this.addItem = function(item) {
+            return this.items.push(item);
+          };
+          this.removeItem = function(item) {
+            var i;
+            return this.items = (function() {
+              var _i, _len, _ref, _results;
+              _ref = this.items;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                i = _ref[_i];
+                if (i !== item) {
+                  _results.push(i);
+                }
+              }
+              return _results;
+            }).call(this);
+          };
+          this.checkInViewDebounced = debounce((function(_this) {
+            return function() {
+              return checkInView(_this.items, $element[0]);
+            };
+          })(this));
+          return this;
+        }
+      ],
+      link: function(scope, element, attrs, controller) {
+        element.bind('scroll', controller.checkInViewDebounced);
+        trackInViewContainer(controller);
+        return scope.$on('$destroy', function() {
+          element.unbind('scroll', controller.checkInViewDebounced);
+          return untrackInViewContainer(controller);
+        });
+      }
+    };
+  });
 
   _windowInViewItems = [];
 
@@ -243,6 +243,9 @@
 
   getBoundingClientRect = function(element) {
     var el, parent, top;
+    if (element.getBoundingClientRect != null) {
+      return element.getBoundingClientRect();
+    }
     top = 0;
     el = element;
     while (el) {
