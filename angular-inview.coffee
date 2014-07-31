@@ -40,6 +40,12 @@ angular.module('angular-inview', [])
 						'$element': element[0]
 						'$inview': $inview
 						'$inviewpart': $inviewpart
+			# An additional `in-view-offset` attribute can be specified to set an offset
+			# that will displace the inView calculation.
+			if attrs.inViewOffset?
+				attrs.$observe 'inViewOffset', (offset) ->
+					item.offset = scope.$eval(offset) or 0
+					do performCheckDebounced
 			# A series of checks are set up to verify the status of the element visibility.
 			performCheckDebounced = windowCheckInViewDebounced
 			if containerController?
@@ -49,12 +55,6 @@ angular.module('angular-inview', [])
 				addWindowInViewItem item
 			# This checks will be performed immediatly and when a relevant measure changes.
 			do performCheckDebounced
-			# An additional `in-view-offset` attribute can be specified to set an offset
-			# that will displace the inView calculation.
-			if attrs.inViewOffset?
-				attrs.$observe 'inViewOffset', (offset) ->
-					item.offset = scope.$eval(offset) or 0
-					do performCheckDebounced
 			# When the element is removed, all the logic behind in-view is removed.
 			# One might want to use `in-view` in conjunction with `ng-if` when using
 			# the directive for lazy loading.
@@ -174,11 +174,11 @@ checkInView = (items, container) ->
 		element = item.element[0]
 		bounds = getBoundingClientRect element
 		# Apply offset.
-		bounds.top += item.offset?[0] ? item.offset
-		bounds.bottom += item.offset?[1] ? item.offset
+		boundsTop = bounds.top + parseInt(item.offset?[0] ? item.offset)
+		boundsBottom = bounds.bottom + parseInt(item.offset?[1] ? item.offset)
 		# Calculate parts in view.
-		if bounds.top < viewport.bottom and bounds.bottom >= viewport.top
-			triggerInViewCallback(item, true, bounds.bottom > viewport.bottom, bounds.top < viewport.top)
+		if boundsTop < viewport.bottom and boundsBottom >= viewport.top
+			triggerInViewCallback(item, true, boundsBottom > viewport.bottom, boundsTop < viewport.top)
 		else
 			triggerInViewCallback(item, false)
 

@@ -30,6 +30,12 @@
               })(this));
             }
           };
+          if (attrs.inViewOffset != null) {
+            attrs.$observe('inViewOffset', function(offset) {
+              item.offset = scope.$eval(offset) || 0;
+              return performCheckDebounced();
+            });
+          }
           performCheckDebounced = windowCheckInViewDebounced;
           if (containerController != null) {
             containerController.addItem(item);
@@ -38,12 +44,6 @@
             addWindowInViewItem(item);
           }
           performCheckDebounced();
-          if (attrs.inViewOffset != null) {
-            attrs.$observe('inViewOffset', function(offset) {
-              item.offset = scope.$eval(offset) || 0;
-              return performCheckDebounced();
-            });
-          }
           return scope.$on('$destroy', function() {
             if (containerController != null) {
               containerController.removeItem(item);
@@ -191,7 +191,7 @@
   };
 
   checkInView = function(items, container) {
-    var bounds, element, item, viewport, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
+    var bounds, boundsBottom, boundsTop, element, item, viewport, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
     viewport = {
       top: 0,
       bottom: getViewportHeight()
@@ -217,10 +217,10 @@
       item = items[_j];
       element = item.element[0];
       bounds = getBoundingClientRect(element);
-      bounds.top += (_ref = (_ref1 = item.offset) != null ? _ref1[0] : void 0) != null ? _ref : item.offset;
-      bounds.bottom += (_ref2 = (_ref3 = item.offset) != null ? _ref3[1] : void 0) != null ? _ref2 : item.offset;
-      if (bounds.top < viewport.bottom && bounds.bottom >= viewport.top) {
-        _results.push(triggerInViewCallback(item, true, bounds.bottom > viewport.bottom, bounds.top < viewport.top));
+      boundsTop = bounds.top + parseInt((_ref = (_ref1 = item.offset) != null ? _ref1[0] : void 0) != null ? _ref : item.offset);
+      boundsBottom = bounds.bottom + parseInt((_ref2 = (_ref3 = item.offset) != null ? _ref3[1] : void 0) != null ? _ref2 : item.offset);
+      if (boundsTop < viewport.bottom && boundsBottom >= viewport.top) {
+        _results.push(triggerInViewCallback(item, true, boundsBottom > viewport.bottom, boundsTop < viewport.top));
       } else {
         _results.push(triggerInViewCallback(item, false));
       }
