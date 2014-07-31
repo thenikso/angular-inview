@@ -140,6 +140,25 @@ window, that containing element should be <a href="#in-view-container-directive"
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
+              <p>An additional <code>in-view-offset</code> attribute can be specified to set an offset
+that will displace the inView calculation.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> attrs.inViewOffset?
+				attrs.$observe <span class="hljs-string">'inViewOffset'</span>, <span class="hljs-function"><span class="hljs-params">(offset)</span> -&gt;</span>
+					item.offset = scope.$eval(offset) <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
+					<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
               <p>A series of checks are set up to verify the status of the element visibility.</p>
 
             </div>
@@ -154,36 +173,17 @@ window, that containing element should be <a href="#in-view-container-directive"
         </li>
         
         
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>This checks will be performed immediatly and when a relevant measure changes.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
-            
-        </li>
-        
-        
         <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>An additional <code>in-view-offset</code> attribute can be specified to set an offset
-that will displace the inView calculation.</p>
+              <p>This checks will be performed immediatly and when a relevant measure changes.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> attrs.inViewOffset?
-				attrs.$observe <span class="hljs-string">'inViewOffset'</span>, <span class="hljs-function"><span class="hljs-params">(offset)</span> -&gt;</span>
-					item.offset = scope.$eval(offset) <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
-					<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
             
         </li>
         
@@ -426,15 +426,8 @@ the directive for lazy loading.</p>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">triggerInViewCallback</span> = <span class="hljs-params">(item, inview, isTopVisible, isBottomVisible)</span> -&gt;</span>
 	<span class="hljs-keyword">if</span> inview
-		el = item.element[<span class="hljs-number">0</span>]
-		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span>
-		<span class="hljs-keyword">unless</span> item.wasInView <span class="hljs-keyword">and</span> item.wasInView == inviewpart <span class="hljs-keyword">and</span> el.offsetTop == item.lastOffsetTop
-			item.lastOffsetTop = el.offsetTop
-			item.wasInView = inviewpart
-			item.callback <span class="hljs-literal">yes</span>, inviewpart
-	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> item.wasInView
-		item.wasInView = <span class="hljs-literal">no</span>
-		item.callback <span class="hljs-literal">no</span></pre></div></div>
+		elOffsetTop = getBoundingClientRect(item.element[<span class="hljs-number">0</span>]).top + <span class="hljs-built_in">window</span>.pageYOffset
+		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span></pre></div></div>
             
         </li>
         
@@ -445,11 +438,19 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p>The main function to check if the given items are in view relative to the provided container.</p>
+              <p>The callback will be called only if a relevant value has changed.
+However, if the element changed it’s position (for example if it has been
+pushed down by dynamically loaded content), the callback will be called anyway.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">checkInView</span> = <span class="hljs-params">(items, container)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">unless</span> item.wasInView <span class="hljs-keyword">and</span> item.wasInView == inviewpart <span class="hljs-keyword">and</span> elOffsetTop == item.lastOffsetTop
+			item.lastOffsetTop = elOffsetTop
+			item.wasInView = inviewpart
+			item.callback <span class="hljs-literal">yes</span>, inviewpart
+	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> item.wasInView
+		item.wasInView = <span class="hljs-literal">no</span>
+		item.callback <span class="hljs-literal">no</span></pre></div></div>
             
         </li>
         
@@ -459,6 +460,21 @@ the directive for lazy loading.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>The main function to check if the given items are in view relative to the provided container.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">checkInView</span> = <span class="hljs-params">(items, container)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>It first calculate the viewport.</p>
 
@@ -471,11 +487,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Restrict viewport if a container is specified.</p>
 
@@ -487,11 +503,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Shortcut to all item not in view if container isn’t itself.</p>
 
@@ -504,11 +520,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Actual viewport restriction.</p>
 
@@ -520,11 +536,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Calculate inview status for each item.</p>
 
@@ -535,11 +551,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Get the bounding top and bottom of the element in the viewport.</p>
 
@@ -551,36 +567,18 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-30">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
-              </div>
-              <p>Apply offset.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>		bounds.top += item.offset?[<span class="hljs-number">0</span>] ? item.offset
-		bounds.bottom += item.offset?[<span class="hljs-number">1</span>] ? item.offset</pre></div></div>
-            
-        </li>
-        
-        
         <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
-              <p>Calculate parts in view.</p>
+              <p>Apply offset.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> bounds.top &lt; viewport.bottom <span class="hljs-keyword">and</span> bounds.bottom &gt;= viewport.top
-			triggerInViewCallback(item, <span class="hljs-literal">true</span>, bounds.bottom &gt; viewport.bottom, bounds.top &lt; viewport.top)
-		<span class="hljs-keyword">else</span>
-			triggerInViewCallback(item, <span class="hljs-literal">false</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>		boundsTop = bounds.top + parseInt(item.offset?[<span class="hljs-number">0</span>] ? item.offset)
+		boundsBottom = bounds.bottom + parseInt(item.offset?[<span class="hljs-number">1</span>] ? item.offset)</pre></div></div>
             
         </li>
         
@@ -591,9 +589,14 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
-              <h3 id="utility-functions">Utility functions</h3>
+              <p>Calculate parts in view.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> boundsTop &lt; viewport.bottom <span class="hljs-keyword">and</span> boundsBottom &gt;= viewport.top
+			triggerInViewCallback(item, <span class="hljs-literal">true</span>, boundsBottom &gt; viewport.bottom, boundsTop &lt; viewport.top)
+		<span class="hljs-keyword">else</span>
+			triggerInViewCallback(item, <span class="hljs-literal">false</span>)</pre></div></div>
             
         </li>
         
@@ -603,6 +606,19 @@ the directive for lazy loading.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <h3 id="utility-functions">Utility functions</h3>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Returns the height of the window viewport</p>
 
@@ -619,11 +635,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Polyfill for <code>getBoundingClientRect</code></p>
 
@@ -648,11 +664,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Debounce a function.</p>
 
@@ -667,11 +683,11 @@ the directive for lazy loading.</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>The main funciton to perform in-view checks on all items.</p>
 
