@@ -175,12 +175,12 @@
   };
 
   triggerInViewCallback = function(item, inview, isTopVisible, isBottomVisible) {
-    var el, inviewpart;
+    var elOffsetTop, inviewpart;
     if (inview) {
-      el = item.element[0];
+      elOffsetTop = getBoundingClientRect(item.element[0]).top + window.pageYOffset;
       inviewpart = (isTopVisible && 'top') || (isBottomVisible && 'bottom') || 'both';
-      if (!(item.wasInView && item.wasInView === inviewpart && el.offsetTop === item.lastOffsetTop)) {
-        item.lastOffsetTop = el.offsetTop;
+      if (!(item.wasInView && item.wasInView === inviewpart && elOffsetTop === item.lastOffsetTop)) {
+        item.lastOffsetTop = elOffsetTop;
         item.wasInView = inviewpart;
         return item.callback(true, inviewpart);
       }

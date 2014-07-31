@@ -139,10 +139,13 @@ unbindWindowEvents = ->
 # This method will call the user defined callback with the proper parameters if neccessary.
 triggerInViewCallback = (item, inview, isTopVisible, isBottomVisible) ->
 	if inview
-		el = item.element[0]
+		elOffsetTop = getBoundingClientRect(item.element[0]).top + window.pageYOffset
 		inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
-		unless item.wasInView and item.wasInView == inviewpart and el.offsetTop == item.lastOffsetTop
-			item.lastOffsetTop = el.offsetTop
+		# The callback will be called only if a relevant value has changed.
+		# However, if the element changed it's position (for example if it has been
+		# pushed down by dynamically loaded content), the callback will be called anyway.
+		unless item.wasInView and item.wasInView == inviewpart and elOffsetTop == item.lastOffsetTop
+			item.lastOffsetTop = elOffsetTop
 			item.wasInView = inviewpart
 			item.callback yes, inviewpart
 	else if item.wasInView
