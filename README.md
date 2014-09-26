@@ -48,7 +48,8 @@ available in the expression:
 - `$inviewpart` is undefined or a string either `top`, `bottom` or `both`
 indicating which part of the DOM element is visible.
 - `$event` is the DOM event that triggered the check; the DOM element that
-changed its visibility status is passed as `$event.inViewTarget`.
+changed its visibility status is passed as `$event.inViewTarget`
+(To use the old `$element` variable use version 1.3.x).
 
 An additional attribute `in-view-offset` can be speficied to add a virtual
 offset to the element that will anticipate or delay the in view event.
