@@ -26,7 +26,7 @@
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
 <li>Install with: <code>bower install angular-inview</code></li>
-<li>Version: <strong>1.3.4</strong></li>
+<li>Version: <strong>1.4.0</strong></li>
 </ul>
 
             </div>
@@ -120,16 +120,18 @@ window, that containing element should be <a href="#in-view-container-directive"
               </div>
               <p>In the callback expression, the following variables will be provided:</p>
 <ul>
-<li><code>$element</code>: the DOM element</li>
+<li><code>$event</code>: the DOM event that triggered the inView callback.
+The inView DOM element will be passed in <code>$event.inViewTarget</code>.</li>
 <li><code>$inview</code>: boolean indicating if the element is in view</li>
 <li><code>$inviewpart</code>: string either ‘top’, ‘bottom’ or ‘both’</li>
 </ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($inview, $inviewpart)</span> -&gt;</span> scope.$apply<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($event, $inview, $inviewpart)</span> -&gt;</span> scope.$apply<span class="hljs-function"> =&gt;</span>
+					$event.inViewTarget = element[<span class="hljs-number">0</span>]
 					inViewFunc scope,
-						<span class="hljs-string">'$element'</span>: element[<span class="hljs-number">0</span>]
+						<span class="hljs-string">'$event'</span>: $event
 						<span class="hljs-string">'$inview'</span>: $inview
 						<span class="hljs-string">'$inviewpart'</span>: $inviewpart</pre></div></div>
             
@@ -257,8 +259,8 @@ the directive for lazy loading.</p>
 				<span class="hljs-property">@items</span>.push item
 			<span class="hljs-property">@removeItem</span> = <span class="hljs-function"><span class="hljs-params">(item)</span> -&gt;</span>
 				<span class="hljs-property">@items</span> = (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> i <span class="hljs-keyword">isnt</span> item)
-			<span class="hljs-property">@checkInViewDebounced</span> = debounce<span class="hljs-function"> =&gt;</span>
-				checkInView <span class="hljs-property">@items</span>, $element[<span class="hljs-number">0</span>]
+			<span class="hljs-property">@checkInViewDebounced</span> = debounce <span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span>
+				checkInView <span class="hljs-property">@items</span>, $element[<span class="hljs-number">0</span>], event
 			@
 		]</pre></div></div>
             
@@ -371,9 +373,9 @@ the directive for lazy loading.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
-<span class="hljs-function"><span class="hljs-title">windowEventsHandler</span> = -&gt;</span>
-	<span class="hljs-keyword">do</span> c.checkInViewDebounced <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers
-	<span class="hljs-keyword">do</span> windowCheckInViewDebounced <span class="hljs-keyword">if</span> _windowInViewItems.length
+<span class="hljs-function"><span class="hljs-title">windowEventsHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+	c.checkInViewDebounced(event) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers
+	windowCheckInViewDebounced(event) <span class="hljs-keyword">if</span> _windowInViewItems.length
 <span class="hljs-function"><span class="hljs-title">bindWindowEvents</span> = -&gt;</span></pre></div></div>
             
         </li>
@@ -426,7 +428,7 @@ the directive for lazy loading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">triggerInViewCallback</span> = <span class="hljs-params">(item, inview, isTopVisible, isBottomVisible)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">triggerInViewCallback</span> = <span class="hljs-params">(event, item, inview, isTopVisible, isBottomVisible)</span> -&gt;</span>
 	<span class="hljs-keyword">if</span> inview
 		elOffsetTop = getBoundingClientRect(item.element[<span class="hljs-number">0</span>]).top + <span class="hljs-built_in">window</span>.pageYOffset
 		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span></pre></div></div>
@@ -449,10 +451,10 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
             <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">unless</span> item.wasInView <span class="hljs-keyword">and</span> item.wasInView == inviewpart <span class="hljs-keyword">and</span> elOffsetTop == item.lastOffsetTop
 			item.lastOffsetTop = elOffsetTop
 			item.wasInView = inviewpart
-			item.callback <span class="hljs-literal">yes</span>, inviewpart
+			item.callback event, <span class="hljs-literal">yes</span>, inviewpart
 	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> item.wasInView
 		item.wasInView = <span class="hljs-literal">no</span>
-		item.callback <span class="hljs-literal">no</span></pre></div></div>
+		item.callback event, <span class="hljs-literal">no</span></pre></div></div>
             
         </li>
         
@@ -467,7 +469,7 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">checkInView</span> = <span class="hljs-params">(items, container)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">checkInView</span> = <span class="hljs-params">(items, container, event)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -516,7 +518,7 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
             </div>
             
             <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> bounds.top &gt; viewport.bottom <span class="hljs-keyword">or</span> bounds.bottom &lt; viewport.top
-			triggerInViewCallback(item, <span class="hljs-literal">false</span>) <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> items
+			triggerInViewCallback(event, item, <span class="hljs-literal">false</span>) <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> items
 			<span class="hljs-keyword">return</span></pre></div></div>
             
         </li>
@@ -596,9 +598,9 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
             </div>
             
             <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> boundsTop &lt; viewport.bottom <span class="hljs-keyword">and</span> boundsBottom &gt;= viewport.top
-			triggerInViewCallback(item, <span class="hljs-literal">true</span>, boundsBottom &gt; viewport.bottom, boundsTop &lt; viewport.top)
+			triggerInViewCallback(event, item, <span class="hljs-literal">true</span>, boundsBottom &gt; viewport.bottom, boundsTop &lt; viewport.top)
 		<span class="hljs-keyword">else</span>
-			triggerInViewCallback(item, <span class="hljs-literal">false</span>)</pre></div></div>
+			triggerInViewCallback(event, item, <span class="hljs-literal">false</span>)</pre></div></div>
             
         </li>
         
@@ -677,10 +679,10 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">debounce</span> = <span class="hljs-params">(f, t)</span> -&gt;</span>
-	timer = <span class="hljs-literal">null</span><span class="hljs-function">
-	-&gt;</span>
+	timer = <span class="hljs-literal">null</span>
+	<span class="hljs-function"><span class="hljs-params">(args...)</span>-&gt;</span>
 		clearTimeout timer <span class="hljs-keyword">if</span> timer?
-		timer = setTimeout f, (t ? <span class="hljs-number">100</span>)</pre></div></div>
+		timer = setTimeout (<span class="hljs-function">-&gt;</span> f(args...)), (t ? <span class="hljs-number">100</span>)</pre></div></div>
             
         </li>
         
@@ -695,7 +697,7 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>windowCheckInViewDebounced = debounce<span class="hljs-function"> -&gt;</span> checkInView _windowInViewItems</pre></div></div>
+            <div class="content"><div class='highlight'><pre>windowCheckInViewDebounced = debounce <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span> checkInView _windowInViewItems, <span class="hljs-literal">null</span>, event</pre></div></div>
             
         </li>
         
