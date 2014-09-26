@@ -34,12 +34,14 @@ angular.module('angular-inview', [])
 				wasInView: no
 				offset: 0
 				# In the callback expression, the following variables will be provided:
-				# - `$element`: the DOM element
+				# - `$event`: the DOM event that triggered the inView callback.
+				# The inView DOM element will be passed in `$event.inViewTarget`.
 				# - `$inview`: boolean indicating if the element is in view
 				# - `$inviewpart`: string either 'top', 'bottom' or 'both'
-				callback: ($inview, $inviewpart) -> scope.$apply =>
+				callback: ($event, $inview, $inviewpart) -> scope.$apply =>
+					$event.inViewTarget = element[0]
 					inViewFunc scope,
-						'$element': element[0]
+						'$event': $event
 						'$inview': $inview
 						'$inviewpart': $inviewpart
 			# An additional `in-view-offset` attribute can be specified to set an offset
@@ -77,8 +79,8 @@ angular.module('angular-inview', [])
 				@items.push item
 			@removeItem = (item) ->
 				@items = (i for i in @items when i isnt item)
-			@checkInViewDebounced = debounce =>
-				checkInView @items, $element[0]
+			@checkInViewDebounced = debounce (event) =>
+				checkInView @items, $element[0], event
 			@
 		]
 		# Custom checks on child `in-view` elements will be triggered when the
@@ -122,9 +124,9 @@ untrackInViewContainer = (container) ->
 
 # ### Events handler management
 _windowEventsHandlerBinded = no
-windowEventsHandler = ->
-	do c.checkInViewDebounced for c in _containersControllers
-	do windowCheckInViewDebounced if _windowInViewItems.length
+windowEventsHandler = (event) ->
+	c.checkInViewDebounced(event) for c in _containersControllers
+	windowCheckInViewDebounced(event) if _windowInViewItems.length
 bindWindowEvents = ->
 	# The bind to window events will be added only if actually needed.
 	return if _windowEventsHandlerBinded
@@ -139,7 +141,7 @@ unbindWindowEvents = ->
 
 # ### InView checks
 # This method will call the user defined callback with the proper parameters if neccessary.
-triggerInViewCallback = (item, inview, isTopVisible, isBottomVisible) ->
+triggerInViewCallback = (event, item, inview, isTopVisible, isBottomVisible) ->
 	if inview
 		elOffsetTop = getBoundingClientRect(item.element[0]).top + window.pageYOffset
 		inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
@@ -149,13 +151,13 @@ triggerInViewCallback = (item, inview, isTopVisible, isBottomVisible) ->
 		unless item.wasInView and item.wasInView == inviewpart and elOffsetTop == item.lastOffsetTop
 			item.lastOffsetTop = elOffsetTop
 			item.wasInView = inviewpart
-			item.callback yes, inviewpart
+			item.callback event, yes, inviewpart
 	else if item.wasInView
 		item.wasInView = no
-		item.callback no
+		item.callback event, no
 
 # The main function to check if the given items are in view relative to the provided container.
-checkInView = (items, container) ->
+checkInView = (items, container, event) ->
 	# It first calculate the viewport.
 	viewport =
 		top: 0
@@ -165,7 +167,7 @@ checkInView = (items, container) ->
 		bounds = getBoundingClientRect container
 		# Shortcut to all item not in view if container isn't itself.
 		if bounds.top > viewport.bottom or bounds.bottom < viewport.top
-			triggerInViewCallback(item, false) for item in items
+			triggerInViewCallback(event, item, false) for item in items
 			return
 		# Actual viewport restriction.
 		viewport.top = bounds.top if bounds.top > viewport.top
@@ -180,9 +182,9 @@ checkInView = (items, container) ->
 		boundsBottom = bounds.bottom + parseInt(item.offset?[1] ? item.offset)
 		# Calculate parts in view.
 		if boundsTop < viewport.bottom and boundsBottom >= viewport.top
-			triggerInViewCallback(item, true, boundsBottom > viewport.bottom, boundsTop < viewport.top)
+			triggerInViewCallback(event, item, true, boundsBottom > viewport.bottom, boundsTop < viewport.top)
 		else
-			triggerInViewCallback(item, false)
+			triggerInViewCallback(event, item, false)
 
 # ### Utility functions
 
@@ -215,9 +217,9 @@ getBoundingClientRect = (element) ->
 # Debounce a function.
 debounce = (f, t) ->
 	timer = null
-	->
+	(args...)->
 		clearTimeout timer if timer?
-		timer = setTimeout f, (t ? 100)
+		timer = setTimeout (-> f(args...)), (t ? 100)
 
 # The main funciton to perform in-view checks on all items.
-windowCheckInViewDebounced = debounce -> checkInView _windowInViewItems
+windowCheckInViewDebounced = debounce (event) -> checkInView _windowInViewItems, null, event

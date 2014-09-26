@@ -41,7 +41,7 @@
 	</div>
 
 	<ul id="lines">
-		<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
+		<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart, $event)">This is test line #{{$index}}</li>
 	</ul>
 
 	<script src="../bower_components/angular/angular.js"></script>
@@ -54,12 +54,14 @@
 			$scope.testLines.push(i);
 		};
 		$scope.inviewLogs = [];
-		$scope.lineInView = function(index, inview, inviewpart) {
+		$scope.lineInView = function(index, inview, inviewpart, event) {
 			var inViewReport = inview ? '<strong>enters</strong>' : '<strong>exit</strong>';
 			if (typeof(inviewpart) != 'undefined') {
 				inViewReport = '<strong>' + inviewpart + '</strong> part ' + inViewReport;
 			}
 			$scope.inviewLogs.unshift({ id: logId++, message: $sce.trustAsHtml('Line <em>#' + index + '</em>: ' + inViewReport) });
+			console.log(event);
+			return false;
 		}
 	});
 	</script>
