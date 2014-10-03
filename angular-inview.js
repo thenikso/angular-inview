@@ -20,6 +20,9 @@
             wasInView: false,
             offset: 0,
             callback: function($event, $inview, $inviewpart) {
+              if ($event == null) {
+                $event = {};
+              }
               return scope.$apply((function(_this) {
                 return function() {
                   $event.inViewTarget = element[0];

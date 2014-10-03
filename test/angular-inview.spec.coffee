@@ -40,13 +40,15 @@ describe 'Directive: inView', ->
 	describe 'local variables', ->
 
 		test = createTestView """
-			<div id="zero" in-view="inviewSpy($element, $inview, $inviewpart)" style="height:0"></div>
+			<div id="zero" in-view="inviewSpy($event, $inview, $inviewpart)" style="height:0"></div>
 		"""
 
-		it 'should define local variables `$element`, `$inview` and `$inviewpart`', ->
+		it 'should define local variables `$event`, `$inview` and `$inviewpart`', ->
 			test.scrollAndWaitInView 0, ->
 				expect(test.scope.inviewSpy.calls.length).toEqual(1)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(test.elem[0], true, 'both')
+				expect(test.scope.inviewSpy.mostRecentCall.args[0].inViewTarget).toBe(test.elem[0])
+				expect(test.scope.inviewSpy.mostRecentCall.args[1]).toBe(true)
+				expect(test.scope.inviewSpy.mostRecentCall.args[2]).toBe('both')
 
 	describe 'scrolling behaviour', ->
 
