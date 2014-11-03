@@ -17,7 +17,7 @@ angular.module('angular-inview', [])
 	#
 	# **Usage**
 	# ```html
-	# <any in-view="{expression}" [in-view-offset="{number|array}"]></any>
+	# <any in-view="{expression}" [in-view-options="{object}"]></any>
 	# ```
 	.directive 'inView', ['$parse', ($parse) ->
 		# Evaluate the expression passet to the attribute `in-view` when the DOM
@@ -33,6 +33,7 @@ angular.module('angular-inview', [])
 				element: element
 				wasInView: no
 				offset: 0
+				customDebouncedCheck: null
 				# In the callback expression, the following variables will be provided:
 				# - `$event`: the DOM event that triggered the inView callback.
 				# The inView DOM element will be passed in `$event.inViewTarget`.
@@ -44,17 +45,20 @@ angular.module('angular-inview', [])
 						'$event': $event
 						'$inview': $inview
 						'$inviewpart': $inviewpart
-			# An additional `in-view-offset` attribute can be specified to set an offset
-			# that will displace the inView calculation.
-			if attrs.inViewOffset?
-				attrs.$observe 'inViewOffset', (offset) ->
-					item.offset = scope.$eval(offset) or 0
+			# An additional `in-view-options` attribute can be specified to set offsets
+			# that will displace the inView calculation and a debounce to slow down updates
+			# via scrolling events.
+			if attrs.inViewOptions?
+				attrs.$observe 'inViewOptions', (optionsValue) ->
+					options = scope.$eval(optionsValue)
+					item.offset = options.offset || [options.offsetTop or 0, options.offsetBottom or 0]
+					if options.debounce
+						item.customDebouncedCheck = debounce ((event) -> checkInView [item], element[0], event), options.debounce
 					do performCheckDebounced
 			# A series of checks are set up to verify the status of the element visibility.
-			performCheckDebounced = windowCheckInViewDebounced
+			performCheckDebounced = item.customDebouncedCheck ? containerController?.checkInView ? windowCheckInView
 			if containerController?
 				containerController.addItem item
-				performCheckDebounced = containerController.checkInViewDebounced
 			else
 				addWindowInViewItem item
 			# This checks will be performed immediatly and when a relevant measure changes.
@@ -79,17 +83,18 @@ angular.module('angular-inview', [])
 				@items.push item
 			@removeItem = (item) ->
 				@items = (i for i in @items when i isnt item)
-			@checkInViewDebounced = debounce (event) =>
-				checkInView @items, $element[0], event
+			@checkInView = (event) =>
+				i.customDebouncedCheck() for i in @items when i.customDebouncedCheck?
+				checkInView (i for i in @items when not i.customDebouncedCheck?), $element[0], event
 			@
 		]
 		# Custom checks on child `in-view` elements will be triggered when the
 		# `in-view-container` scrolls.
 		link: (scope, element, attrs, controller) ->
-			element.bind 'scroll', controller.checkInViewDebounced
+			element.bind 'scroll', controller.checkInView
 			trackInViewContainer controller
 			scope.$on '$destroy', ->
-				element.unbind 'scroll', controller.checkInViewDebounced
+				element.unbind 'scroll', controller.checkInView
 				untrackInViewContainer controller
 
 # ## Utilities
@@ -125,8 +130,8 @@ untrackInViewContainer = (container) ->
 # ### Events handler management
 _windowEventsHandlerBinded = no
 windowEventsHandler = (event) ->
-	c.checkInViewDebounced(event) for c in _containersControllers
-	windowCheckInViewDebounced(event) if _windowInViewItems.length
+	c.checkInView(event) for c in _containersControllers
+	windowCheckInView(event) if _windowInViewItems.length
 bindWindowEvents = ->
 	# The bind to window events will be added only if actually needed.
 	return if _windowEventsHandlerBinded
@@ -222,4 +227,6 @@ debounce = (f, t) ->
 		timer = setTimeout (-> f(args...)), (t ? 100)
 
 # The main funciton to perform in-view checks on all items.
-windowCheckInViewDebounced = debounce (event) -> checkInView _windowInViewItems, null, event
+windowCheckInView = (event) ->
+	i.customDebouncedCheck() for i in _windowInViewItems when i.customDebouncedCheck?
+	checkInView (i for i in _windowInViewItems when not i.customDebouncedCheck?), null, event
