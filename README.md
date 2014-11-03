@@ -74,6 +74,13 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 </div>
 ```
 
+## How to contribute
+
+1. Fork the repository and clone it to your machine
+2. Run `bower install`, `npm install` (make sure that *nodejs*, *npm* and *bower* are installed globally)
+3. Run tests by issuing: `karma start` (make sure, that *karma-cli* is installed globally)
+4. Commit your changes and create a PR
+
 ## License
 
 MIT

@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "karma": "~0",
+    "karma-jasmine": "~0",
+    "karma-chrome-launcher": "~0",
+    "karma-coffee-preprocessor": "~0"
+  }
+}
