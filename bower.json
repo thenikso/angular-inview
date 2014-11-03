@@ -1,6 +1,6 @@
 {
 	"name": "angular-inview",
-	"version": "1.4.2",
+	"version": "1.4.3",
 	"main": "./angular-inview.js",
 	"dependencies": {
 		"angular": "~1"
