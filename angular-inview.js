@@ -10,7 +10,7 @@
         restrict: 'A',
         require: '?^inViewContainer',
         link: function(scope, element, attrs, containerController) {
-          var inViewFunc, item, performCheckDebounced, _ref, _ref1;
+          var inViewFunc, item, options, performCheck, _ref, _ref1;
           if (!attrs.inView) {
             return;
           }
@@ -36,30 +36,21 @@
               })(this));
             }
           };
-          if (attrs.inViewOptions != null) {
-            attrs.$observe('inViewOptions', function(optionsValue) {
-              var options;
-              options = scope.$eval(optionsValue);
-              if (!options) {
-                return;
-              }
-              console.log(options);
-              item.offset = options.offset || [options.offsetTop || 0, options.offsetBottom || 0];
-              if (options.debounce) {
-                item.customDebouncedCheck = debounce((function(event) {
-                  return checkInView([item], element[0], event);
-                }), options.debounce);
-              }
-              return performCheckDebounced();
-            });
+          if ((attrs.inViewOptions != null) && (options = scope.$eval(attrs.inViewOptions))) {
+            item.offset = options.offset || [options.offsetTop || 0, options.offsetBottom || 0];
+            if (options.debounce) {
+              item.customDebouncedCheck = debounce((function(event) {
+                return checkInView([item], element[0], event);
+              }), options.debounce);
+            }
           }
-          performCheckDebounced = (_ref = (_ref1 = item.customDebouncedCheck) != null ? _ref1 : containerController != null ? containerController.checkInView : void 0) != null ? _ref : windowCheckInView;
+          performCheck = (_ref = (_ref1 = item.customDebouncedCheck) != null ? _ref1 : containerController != null ? containerController.checkInView : void 0) != null ? _ref : windowCheckInView;
           if (containerController != null) {
             containerController.addItem(item);
           } else {
             addWindowInViewItem(item);
           }
-          performCheckDebounced();
+          performCheck();
           return scope.$on('$destroy', function() {
             if (containerController != null) {
               containerController.removeItem(item);

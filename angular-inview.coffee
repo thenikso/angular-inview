@@ -48,23 +48,18 @@ angular.module('angular-inview', [])
 			# An additional `in-view-options` attribute can be specified to set offsets
 			# that will displace the inView calculation and a debounce to slow down updates
 			# via scrolling events.
-			if attrs.inViewOptions?
-				attrs.$observe 'inViewOptions', (optionsValue) ->
-					options = scope.$eval(optionsValue)
-					return unless options
-					console.log options
-					item.offset = options.offset || [options.offsetTop or 0, options.offsetBottom or 0]
-					if options.debounce
-						item.customDebouncedCheck = debounce ((event) -> checkInView [item], element[0], event), options.debounce
-					do performCheckDebounced
+			if attrs.inViewOptions? and options = scope.$eval(attrs.inViewOptions)
+				item.offset = options.offset || [options.offsetTop or 0, options.offsetBottom or 0]
+				if options.debounce
+					item.customDebouncedCheck = debounce ((event) -> checkInView [item], element[0], event), options.debounce
 			# A series of checks are set up to verify the status of the element visibility.
-			performCheckDebounced = item.customDebouncedCheck ? containerController?.checkInView ? windowCheckInView
+			performCheck = item.customDebouncedCheck ? containerController?.checkInView ? windowCheckInView
 			if containerController?
 				containerController.addItem item
 			else
 				addWindowInViewItem item
 			# This checks will be performed immediatly and when a relevant measure changes.
-			do performCheckDebounced
+			do performCheck
 			# When the element is removed, all the logic behind in-view is removed.
 			# One might want to use `in-view` in conjunction with `ng-if` when using
 			# the directive for lazy loading.

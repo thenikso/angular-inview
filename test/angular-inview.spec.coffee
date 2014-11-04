@@ -84,6 +84,23 @@ describe 'Directive: inView', ->
 					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'bottom')
 					expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'top')
 
+	describe 'options', ->
+
+		test = createTestView """
+			<div id="zero" in-view="inviewSpy(0, $inview, $inviewpart)" style="height:100%" in-view-options="{ debounce: 100 }"></div>
+			<div id="one" in-view="inviewSpy(1, $inview, $inviewpart)" style="height:100%" in-view-options="{ debounce: 0, offset: -100 }">one</div>
+		"""
+
+		it 'should debounce in-view calls when `debounce` option is specified', (done) ->
+			expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(0, true, 'top')
+			setTimeout (->
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'top')
+				done()
+			), 150
+
+		it 'should offset a view when `offset` option is specified', ->
+			expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
+
 	describe 'element positioning behaviours', ->
 
 		test = createTestView """
@@ -116,7 +133,7 @@ describe 'Directive: inViewContainer', ->
 				<div id="c2one" in-view="inviewSpy(21, $inview, $inviewpart)" style="height:100%">one</div>
 				<div id="c2two" in-view="inviewSpy(22, $inview, $inviewpart)" style="height:100%">two</div>
 			</div>
-			<div id="c1three" in-view="inviewSpy(13, $inview, $inviewpart)" in-view-offset="{{threeOffset}}" style="height:100%">three</div>
+			<div id="c1three" in-view="inviewSpy(13, $inview, $inviewpart)" style="height:100%">three</div>
 		</div>
 	""", ->
 		test.elem2 = test.elem.find('#container2')
