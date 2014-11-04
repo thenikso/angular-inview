@@ -36,7 +36,7 @@ This module will define two directives: `in-view` and `in-view-container`.
 ### InView
 
 ```
-<any in-view="{expression using $inview}" in-view-offset="{number}"></any>
+<any in-view="{expression using $inview}" in-view-options="{object}"></any>
 ```
 
 The `in-view` attribute must contain a valid [AngularJS expression](http://docs.angularjs.org/guide/expression)
@@ -53,14 +53,16 @@ indicating which part of the DOM element is visible.
 changed its visibility status is passed as `$event.inViewTarget`
 (To use the old `$element` variable use version 1.3.x).
 
-An additional attribute `in-view-offset` can be speficied to add a virtual
-offset to the element that will anticipate or delay the in view event.
-The offset can be:
+An additional attribute `in-view-options` can be speficied with an object value
+containing:
 
-- a number: indicating how much to move down (or up if negative) the top
+- `offset`: a number indicating how much to move down (or up if negative) the top
 position of the element for the purpose of inview testing;
-- an array of two numbers representing the top and bottom offset respectively;
-this may virtually change the height of the element for inview testing.
+- `offsetTop` and `offsetBottom`: two numbers representing the top and bottom
+offset respectively; this may virtually change the height of the element for inview testing;
+- `debounce`: a number indicating a millisecond value of debounce which will delay
+firing the in-view event until that number of millisecond is passed without a scrolling
+event happening.
 
 ### InViewContainer
 
