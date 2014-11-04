@@ -51,6 +51,8 @@ angular.module('angular-inview', [])
 			if attrs.inViewOptions?
 				attrs.$observe 'inViewOptions', (optionsValue) ->
 					options = scope.$eval(optionsValue)
+					return unless options
+					console.log options
 					item.offset = options.offset || [options.offsetTop or 0, options.offsetBottom or 0]
 					if options.debounce
 						item.customDebouncedCheck = debounce ((event) -> checkInView [item], element[0], event), options.debounce

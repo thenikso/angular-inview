@@ -40,6 +40,10 @@
             attrs.$observe('inViewOptions', function(optionsValue) {
               var options;
               options = scope.$eval(optionsValue);
+              if (!options) {
+                return;
+              }
+              console.log(options);
               item.offset = options.offset || [options.offsetTop || 0, options.offsetBottom || 0];
               if (options.debounce) {
                 item.customDebouncedCheck = debounce((function(event) {
