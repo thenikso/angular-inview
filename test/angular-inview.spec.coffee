@@ -10,7 +10,6 @@ createTestView = (elemHtml, bef, aft) ->
 		test.elem = angular.element elemHtml
 		$('body,html').css('height', '100%');
 		$('body').append test.elem
-		$(window).scrollTop 0
 		# Prepare test object
 		test.scope = $rootScope.$new(yes)
 		test.scope.inviewSpy = jasmine.createSpy 'inviewSpy'
@@ -51,11 +50,12 @@ describe 'Directive: inView', ->
 			<div id="zero" in-view="inviewSpy($event, $inview, $inviewpart)" style="height:0"></div>
 		"""
 
-		it 'should define local variables `$event`, `$inview` and `$inviewpart`', ->
-			expect(test.scope.inviewSpy.calls.count()).toEqual(1)
-			expect(test.scope.inviewSpy.calls.mostRecent().args[0].inViewTarget).toBe(test.elem[0])
-			expect(test.scope.inviewSpy.calls.mostRecent().args[1]).toBe(true)
-			expect(test.scope.inviewSpy.calls.mostRecent().args[2]).toBe('both')
+		it 'should define local variables `$event`, `$inview` and `$inviewpart`', (done) ->
+			test.scrollAndWaitInView 0, done, ->
+				expect(test.scope.inviewSpy.calls.count()).toEqual(1)
+				expect(test.scope.inviewSpy.calls.mostRecent().args[0].inViewTarget).toBe(test.elem[0])
+				expect(test.scope.inviewSpy.calls.mostRecent().args[1]).toBe(true)
+				expect(test.scope.inviewSpy.calls.mostRecent().args[2]).toBe('both')
 
 	describe 'scrolling behaviour', ->
 
@@ -66,23 +66,25 @@ describe 'Directive: inView', ->
 			<div id="three" in-view="inviewSpy(3, $inview, $inviewpart)" style="height:100%">three</div>
 		"""
 
-		it 'should initially execute the expression for all in-view elements', ->
-			expect(test.scope.inviewSpy.calls.count()).toEqual(2)
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'both')
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
+		it 'should initially execute the expression for all in-view elements', (done) ->
+			test.scrollAndWaitInView 0, done, ->
+				expect(test.scope.inviewSpy.calls.count()).toEqual(2)
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'both')
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
 
 		it 'should change the inview status on scrolling', (done) ->
-			test.scrollAndWaitInView window.innerHeight / 2, null, ->
-				expect(test.scope.inviewSpy.calls.count() - test.spyCalls).toEqual(3)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, false, undefined)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'bottom')
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
-
-				test.scrollAndWaitInView window.innerHeight * 2, done, ->
+			test.scrollAndWaitInView 0, null, ->
+				test.scrollAndWaitInView window.innerHeight / 2, null, ->
 					expect(test.scope.inviewSpy.calls.count() - test.spyCalls).toEqual(3)
-					expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, false, undefined)
-					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'bottom')
-					expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'top')
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, false, undefined)
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'bottom')
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'top')
+
+					test.scrollAndWaitInView window.innerHeight * 2, done, ->
+						expect(test.scope.inviewSpy.calls.count() - test.spyCalls).toEqual(3)
+						expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, false, undefined)
+						expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'bottom')
+						expect(test.scope.inviewSpy).toHaveBeenCalledWith(3, true, 'top')
 
 	describe 'options', ->
 
@@ -92,14 +94,16 @@ describe 'Directive: inView', ->
 		"""
 
 		it 'should debounce in-view calls when `debounce` option is specified', (done) ->
-			expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(0, true, 'top')
-			setTimeout (->
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'top')
-				done()
-			), 150
+			test.scrollAndWaitInView 100, null, ->
+				expect(test.scope.inviewSpy).not.toHaveBeenCalledWith(0, true, 'bottom')
+				setTimeout (->
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'bottom')
+					done()
+				), 150
 
-		it 'should offset a view when `offset` option is specified', ->
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
+		it 'should offset a view when `offset` option is specified', (done) ->
+			test.scrollAndWaitInView 0, done, ->
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'top')
 
 	describe 'element positioning behaviours', ->
 
@@ -111,14 +115,15 @@ describe 'Directive: inView', ->
 		"""
 
 		it 'should resend identical notification if inview item changed its position between debounces', (done) ->
-			test.scrollAndWaitInView window.innerHeight, null, ->
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
-
-				test.scope.inviewSpy = jasmine.createSpy 'inviewSpy'
-				test.scope.showSpacer = true
-				test.scope.$digest()
-				test.scrollAndWaitInView window.innerHeight * 2, done, ->
+			test.scrollAndWaitInView 0, null, ->
+				test.scrollAndWaitInView window.innerHeight, null, ->
 					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
+
+					test.scope.inviewSpy = jasmine.createSpy 'inviewSpy'
+					test.scope.showSpacer = true
+					test.scope.$digest()
+					test.scrollAndWaitInView window.innerHeight * 2, done, ->
+						expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
 
 describe 'Directive: inViewContainer', ->
 	beforeEach module 'angular-inview'
@@ -139,19 +144,21 @@ describe 'Directive: inViewContainer', ->
 		test.elem2 = test.elem.find('#container2')
 
 	it 'should fire inview with windows scroll', (done) ->
-		test.scrollAndWaitInView window.innerHeight * 2, done, ->
-			expect(test.scope.inviewSpy.calls.count()).toEqual(6)
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(20, true, 'both')
-			expect(test.scope.inviewSpy).toHaveBeenCalledWith(21, true, 'top')
+		test.scrollAndWaitInView 0, null, ->
+			test.scrollAndWaitInView window.innerHeight * 2, done, ->
+				expect(test.scope.inviewSpy.calls.count()).toEqual(6)
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(20, true, 'both')
+				expect(test.scope.inviewSpy).toHaveBeenCalledWith(21, true, 'top')
 
 	it 'should trigger inview with container scroll for all nested children', (done) ->
-		test.scrollAndWaitInView (->
-			$(window).scrollTop window.innerHeight * 2
-			test.elem2.scrollTop window.innerHeight
-			), done, ->
-				expect(test.scope.inviewSpy.calls.count()).toEqual(6)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(21, true, 'bottom')
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(22, true, 'top')
+		test.scrollAndWaitInView 0, null, ->
+			test.scrollAndWaitInView (->
+				$(window).scrollTop window.innerHeight * 2
+				test.elem2.scrollTop window.innerHeight
+				), done, ->
+					expect(test.scope.inviewSpy.calls.count()).toEqual(6)
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(21, true, 'bottom')
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(22, true, 'top')
 
 describe 'Directive: inViewContainer in fixed containers', ->
 	beforeEach module 'angular-inview'
@@ -165,15 +172,16 @@ describe 'Directive: inViewContainer in fixed containers', ->
 	"""
 
 	it 'should properly handle fixed positioned containers', (done) ->
-		containerHeight = 200
-		expect(test.scope.inviewSpy.calls.count()).toEqual(2)
-		expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'both')
-		expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'both')
-		test.scrollAndWaitInView (->
-			test.elem.scrollTop containerHeight
-			), done, ->
-				expect(test.scope.inviewSpy.calls.count()).toEqual(2 + 3)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, false, undefined)
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'bottom')
-				expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
+		test.scrollAndWaitInView 0, null, ->
+			containerHeight = 200
+			expect(test.scope.inviewSpy.calls.count()).toEqual(2)
+			expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, true, 'both')
+			expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'both')
+			test.scrollAndWaitInView (->
+				test.elem.scrollTop containerHeight
+				), done, ->
+					expect(test.scope.inviewSpy.calls.count()).toEqual(2 + 3)
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(0, false, undefined)
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(1, true, 'bottom')
+					expect(test.scope.inviewSpy).toHaveBeenCalledWith(2, true, 'both')
 

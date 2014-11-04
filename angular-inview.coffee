@@ -59,7 +59,7 @@ angular.module('angular-inview', [])
 			else
 				addWindowInViewItem item
 			# This checks will be performed immediatly and when a relevant measure changes.
-			do performCheck
+			setTimeout performCheck
 			# When the element is removed, all the logic behind in-view is removed.
 			# One might want to use `in-view` in conjunction with `ng-if` when using
 			# the directive for lazy loading.

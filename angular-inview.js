@@ -50,7 +50,7 @@
           } else {
             addWindowInViewItem(item);
           }
-          performCheck();
+          setTimeout(performCheck);
           return scope.$on('$destroy', function() {
             if (containerController != null) {
               containerController.removeItem(item);
