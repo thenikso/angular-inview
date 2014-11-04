@@ -26,7 +26,7 @@
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
 <li>Install with: <code>bower install angular-inview</code></li>
-<li>Version: <strong>1.4.0</strong></li>
+<li>Version: <strong>1.5.0</strong></li>
 </ul>
 
             </div>
@@ -63,7 +63,7 @@ Use it in your Angular.js app by including the javascript and requireing it:</p>
               </div>
               <h2 id="in-view-directive">in-view directive</h2>
 <p><strong>Usage</strong></p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">any</span> <span class="hljs-attribute">in-view</span>=<span class="hljs-value">"{expression}"</span> [<span class="hljs-attribute">in-view-offset</span>=<span class="hljs-value">"{number|array}"</span><span class="hljs-value">]</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">any</span>&gt;</span>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">any</span> <span class="hljs-attribute">in-view</span>=<span class="hljs-value">"{expression}"</span> [<span class="hljs-attribute">in-view-options</span>=<span class="hljs-value">"{object}"</span><span class="hljs-value">]</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">any</span>&gt;</span>
 </code></pre>
 
             </div>
@@ -107,7 +107,8 @@ window, that containing element should be <a href="#in-view-container-directive"
 			item =
 				<span class="hljs-attribute">element</span>: element
 				<span class="hljs-attribute">wasInView</span>: <span class="hljs-literal">no</span>
-				<span class="hljs-attribute">offset</span>: <span class="hljs-number">0</span></pre></div></div>
+				<span class="hljs-attribute">offset</span>: <span class="hljs-number">0</span>
+				<span class="hljs-attribute">customDebouncedCheck</span>: <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -128,7 +129,7 @@ The inView DOM element will be passed in <code>$event.inViewTarget</code>.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($event, $inview, $inviewpart)</span> -&gt;</span> scope.$apply<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($event={}, $inview, $inviewpart)</span> -&gt;</span> scope.$apply<span class="hljs-function"> =&gt;</span>
 					$event.inViewTarget = element[<span class="hljs-number">0</span>]
 					inViewFunc scope,
 						<span class="hljs-string">'$event'</span>: $event
@@ -144,15 +145,17 @@ The inView DOM element will be passed in <code>$event.inViewTarget</code>.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>An additional <code>in-view-offset</code> attribute can be specified to set an offset
-that will displace the inView calculation.</p>
+              <p>An additional <code>in-view-options</code> attribute can be specified to set offsets
+that will displace the inView calculation and a debounce to slow down updates
+via scrolling events.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> attrs.inViewOffset?
-				attrs.$observe <span class="hljs-string">'inViewOffset'</span>, <span class="hljs-function"><span class="hljs-params">(offset)</span> -&gt;</span>
-					item.offset = scope.$eval(offset) <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>
-					<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> attrs.inViewOptions? <span class="hljs-keyword">and</span> options = scope.$eval(attrs.inViewOptions)
+				item.offset = options.offset || [options.offsetTop <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>, options.offsetBottom <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>]
+				<span class="hljs-keyword">if</span> options.debounce
+					item.customDebouncedCheck = debounce <span class="hljs-function"><span class="hljs-params">((event) -&gt; checkInView [item], element[<span class="hljs-number">0</span>], event)</span>, <span class="hljs-title">options</span>.<span class="hljs-title">debounce</span>
+</span></pre></div></div>
             
         </li>
         
@@ -167,10 +170,9 @@ that will displace the inView calculation.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			performCheckDebounced = windowCheckInViewDebounced
+            <div class="content"><div class='highlight'><pre>			performCheck = item.customDebouncedCheck ? containerController?.checkInView ? windowCheckInView
 			<span class="hljs-keyword">if</span> containerController?
 				containerController.addItem item
-				performCheckDebounced = containerController.checkInViewDebounced
 			<span class="hljs-keyword">else</span>
 				addWindowInViewItem item</pre></div></div>
             
@@ -187,7 +189,7 @@ that will displace the inView calculation.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">do</span> performCheckDebounced</pre></div></div>
+            <div class="content"><div class='highlight'><pre>			setTimeout performCheck</pre></div></div>
             
         </li>
         
@@ -259,8 +261,9 @@ the directive for lazy loading.</p>
 				<span class="hljs-property">@items</span>.push item
 			<span class="hljs-property">@removeItem</span> = <span class="hljs-function"><span class="hljs-params">(item)</span> -&gt;</span>
 				<span class="hljs-property">@items</span> = (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> i <span class="hljs-keyword">isnt</span> item)
-			<span class="hljs-property">@checkInViewDebounced</span> = debounce <span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span>
-				checkInView <span class="hljs-property">@items</span>, $element[<span class="hljs-number">0</span>], event
+			<span class="hljs-property">@checkInView</span> = <span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span>
+				i.customDebouncedCheck() <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> i.customDebouncedCheck?
+				checkInView (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> i.customDebouncedCheck?), $element[<span class="hljs-number">0</span>], event
 			@
 		]</pre></div></div>
             
@@ -279,10 +282,10 @@ the directive for lazy loading.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">link</span>: <span class="hljs-function"><span class="hljs-params">(scope, element, attrs, controller)</span> -&gt;</span>
-			element.bind <span class="hljs-string">'scroll'</span>, controller.checkInViewDebounced
+			element.bind <span class="hljs-string">'scroll'</span>, controller.checkInView
 			trackInViewContainer controller
 			scope.$<span class="hljs-literal">on</span> <span class="hljs-string">'$destroy'</span>,<span class="hljs-function"> -&gt;</span>
-				element.unbind <span class="hljs-string">'scroll'</span>, controller.checkInViewDebounced
+				element.unbind <span class="hljs-string">'scroll'</span>, controller.checkInView
 				untrackInViewContainer controller</pre></div></div>
             
         </li>
@@ -374,8 +377,8 @@ the directive for lazy loading.</p>
             
             <div class="content"><div class='highlight'><pre>_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
 <span class="hljs-function"><span class="hljs-title">windowEventsHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
-	c.checkInViewDebounced(event) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers
-	windowCheckInViewDebounced(event) <span class="hljs-keyword">if</span> _windowInViewItems.length
+	c.checkInView(event) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers
+	windowCheckInView(event) <span class="hljs-keyword">if</span> _windowInViewItems.length
 <span class="hljs-function"><span class="hljs-title">bindWindowEvents</span> = -&gt;</span></pre></div></div>
             
         </li>
@@ -697,7 +700,9 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>windowCheckInViewDebounced = debounce <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span> checkInView _windowInViewItems, <span class="hljs-literal">null</span>, event</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">windowCheckInView</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+	i.customDebouncedCheck() <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> i.customDebouncedCheck?
+	checkInView (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> i.customDebouncedCheck?), <span class="hljs-literal">null</span>, event</pre></div></div>
             
         </li>
         
