@@ -47,7 +47,7 @@ available in the expression:
 - `$inview` is a boolean value indicating if the DOM element is in view.
 If using this directive for infinite scrolling, you may want to use this like
 `<any in-view="$inview&&myLoadingFunction()"></any>`.
-- `$inviewpart` is undefined or a string either `top`, `bottom` or `both`
+- `$inviewpart` is undefined or a string either `top`, `bottom`, `both` or `neither`
 indicating which part of the DOM element is visible.
 - `$event` is the DOM event that triggered the check; the DOM element that
 changed its visibility status is passed as `$event.inViewTarget`
