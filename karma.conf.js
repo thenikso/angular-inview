@@ -18,8 +18,8 @@ module.exports = function(config) {
 			'bower_components/jquery/dist/jquery.js',
 			'bower_components/angular/angular.js',
 			'bower_components/angular-mocks/angular-mocks.js',
-			'*.coffee',
-			'test/*.coffee'
+			'angular-inview.js',
+			'angular-inview.spec.js'
 		],
 
 
@@ -30,7 +30,6 @@ module.exports = function(config) {
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'**/*.coffee': ['coffee']
 		},
 
 

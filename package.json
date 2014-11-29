@@ -2,7 +2,6 @@
   "devDependencies": {
     "karma": "^0.12.24",
     "karma-chrome-launcher": "^0.1.5",
-    "karma-coffee-preprocessor": "^0.2.1",
     "karma-jasmine": "~0.2"
   }
 }
