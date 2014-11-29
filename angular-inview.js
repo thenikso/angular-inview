@@ -26,6 +26,17 @@ angular.module('angular-inview', [])
 
 // ## Implementation
 function inViewDirective ($parse) {
+  return {
+    // Evaluate the expression passet to the attribute `in-view` when the DOM
+    // element is visible in the viewport.
+    restrict: 'A',
+    link: function inViewDirectiveLink (scope, element, attrs) {
+      var inViewExpression = $parse(attrs.inView);
+      inViewExpression(scope, {
+        '$inview': true
+      });
+    }
+  }
 }
 
 function inViewContainerDirective () {
