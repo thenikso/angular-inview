@@ -42,4 +42,25 @@ function inViewDirective ($parse) {
 function inViewContainerDirective () {
 }
 
+// ## Utilities
+
+function getViewportSize () {
+  var result = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
+  if (result.height) {
+    return result;
+  }
+  var mode = document.compatMode;
+  if (mode === 'CSS1Compat') {
+    result.width = document.documentElement.clientWidth;
+    result.height = document.documentElement.clientHeight;
+  } else {
+    result.width = document.body.clientWidth;
+    result.height = document.body.clientHeight;
+  }
+  return result;
+}
+
 })();
