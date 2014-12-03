@@ -31,10 +31,66 @@ function inViewDirective ($parse) {
     // element is visible in the viewport.
     restrict: 'A',
     link: function inViewDirectiveLink (scope, element, attrs) {
-      var inViewExpression = $parse(attrs.inView);
-      inViewExpression(scope, {
-        '$inview': true
+      // Build reactive chain from an initial event
+      var eventsSignal = signalSingle({ type: 'initial' })
+
+      // Merged with the window events
+      .merge(signalFromEvent(window, 'scroll resize'));
+
+      // TODO merge with container's events signal
+
+      // TODO throttle if option specified
+
+      // Map to viewport intersection and in-view informations
+      var inviewInfoSignal = eventsSignal
+
+      // Inview information structure contains:
+      //   - `inView`: a boolean value indicating if the element is
+      //     visible in the viewport;
+      //   - `changed`: a boolean value indicating if the inview status
+      //     changed after the last event;
+      //   - `event`
+      .map(function(event) {
+        var viewportRect = getViewportRect();
+        var elementRect = element[0].getBoundingClientRect();
+        var inviewInfo = {
+          inView: intersectRect(elementRect, viewportRect),
+          event: event,
+        };
+        // TODO direciton and inview parts
+        return inviewInfo;
+      })
+
+      // Add the changed information to the inview structure.
+      .scan({}, function (lastInfo, newInfo) {
+        newInfo.changed =
+          newInfo.inView !== lastInfo.inView;
+        return newInfo;
+      })
+
+      // Filters only informations that should be forwarded to the callback
+      .filter(function (info) {
+        // Don't forward if no relevant infomation changed
+        if (!info.changed) {
+          return false;
+        }
+        // Don't forward if not initially in-view
+        if (info.event.type === 'initial' && !info.inView) {
+          return false;
+        }
+        return true;
       });
+
+      // Execute in-view callback
+      var inViewExpression = $parse(attrs.inView);
+      var dispose = inviewInfoSignal.subscribe(function (info) {
+        inViewExpression(scope, {
+          '$inview': info.inView
+        });
+      });
+
+      // Dispose of reactive chain
+      scope.$on('$destroy', dispose);
     }
   }
 }
