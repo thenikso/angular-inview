@@ -103,7 +103,6 @@ function inViewDirective ($parse) {
       // Add the changed information to the inview structure.
       .scan({}, function (lastInfo, newInfo) {
         // Add inview direction info
-        // TODO use option to include direction or not
         if (options.generateDirection && newInfo.inView && lastInfo.elementRect) {
           newInfo.direction = {
             horizontal: newInfo.elementRect.left - lastInfo.elementRect.left,
