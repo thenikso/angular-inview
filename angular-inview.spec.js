@@ -92,6 +92,18 @@ describe("angular-inview", function() {
 					var info = test.spy.calls.argsFor(1)[0];
 					expect(test.spy.calls.count()).toBe(2);
 					expect(info.parts).toEqual(undefined);
+					return test;
+				})
+				.then(lazyScrollTo([0, 0]))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(2)[0];
+					expect(test.spy.calls.count()).toBe(3);
+					expect(info.parts).toEqual({
+						top: false,
+						left: false,
+						bottom: true,
+						right: true
+					});
 				})
 				.then(done);
 			});
