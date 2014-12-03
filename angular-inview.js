@@ -44,21 +44,25 @@ function inViewContainerDirective () {
 
 // ## Utilities
 
-function getViewportSize () {
+function getViewportRect () {
   var result = {
+    top: 0,
+    left: 0,
     width: window.innerWidth,
-    height: window.innerHeight
+    right: window.innerWidth,
+    height: window.innerHeight,
+    bottom: window.innerHeight
   };
   if (result.height) {
     return result;
   }
   var mode = document.compatMode;
   if (mode === 'CSS1Compat') {
-    result.width = document.documentElement.clientWidth;
-    result.height = document.documentElement.clientHeight;
+    result.width = result.right = document.documentElement.clientWidth;
+    result.height = result.bottom = document.documentElement.clientHeight;
   } else {
-    result.width = document.body.clientWidth;
-    result.height = document.body.clientHeight;
+    result.width = result.right = document.body.clientWidth;
+    result.height = result.bottom = document.body.clientHeight;
   }
   return result;
 }
