@@ -195,14 +195,24 @@ function offsetRect (rect, offset) {
   if (!offset) {
     return rect;
   }
+  var offsetObject = {
+    top: isPercent(offset[0]) ? (parseFloat(offset[0]) * rect.height) : offset[0],
+    right: isPercent(offset[1]) ? (parseFloat(offset[1]) * rect.width) : offset[1],
+    bottom: isPercent(offset[2]) ? (parseFloat(offset[2]) * rect.height) : offset[2],
+    left: isPercent(offset[3]) ? (parseFloat(offset[3]) * rect.width) : offset[3]
+  };
   var result = angular.copy(rect);
-  result.top -= offset[0];
-  result.left -= offset[1];
-  result.bottom += offset[2];
-  result.right += offset[3];
-  result.height += offset[0] + offset[2];
-  result.width += offset[1] + offset[3];
+  result.top -= offsetObject.top;
+  result.left -= offsetObject.left;
+  result.bottom += offsetObject.bottom;
+  result.right += offsetObject.right;
+  result.height += offsetObject.top + offsetObject.bottom;
+  result.width += offsetObject.left + offsetObject.right;
   return result;
+}
+
+function isPercent (n) {
+  return angular.isString(n) && n.indexOf('%') > 0;
 }
 
 // ## QuickSignal FRP
