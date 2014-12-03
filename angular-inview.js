@@ -31,6 +31,17 @@ function inViewDirective ($parse) {
     // element is visible in the viewport.
     restrict: 'A',
     link: function inViewDirectiveLink (scope, element, attrs) {
+      // in-view-options attribute can be specified with an object expression
+      // containing:
+      //   - `generateDirection`: Indicate if the `direction` information should
+      //     be included in `$inviewInfo` (default false);
+      //   - `generateParts`: Indicate if the `parts` information should
+      //     be included in `$inviewInfo` (default false);
+      var options = {};
+      if (attrs.inViewOptions) {
+        options = scope.$eval(attrs.inViewOptions);
+      }
+
       // Build reactive chain from an initial event
       var eventsSignal = signalSingle({ type: 'initial' })
 
@@ -61,8 +72,7 @@ function inViewDirective ($parse) {
           viewportRect: viewportRect
         };
         // Add inview parts
-        // TODO use option to include parts or not
-        if (info.inView) {
+        if (options.generateParts && info.inView) {
           info.parts = {};
           info.parts.top = elementRect.top >= viewportRect.top;
           info.parts.left = elementRect.left >= viewportRect.left;
@@ -76,7 +86,7 @@ function inViewDirective ($parse) {
       .scan({}, function (lastInfo, newInfo) {
         // Add inview direction info
         // TODO use option to include direction or not
-        if (newInfo.inView && lastInfo.elementRect) {
+        if (options.generateDirection && newInfo.inView && lastInfo.elementRect) {
           newInfo.direction = {
             horizontal: newInfo.elementRect.left - lastInfo.elementRect.left,
             vertical: newInfo.elementRect.top - lastInfo.elementRect.top
