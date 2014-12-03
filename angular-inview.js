@@ -55,9 +55,13 @@ function inViewDirective ($parse) {
         var elementRect = element[0].getBoundingClientRect();
         var info = {
           inView: intersectRect(elementRect, viewportRect),
-          event: event
+          event: event,
+          element: element,
+          elementRect: elementRect,
+          viewportRect: viewportRect
         };
         // Add inview parts
+        // TODO use option to include parts or not
         if (info.inView) {
           info.parts = {};
           info.parts.top = elementRect.top >= viewportRect.top;
@@ -70,9 +74,19 @@ function inViewDirective ($parse) {
 
       // Add the changed information to the inview structure.
       .scan({}, function (lastInfo, newInfo) {
+        // Add inview direction info
+        // TODO use option to include direction or not
+        if (newInfo.inView && lastInfo.elementRect) {
+          newInfo.direction = {
+            horizontal: newInfo.elementRect.left - lastInfo.elementRect.left,
+            vertical: newInfo.elementRect.top - lastInfo.elementRect.top
+          };
+        }
+        // Calculate changed flag
         newInfo.changed =
           newInfo.inView !== lastInfo.inView ||
-          !angular.equals(newInfo.parts, lastInfo.parts);
+          !angular.equals(newInfo.parts, lastInfo.parts) ||
+          !angular.equals(newInfo.direction, lastInfo.direction);
         return newInfo;
       })
 

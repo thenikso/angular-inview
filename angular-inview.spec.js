@@ -120,6 +120,36 @@ describe("angular-inview", function() {
 				.then(done);
 			});
 
+			it("should return proper `direction` informations", function(done) {
+				makeTestForHtml(
+					'<div in-view="spy($inviewInfo)" style="width: 200px; height: 200px;"></div>' +
+					'<div style="width:200%; height:200%"></div>'
+				)
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(0)[0];
+					expect(info.direction).toEqual(undefined);
+					return test;
+				})
+				.then(lazyScrollTo([100, 100]))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(1)[0];
+					expect(info.direction).toEqual({
+						horizontal: -100,
+						vertical: -100
+					});
+					return test;
+				})
+				.then(lazyScrollTo([50, 50]))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(2)[0];
+					expect(info.direction).toEqual({
+						horizontal: 50,
+						vertical: 50
+					});
+				})
+				.then(done);
+			});
+
 		});
 
 	});
