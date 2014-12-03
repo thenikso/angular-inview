@@ -130,14 +130,14 @@ describe("angular-inview", function() {
 		// Compile the element
 		$compile(test.element)(test.scope);
 		test.scope.$digest();
-		return scrollTo(window, [0, 0]).then(function () {
+		return scrollTo(window, [0, 0], true).then(function () {
 			return test;
 		});
 	}
 
 	// Scrolls the element to the given x, y position and waits a bit before
 	// resolving the returned promise.
-	function scrollTo(element, position) {
+	function scrollTo(element, position, useTimeout) {
 		if (!angular.isDefined(position)) {
 			position = element;
 			element = window;
@@ -172,7 +172,7 @@ describe("angular-inview", function() {
 			element.scrollTop += position[1];
 		}
 		// Backup resolver
-		timeout = setTimeout(function () {
+		if (useTimeout) timeout = setTimeout(function () {
 			angular.element(element).off('scroll', scrollOnceHandler);
 			var check = (element === window) ?
 				[element.scrollX, element.scrollY] :
