@@ -53,12 +53,19 @@ function inViewDirective ($parse) {
       .map(function(event) {
         var viewportRect = getViewportRect();
         var elementRect = element[0].getBoundingClientRect();
-        var inviewInfo = {
+        var info = {
           inView: intersectRect(elementRect, viewportRect),
-          event: event,
+          event: event
         };
-        // TODO direciton and inview parts
-        return inviewInfo;
+        // Add inview parts
+        if (info.inView) {
+          info.parts = {};
+          info.parts.top = elementRect.top >= viewportRect.top;
+          info.parts.left = elementRect.left >= viewportRect.left;
+          info.parts.bottom = elementRect.bottom <= viewportRect.bottom;
+          info.parts.right = elementRect.right <= viewportRect.right;
+        }
+        return info;
       })
 
       // Add the changed information to the inview structure.
@@ -86,7 +93,8 @@ function inViewDirective ($parse) {
       var dispose = inviewInfoSignal.subscribe(function (info) {
         scope.$applyAsync(function () {
           inViewExpression(scope, {
-            '$inview': info.inView
+            '$inview': info.inView,
+            '$inviewInfo': info
           });
         });
       });
