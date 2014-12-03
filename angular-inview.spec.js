@@ -71,6 +71,31 @@ describe("angular-inview", function() {
 				.then(done);
 			});
 
+			it("should return proper `parts` informations", function(done) {
+				makeTestForHtml(
+					'<div in-view="spy($inviewInfo)" style="margin:-100px 0 0 -100px; width: 200px; height: 200px;"></div>' +
+					'<div style="width:200%; height:200%"></div>'
+				)
+				.then(function (test) {
+					expect(test.spy.calls.count()).toBe(1);
+					var info = test.spy.calls.argsFor(0)[0];
+					expect(info.parts).toEqual({
+						top: false,
+						left: false,
+						bottom: true,
+						right: true
+					});
+					return test;
+				})
+				.then(lazyScrollTo([400, 400]))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(1)[0];
+					expect(test.spy.calls.count()).toBe(2);
+					expect(info.parts).toEqual(undefined);
+				})
+				.then(done);
+			});
+
 		});
 
 	});
