@@ -17,11 +17,10 @@ describe("angular-inview", function() {
 	describe("in-view directive", function() {
 
 		it("should trigger in-view expression with `$inview` local", function(done) {
-			var test = makeTestForHtml(
+			makeTestForHtml(
 				'<div in-view="spy($inview)"></div>'
-			);
-			scrollTo(0)
-			.then(function () {
+			)
+			.then(function (test) {
 				expect(test.spy.calls.count()).toBe(1);
 				expect(test.spy).toHaveBeenCalledWith(true);
 			})
@@ -29,24 +28,22 @@ describe("angular-inview", function() {
 		});
 
 		it("should not trigger in-view expression if out of viewport", function(done) {
-			var test = makeTestForHtml(
+			makeTestForHtml(
 				'<div in-view="spy($inview)" style="margin-top:-100px"></div>'
-			);
-			scrollTo(0)
-			.then(function () {
+			)
+			.then(function (test) {
 				expect(test.spy.calls.count()).toBe(0);
 			})
 			.then(done);
 		});
 
 		it("should change inview status when scrolling out of view", function(done) {
-			var test = makeTestForHtml(
+			makeTestForHtml(
 				'<div in-view="spy($inview)"></div>' +
 				'<div style="height:200%"></div>'
-			);
-			scrollTo(0)
-			.then(scrollTo(100))
-			.then(function () {
+			)
+			.then(lazyScrollTo(100))
+			.then(function (test) {
 				expect(test.spy.calls.count()).toBe(2);
 				expect(test.spy).toHaveBeenCalledWith(true);
 				expect(test.spy).toHaveBeenCalledWith(false);
@@ -57,11 +54,10 @@ describe("angular-inview", function() {
 		describe("informations object", function() {
 
 			it("should return an info object with relative informations", function(done) {
-				var test = makeTestForHtml(
+				makeTestForHtml(
 					'<div in-view="spy($inviewInfo)"></div>'
-				);
-				scrollTo(0)
-				.then(function () {
+				)
+				.then(function (test) {
 					expect(test.spy.calls.count()).toBe(1);
 					var info = test.spy.calls.mostRecent().args[0];
 					expect(info.inView).toEqual(true);
@@ -97,7 +93,9 @@ describe("angular-inview", function() {
 		// Compile the element
 		$compile(test.element)(test.scope);
 		test.scope.$digest();
-		return test;
+		return scrollTo(window, [0, 0]).then(function () {
+			return test;
+		});
 	}
 
 	// Scrolls the element to the given x, y position and waits a bit before
