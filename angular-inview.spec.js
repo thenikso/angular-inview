@@ -111,8 +111,18 @@ describe("angular-inview", function() {
 			position = [0, position];
 		}
 		// Prepare promise resolution
-		var deferred = $q.defer();
+		var deferred = $q.defer(), timeout;
 		var scrollOnceHandler = function () {
+			var check = (element === window) ?
+				[element.scrollX, element.scrollY] :
+				[element.scrollLeft, element.scrollTop];
+			if (check[0] != position[0] || check[1] != position[1]) {
+				return;
+			}
+			if (timeout) {
+				clearTimeout(timeout);
+				timeout = null;
+			}
 			angular.element(element).off('scroll', scrollOnceHandler);
 			deferred.resolve();
 			$rootScope.$digest();
@@ -127,27 +137,29 @@ describe("angular-inview", function() {
 			element.scrollTop += position[1];
 		}
 		// Backup resolver
-		setTimeout(function () {
+		timeout = setTimeout(function () {
 			angular.element(element).off('scroll', scrollOnceHandler);
-			if (element === window) {
-				if (element.scrollX == position[0] && element.scrollY == position[1]) {
-					deferred.resolve();
-				}
-				else {
-					deferred.reject();
-				}
+			var check = (element === window) ?
+				[element.scrollX, element.scrollY] :
+				[element.scrollLeft, element.scrollTop];
+			if (check[0] != position[0] || check[1] != position[1]) {
+				deferred.reject();
 			}
 			else {
-				if (element.scrollLeft == position[0] && element.scrollTop == position[1]) {
-					deferred.resolve();
-				}
-				else {
-					deferred.reject();
-				}
+				deferred.resolve();
 			}
 			$rootScope.$digest();
-		}, 200);
+		}, 100);
 		return deferred.promise;
+	}
+
+	function lazyScrollTo () {
+		var args = arguments;
+		return function (x) {
+			return scrollTo.apply(null, args).then(function () {
+				return x;
+			});
+		}
 	}
 
 });
