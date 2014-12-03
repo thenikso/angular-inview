@@ -71,7 +71,8 @@ function inViewDirective ($parse) {
       // Add the changed information to the inview structure.
       .scan({}, function (lastInfo, newInfo) {
         newInfo.changed =
-          newInfo.inView !== lastInfo.inView;
+          newInfo.inView !== lastInfo.inView ||
+          !angular.equals(newInfo.parts, lastInfo.parts);
         return newInfo;
       })
 
