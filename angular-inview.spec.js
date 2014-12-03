@@ -73,15 +73,15 @@ describe("angular-inview", function() {
 
 			it("should return proper `parts` informations", function(done) {
 				makeTestForHtml(
-					'<div in-view="spy($inviewInfo)" style="margin:-100px 0 0 -100px; width: 200px; height: 200px;"></div>' +
+					'<div in-view="spy($inviewInfo)" style="width: 200px; height: 200px;"></div>' +
 					'<div style="width:200%; height:200%"></div>'
 				)
 				.then(function (test) {
 					expect(test.spy.calls.count()).toBe(1);
 					var info = test.spy.calls.argsFor(0)[0];
 					expect(info.parts).toEqual({
-						top: false,
-						left: false,
+						top: true,
+						left: true,
 						bottom: true,
 						right: true
 					});
@@ -94,13 +94,25 @@ describe("angular-inview", function() {
 					expect(info.parts).toEqual(undefined);
 					return test;
 				})
-				.then(lazyScrollTo([0, 0]))
+				.then(lazyScrollTo([100, 100]))
 				.then(function (test) {
 					var info = test.spy.calls.argsFor(2)[0];
 					expect(test.spy.calls.count()).toBe(3);
 					expect(info.parts).toEqual({
 						top: false,
 						left: false,
+						bottom: true,
+						right: true
+					});
+					return test;
+				})
+				.then(lazyScrollTo([0, 0]))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(3)[0];
+					expect(test.spy.calls.count()).toBe(4);
+					expect(info.parts).toEqual({
+						top: true,
+						left: true,
 						bottom: true,
 						right: true
 					});
