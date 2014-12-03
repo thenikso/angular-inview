@@ -33,6 +33,11 @@ function inViewDirective ($parse) {
     link: function inViewDirectiveLink (scope, element, attrs) {
       // in-view-options attribute can be specified with an object expression
       // containing:
+      //   - `offset`: An array of values to offset the element position.
+      //     Offsets are expressed as arrays of 4 numbers [top, right, bottom, left].
+      //     Like CSS, you can also specify only 2 numbers [top/bottom, left/right].
+      //     Positive numbers are offsets outside the element rectangle and
+      //     negative numbers are offsets to the inside.
       //   - `generateDirection`: Indicate if the `direction` information should
       //     be included in `$inviewInfo` (default false);
       //   - `generateParts`: Indicate if the `parts` information should
@@ -40,6 +45,9 @@ function inViewDirective ($parse) {
       var options = {};
       if (attrs.inViewOptions) {
         options = scope.$eval(attrs.inViewOptions);
+      }
+      if (options.offset) {
+        options.offset = normalizeOffset(options.offset);
       }
 
       // Build reactive chain from an initial event
@@ -63,7 +71,7 @@ function inViewDirective ($parse) {
       //   - `event`
       .map(function(event) {
         var viewportRect = getViewportRect();
-        var elementRect = element[0].getBoundingClientRect();
+        var elementRect = offsetRect(element[0].getBoundingClientRect(), options.offset);
         var info = {
           inView: intersectRect(elementRect, viewportRect),
           event: event,
@@ -163,6 +171,33 @@ function intersectRect (r1, r2) {
            r2.right < r1.left ||
            r2.top > r1.bottom ||
            r2.bottom < r1.top);
+}
+
+function normalizeOffset (offset) {
+  if (!angular.isArray(offset)) {
+    throw new Error("angular-inview: Offset should be an array");
+  }
+  if (offset.length == 2) {
+    return offset.concat(offset);
+  }
+  else if (offset.length == 3) {
+    return offset.concat([offset[1]]);
+  }
+  return offset;
+}
+
+function offsetRect (rect, offset) {
+  if (!offset) {
+    return rect;
+  }
+  var result = angular.copy(rect);
+  result.top -= offset[0];
+  result.left -= offset[1];
+  result.bottom += offset[2];
+  result.right += offset[3];
+  result.height += offset[0] + offset[2];
+  result.width += offset[1] + offset[3];
+  return result;
 }
 
 // ## QuickSignal FRP

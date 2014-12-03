@@ -152,6 +152,69 @@ describe("angular-inview", function() {
 
 		});
 
+		describe("offset options", function() {
+
+			it("should consider element offset option", function(done) {
+				makeTestForHtml(
+					'<div in-view="spy($inviewInfo)" in-view-options="{ offset:[100, 0], generateParts: true }"></div>' +
+					'<div style="height:200%"></div>'
+				)
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(0)[0];
+					expect(info.inView).toEqual(true);
+					expect(info.parts).toEqual({
+						top: false,
+						left: true,
+						bottom: true,
+						right: true
+					});
+					return test;
+				})
+				.then(done);
+			});
+
+			it("should consider negative offsets", function(done) {
+				makeTestForHtml(
+					'<div in-view="spy($inviewInfo)" style="height:200px" in-view-options="{ offset:[-50, 0], generateParts: true }"></div>' +
+					'<div style="height:200%"></div>'
+				)
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(0)[0];
+					expect(info.parts).toEqual({
+						top: true,
+						left: true,
+						bottom: true,
+						right: true
+					});
+					return test;
+				})
+				.then(lazyScrollTo(100))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(1)[0];
+					expect(info.parts).toEqual({
+						top: false,
+						left: true,
+						bottom: true,
+						right: true
+					});
+					return test;
+				})
+				.then(lazyScrollTo(50))
+				.then(function (test) {
+					var info = test.spy.calls.argsFor(2)[0];
+					expect(info.parts).toEqual({
+						top: true,
+						left: true,
+						bottom: true,
+						right: true
+					});
+					return test;
+				})
+				.then(done);
+			});
+
+		});
+
 	});
 
 	// A test object has the properties:
