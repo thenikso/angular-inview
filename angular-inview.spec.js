@@ -39,6 +39,21 @@ describe("angular-inview", function() {
 			.then(done);
 		});
 
+		it("should change inview status when scrolling out of view", function(done) {
+			var test = makeTestForHtml(
+				'<div in-view="spy($inview)"></div>' +
+				'<div style="height:200%"></div>'
+			);
+			scrollTo(0)
+			.then(scrollTo(100))
+			.then(function () {
+				expect(test.spy.calls.count()).toBe(2);
+				expect(test.spy).toHaveBeenCalledWith(true);
+				expect(test.spy).toHaveBeenCalledWith(false);
+			})
+			.then(done);
+		});
+
 		describe("informations object", function() {
 
 			it("should return an info object with relative informations", function(done) {
@@ -59,17 +74,6 @@ describe("angular-inview", function() {
 				})
 				.then(done);
 			});
-
-			// it("should return an info object with relative informations", function(done) {
-			// 	var test = makeTestForHtml(
-			// 		'<div in-view="spy($inviewInfo)" style="margin:-100px 0 0 -100px; width: 200px; height: 200px;"></div>'
-			// 	);
-			// 	scrollTo(0)
-			// 	.then(function () {
-			// 		expect(test.spy.calls.count()).toBe(1);
-			// 	})
-			// 	.then(done);
-			// });
 
 		});
 
