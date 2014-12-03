@@ -244,6 +244,24 @@ describe("angular-inview", function() {
 
 		});
 
+		it("should accept a `throttle` option", function(done) {
+			makeTestForHtml(
+				'<div in-view="spy($inview)"  in-view-options="{ throttle: 200 }"></div>' +
+				'<div style="height:200%"></div>'
+			)
+			.then(function (test) {
+				expect(test.spy.calls.count()).toBe(0);
+				return test;
+			})
+			.then(lazyWait(200))
+			.then(function (test) {
+				expect(test.spy.calls.count()).toBe(1);
+				expect(test.spy).toHaveBeenCalledWith(true);
+				return test;
+			})
+			.then(done);
+		});
+
 	});
 
 	// A test object has the properties:
@@ -327,6 +345,17 @@ describe("angular-inview", function() {
 		return function (x) {
 			return scrollTo.apply(null, args).then(function () {
 				return x;
+			});
+		}
+	}
+
+	function lazyWait (millisec) {
+		return function (x) {
+			return $q(function (resolve) {
+				setTimeout(function () {
+					resolve(x);
+					$rootScope.$digest();
+				}, millisec);
 			});
 		}
 	}

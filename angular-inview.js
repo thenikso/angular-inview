@@ -44,6 +44,8 @@ function inViewDirective ($parse) {
       //     be included in `$inviewInfo` (default false).
       //   - `generateParts`: Indicate if the `parts` information should
       //     be included in `$inviewInfo` (default false).
+      //  - `throttle`: Spcify a number of milliseconds by which filter the number
+      //    of incoming events.
       var options = {};
       if (attrs.inViewOptions) {
         options = scope.$eval(attrs.inViewOptions);
@@ -63,7 +65,10 @@ function inViewDirective ($parse) {
 
       // TODO merge with container's events signal
 
-      // TODO throttle if option specified
+      // Throttle if option specified
+      if (options.throttle) {
+        eventsSignal = eventsSignal.throttle(options.throttle);
+      }
 
       // Map to viewport intersection and in-view informations
       var inviewInfoSignal = eventsSignal
