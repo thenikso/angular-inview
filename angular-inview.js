@@ -36,18 +36,23 @@ function inViewDirective ($parse) {
       //   - `offset`: An array of values to offset the element position.
       //     Offsets are expressed as arrays of 4 numbers [top, right, bottom, left].
       //     Like CSS, you can also specify only 2 numbers [top/bottom, left/right].
+      //     Instead of numbers, some array elements can be a string with a percentage.
       //     Positive numbers are offsets outside the element rectangle and
       //     negative numbers are offsets to the inside.
+      //   - `viewportOffset`: Like the element offset but appied to the viewport.
       //   - `generateDirection`: Indicate if the `direction` information should
-      //     be included in `$inviewInfo` (default false);
+      //     be included in `$inviewInfo` (default false).
       //   - `generateParts`: Indicate if the `parts` information should
-      //     be included in `$inviewInfo` (default false);
+      //     be included in `$inviewInfo` (default false).
       var options = {};
       if (attrs.inViewOptions) {
         options = scope.$eval(attrs.inViewOptions);
       }
       if (options.offset) {
         options.offset = normalizeOffset(options.offset);
+      }
+      if (options.viewportOffset) {
+        options.viewportOffset = normalizeOffset(options.viewportOffset);
       }
 
       // Build reactive chain from an initial event
@@ -68,9 +73,9 @@ function inViewDirective ($parse) {
       //     visible in the viewport;
       //   - `changed`: a boolean value indicating if the inview status
       //     changed after the last event;
-      //   - `event`
+      //   - `event`: the event that initiated the in-view check;
       .map(function(event) {
-        var viewportRect = getViewportRect();
+        var viewportRect = offsetRect(getViewportRect(), options.viewportOffset);
         var elementRect = offsetRect(element[0].getBoundingClientRect(), options.offset);
         var info = {
           inView: intersectRect(elementRect, viewportRect),
