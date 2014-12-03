@@ -106,6 +106,15 @@ describe("angular-inview", function() {
 		if (!angular.isArray(position)) {
 			position = [0, position];
 		}
+		// Prepare promise resolution
+		var deferred = $q.defer();
+		var scrollOnceHandler = function () {
+			angular.element(element).off('scroll', scrollOnceHandler);
+			deferred.resolve();
+			$rootScope.$digest();
+		};
+		angular.element(element).on('scroll', scrollOnceHandler);
+		// Actual scrolling
 		if (element === window) {
 			element.scrollTo.apply(element, position);
 		}
@@ -113,13 +122,28 @@ describe("angular-inview", function() {
 			element.scrollLeft += position[0];
 			element.scrollTop += position[1];
 		}
-		var q = $q(function (resolve, reject) {
-			setTimeout(function () {
-				resolve();
-				$rootScope.$digest();
-			}, 2);
-		});
-		return q;
+		// Backup resolver
+		setTimeout(function () {
+			angular.element(element).off('scroll', scrollOnceHandler);
+			if (element === window) {
+				if (element.scrollX == position[0] && element.scrollY == position[1]) {
+					deferred.resolve();
+				}
+				else {
+					deferred.reject();
+				}
+			}
+			else {
+				if (element.scrollLeft == position[0] && element.scrollTop == position[1]) {
+					deferred.resolve();
+				}
+				else {
+					deferred.reject();
+				}
+			}
+			$rootScope.$digest();
+		}, 200);
+		return deferred.promise;
 	}
 
 });
