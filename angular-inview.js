@@ -30,7 +30,8 @@ function inViewDirective ($parse) {
     // Evaluate the expression passet to the attribute `in-view` when the DOM
     // element is visible in the viewport.
     restrict: 'A',
-    link: function inViewDirectiveLink (scope, element, attrs) {
+    require: '?^^inViewContainer',
+    link: function inViewDirectiveLink (scope, element, attrs, container) {
       // in-view-options attribute can be specified with an object expression
       // containing:
       //   - `offset`: An array of values to offset the element position.
@@ -58,20 +59,23 @@ function inViewDirective ($parse) {
       }
 
       // Build reactive chain from an initial event
-      var eventsSignal = signalSingle({ type: 'initial' })
+      var viewportEventSignal = signalSingle({ type: 'initial' })
 
       // Merged with the window events
-      .merge(signalFromEvent(window, 'scroll resize'));
+      .merge(signalFromEvent(window, 'scroll resize'))
 
-      // TODO merge with container's events signal
+      // Merge with container's events signal
+      if (container) {
+        viewportEventSignal = viewportEventSignal.merge(container.eventsSignal);
+      }
 
       // Throttle if option specified
       if (options.throttle) {
-        eventsSignal = eventsSignal.throttle(options.throttle);
+        viewportEventSignal = viewportEventSignal.throttle(options.throttle);
       }
 
       // Map to viewport intersection and in-view informations
-      var inviewInfoSignal = eventsSignal
+      var inviewInfoSignal = viewportEventSignal
 
       // Inview information structure contains:
       //   - `inView`: a boolean value indicating if the element is
@@ -80,7 +84,13 @@ function inViewDirective ($parse) {
       //     changed after the last event;
       //   - `event`: the event that initiated the in-view check;
       .map(function(event) {
-        var viewportRect = offsetRect(getViewportRect(), options.viewportOffset);
+        var viewportRect;
+        if (container) {
+          viewportRect = container.getViewportRect();
+        } else {
+          viewportRect = getViewportRect();
+        }
+        viewportRect = offsetRect(viewportRect, options.viewportOffset);
         var elementRect = offsetRect(element[0].getBoundingClientRect(), options.offset);
         var info = {
           inView: intersectRect(elementRect, viewportRect),
@@ -148,6 +158,16 @@ function inViewDirective ($parse) {
 }
 
 function inViewContainerDirective () {
+  return {
+    restrict: 'A',
+    controller: function ($element) {
+      this.element = $element;
+      this.eventsSignal = signalFromEvent($element, 'scroll');
+      this.getViewportRect = function () {
+        return $element[0].getBoundingClientRect();
+      };
+    }
+  }
 }
 
 // ## Utilities
@@ -336,9 +356,9 @@ function signalFromEvent (target, event) {
       subscriber(e);
     };
     var el = angular.element(target);
-    el.bind(event, handler);
+    el.on(event, handler);
     subscriber.$dispose = function () {
-      el.unbind(event, handler);
+      el.off(event, handler);
     };
   });
 }

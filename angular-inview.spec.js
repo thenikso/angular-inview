@@ -264,6 +264,30 @@ describe("angular-inview", function() {
 
 	});
 
+	describe("in-view-container directive", function() {
+
+		it("should trigger in-view when scrolling a container", function(done) {
+			makeTestForHtml(
+				'<div in-view-container style="height:100px; overflow:scroll">' +
+				'  <div in-view="spy($inview)"></div>' +
+				'  <div style="height:200%"></div>' +
+				'</div>'
+			)
+			.then(function (test) {
+				expect(test.spy.calls.count()).toBe(1);
+				expect(test.spy).toHaveBeenCalledWith(true);
+				return test;
+			})
+			.then(lazyScrollTestElementTo(100))
+			.then(function (test) {
+				expect(test.spy.calls.count()).toBe(2);
+				expect(test.spy).toHaveBeenCalledWith(false);
+			})
+			.then(done);
+		});
+
+	});
+
 	// A test object has the properties:
 	//
 	//  - `element`: An angular element inserted in the test page
@@ -320,8 +344,8 @@ describe("angular-inview", function() {
 			element.scrollTo.apply(element, position);
 		}
 		else {
-			element.scrollLeft += position[0];
-			element.scrollTop += position[1];
+			element.scrollLeft = position[0];
+			element.scrollTop = position[1];
 		}
 		// Backup resolver
 		if (useTimeout) timeout = setTimeout(function () {
@@ -345,6 +369,14 @@ describe("angular-inview", function() {
 		return function (x) {
 			return scrollTo.apply(null, args).then(function () {
 				return x;
+			});
+		}
+	}
+
+	function lazyScrollTestElementTo (pos) {
+		return function (test) {
+			return scrollTo(test.element[0], pos, true).then(function () {
+				return test;
 			});
 		}
 	}
