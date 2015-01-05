@@ -87,6 +87,7 @@ function inViewDirective ($parse) {
         var viewportRect;
         if (container) {
           viewportRect = container.getViewportRect();
+          // TODO merge with actual window!
         } else {
           viewportRect = getViewportRect();
         }
