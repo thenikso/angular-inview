@@ -146,7 +146,7 @@ unbindWindowEvents = ->
 triggerInViewCallback = (event, item, inview, isTopVisible, isBottomVisible) ->
 	if inview
 		elOffsetTop = getBoundingClientRect(item.element[0]).top + window.pageYOffset
-		inviewpart = (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
+		inviewpart = (isTopVisible and isBottomVisible and 'neither') or (isTopVisible and 'top') or (isBottomVisible and 'bottom') or 'both'
 		# The callback will be called only if a relevant value has changed.
 		# However, if the element changed it's position (for example if it has been
 		# pushed down by dynamically loaded content), the callback will be called anyway.
