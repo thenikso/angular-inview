@@ -24,7 +24,7 @@
               if ($event == null) {
                 $event = {};
               }
-              return scope.$apply((function(_this) {
+              return scope.$evalAsync((function(_this) {
                 return function() {
                   $event.inViewTarget = element[0];
                   return inViewFunc(scope, {
