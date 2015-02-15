@@ -39,7 +39,7 @@ angular.module('angular-inview', [])
 				# The inView DOM element will be passed in `$event.inViewTarget`.
 				# - `$inview`: boolean indicating if the element is in view
 				# - `$inviewpart`: string either 'top', 'bottom' or 'both'
-				callback: ($event={}, $inview, $inviewpart) -> scope.$apply =>
+				callback: ($event={}, $inview, $inviewpart) -> scope.$evalAsync =>
 					$event.inViewTarget = element[0]
 					inViewFunc scope,
 						'$event': $event
