@@ -6,7 +6,7 @@ visible browser viewport.
 The directive is inspired by the [jQuery.inview](https://github.com/zuk/jquery.inview)
 plugin. However this implementation has no dependency on jQuery.
 
-## Intallation
+## Installation
 
 To install using [Bower](http://bower.io):
 
