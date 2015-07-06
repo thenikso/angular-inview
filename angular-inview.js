@@ -161,13 +161,13 @@ function inViewDirective ($parse) {
 function inViewContainerDirective () {
   return {
     restrict: 'A',
-    controller: function ($element) {
+    controller: ['$element', function ($element) {
       this.element = $element;
       this.eventsSignal = signalFromEvent($element, 'scroll');
       this.getViewportRect = function () {
         return $element[0].getBoundingClientRect();
       };
-    }
+    }]
   }
 }
 
