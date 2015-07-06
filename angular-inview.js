@@ -226,14 +226,15 @@ function offsetRect (rect, offset) {
     bottom: isPercent(offset[2]) ? (parseFloat(offset[2]) * rect.height) : offset[2],
     left: isPercent(offset[3]) ? (parseFloat(offset[3]) * rect.width) : offset[3]
   };
-  var result = angular.copy(rect);
-  result.top -= offsetObject.top;
-  result.left -= offsetObject.left;
-  result.bottom += offsetObject.bottom;
-  result.right += offsetObject.right;
-  result.height += offsetObject.top + offsetObject.bottom;
-  result.width += offsetObject.left + offsetObject.right;
-  return result;
+  // Note: ClientRect object does not allow its properties to be written to therefore a new object has to be created.
+  return {
+    top: rect.top - offsetObject.top,
+    left: rect.left - offsetObject.left,
+    bottom: rect.bottom + offsetObject.bottom,
+    right: rect.right + offsetObject.right,
+    height: rect.height + offsetObject.top + offsetObject.bottom,
+    width: rect.width + offsetObject.left + offsetObject.right
+  };
 }
 
 function isPercent (n) {
