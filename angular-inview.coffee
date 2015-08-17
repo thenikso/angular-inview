@@ -180,8 +180,8 @@ checkInView = (items, container, event) ->
 		element = item.element[0]
 		bounds = getBoundingClientRect element
 		# Apply offset.
-		boundsTop = bounds.top + parseInt(item.offset?[0] ? item.offset)
-		boundsBottom = bounds.bottom + parseInt(item.offset?[1] ? item.offset)
+		boundsTop = bounds.top + if offsetIsPercentage(item.offset) then getOffsetFromPercentage(bounds, item.offset) else parseInt(item.offset?[0] ? item.offset)
+		boundsBottom = bounds.bottom + if offsetIsPercentage(item.offset) then getOffsetFromPercentage(bounds, item.offset) else parseInt(item.offset?[1] ? item.offset)
 		# Calculate parts in view.
 		if boundsTop < viewport.bottom and boundsBottom >= viewport.top
 			triggerInViewCallback(event, item, true, boundsBottom > viewport.bottom, boundsTop < viewport.top)
@@ -189,6 +189,15 @@ checkInView = (items, container, event) ->
 			triggerInViewCallback(event, item, false)
 
 # ### Utility functions
+
+# Checks if the provided offset value is a percentage or not
+offsetIsPercentage = (offset) ->
+	typeof offset is 'string' and offset.slice(-1) is '%'
+
+# Calculates the offset in pixels based on the percentage provided
+getOffsetFromPercentage = (bounds, offsetPercentage) ->
+	percentage = offsetPercentage.substring 0, offsetPercentage.length - 1
+	(bounds.bottom - bounds.top) *  (percentage / 100)
 
 # Returns the height of the window viewport
 getViewportHeight = ->
