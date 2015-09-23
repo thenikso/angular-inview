@@ -232,7 +232,7 @@ debounce = (f, t) ->
 		clearTimeout timer if timer?
 		timer = setTimeout (-> f(args...)), (t ? 100)
 
-# The main funciton to perform in-view checks on all items.
+# The main function to perform in-view checks on all items.
 windowCheckInView = (event) ->
 	i.customDebouncedCheck() for i in _windowInViewItems when i.customDebouncedCheck?
 	checkInView (i for i in _windowInViewItems when not i.customDebouncedCheck?), null, event
