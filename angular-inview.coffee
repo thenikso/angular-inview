@@ -11,7 +11,7 @@
 # Use it in your Angular.js app by including the javascript and requireing it:
 #
 # `angular.module('myApp', ['angular-inview'])`
-angular.module('angular-inview', [])
+angularInviewModule = angular.module('angular-inview', [])
 
 	# ##in-view directive
 	#
@@ -236,3 +236,8 @@ debounce = (f, t) ->
 windowCheckInView = (event) ->
 	i.customDebouncedCheck() for i in _windowInViewItems when i.customDebouncedCheck?
 	checkInView (i for i in _windowInViewItems when not i.customDebouncedCheck?), null, event
+
+if typeof define is 'function' && define.amd
+	define(['angular', 'inview'], angularInviewModule)
+else if typeof module isnt 'undefined' && module && module.exports
+	module.exports = angularInviewModule
