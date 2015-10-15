@@ -338,7 +338,7 @@
   };
 
   if (typeof define === 'function' && define.amd) {
-    define(['angular', 'inview'], angularInviewModule);
+    define(['angular'], angularInviewModule);
   } else if (typeof module !== 'undefined' && module && module.exports) {
     module.exports = angularInviewModule;
   }

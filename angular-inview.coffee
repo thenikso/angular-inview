@@ -238,6 +238,6 @@ windowCheckInView = (event) ->
 	checkInView (i for i in _windowInViewItems when not i.customDebouncedCheck?), null, event
 
 if typeof define is 'function' && define.amd
-	define(['angular', 'inview'], angularInviewModule)
+	define(['angular'], angularInviewModule)
 else if typeof module isnt 'undefined' && module && module.exports
 	module.exports = angularInviewModule
