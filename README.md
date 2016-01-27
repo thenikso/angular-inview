@@ -70,6 +70,16 @@ offset respectively; this may virtually change the height of the element for inv
 firing the in-view event until that number of millisecond is passed without a scrolling
 event happening.
 
+### Example
+
+The following triggers the `lineInView` when the line comes in view:
+
+```
+<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
+```
+
+See more examples in the [examples folder](https://github.com/thenikso/angular-inview/tree/master/examples).
+
 ### InViewContainer
 
 Use `in-view-container` when you have a scollable container that contains `in-view`
