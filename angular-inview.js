@@ -186,7 +186,7 @@
       return;
     }
     _windowEventsHandlerBinded = true;
-    return angular.element(window).bind('checkInView click ready scroll resize', windowEventsHandler);
+    return angular.element(window).bind('checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup', windowEventsHandler);
   };
 
   unbindWindowEvents = function() {
@@ -197,7 +197,7 @@
       return;
     }
     _windowEventsHandlerBinded = false;
-    return angular.element(window).unbind('checkInView click ready scroll resize', windowEventsHandler);
+    return angular.element(window).unbind('checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup', windowEventsHandler);
   };
 
   triggerInViewCallback = function(event, item, inview, isTopVisible, isBottomVisible) {
