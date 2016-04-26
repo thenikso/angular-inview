@@ -39,9 +39,12 @@
           if ((attrs.inViewOptions != null) && (options = scope.$eval(attrs.inViewOptions))) {
             item.offset = options.offset || [options.offsetTop || 0, options.offsetBottom || 0];
             if (options.debounce) {
-              item.customDebouncedCheck = debounce((function(event) {
-                return checkInView([item], element[0], event);
-              }), options.debounce);
+              item.customDebouncedCheck = function(container) {
+                container = container || element;
+                return debounce((function(event) {
+                  return checkInView([item], container[0], event);
+                }), options.debounce)();
+              };
             }
           }
           performCheck = (ref = (ref1 = item.customDebouncedCheck) != null ? ref1 : containerController != null ? containerController.checkInView : void 0) != null ? ref : windowCheckInView;
@@ -91,7 +94,7 @@
               for (j = 0, len = ref.length; j < len; j++) {
                 i = ref[j];
                 if (i.customDebouncedCheck != null) {
-                  i.customDebouncedCheck();
+                  i.customDebouncedCheck($element);
                 }
               }
               return checkInView((function() {
