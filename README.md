@@ -59,7 +59,7 @@ indicating which part of the DOM element is visible.
 changed its visibility status is passed as `$event.inViewTarget`
 (To use the old `$element` variable use version 1.3.x).
 
-An additional attribute `in-view-options` can be speficied with an object value
+An additional attribute `in-view-options` can be specified with an object value
 containing:
 
 - `offset`: a number (in pixels) indicating how much to move down (or up if negative) the top position of the element. As of version 1.5.1, if the number is suffixed with `%` then the offset is applied as a percentage instead of pixels.
@@ -82,7 +82,7 @@ See more examples in the [examples folder](https://github.com/thenikso/angular-i
 
 ### InViewContainer
 
-Use `in-view-container` when you have a scollable container that contains `in-view`
+Use `in-view-container` when you have a scrollable container that contains `in-view`
 elements. When an `in-view` element is inside such container, it will properly
 trigger callbacks when the container scrolls as well as when the window scrolls.
 
