@@ -98,3 +98,13 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 	<div style="height:300px" in-view="{expression using $inview}"></div>
 </div>
 ```
+
+## Contribute
+
+1. [Fork this repo](#fork-destination-box)
+2. Edit `angular-inview.js` and `angular-inview.spec.js` to add your feature
+3. Run `npm test` to check that all is good
+4. Create a [PR](https://github.com/thenikso/angular-inview/pulls)
+
+If you want to become a contributor with push access open an issue asking that
+or contact the author directly.
