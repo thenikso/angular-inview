@@ -4,7 +4,8 @@
   "description": "AngularJS directive to check if a DOM element is in the viewport",
   "main": "angular-inview.js",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "publish-docs": "docco angular-inview.coffee && gh-pages -d docs"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,8 @@
     "angular": "^1.5.8"
   },
   "devDependencies": {
+    "docco": "^0.7.0",
+    "gh-pages": "^0.11.0",
     "karma": "^0.12.24",
     "karma-chrome-launcher": "^0.1.5",
     "karma-jasmine": "~0.2",
