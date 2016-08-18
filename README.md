@@ -16,7 +16,7 @@ a complete revrite of v1
 ### With npm
 
 ```
-npm install agular-inview
+npm install angular-inview
 ```
 
 ### With bower
