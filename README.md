@@ -6,7 +6,7 @@ visible browser viewport.
 Version 2 of this directive uses a lightwight embedded reactive framework and is
 a complete revrite of v1.
 
-## Intallation
+## Installation
 
 ### With npm
 
@@ -18,6 +18,12 @@ npm install agular-inview@beta
 
 ```
 bower install angular-inview
+```
+
+or [npm](https://www.npmjs.com/):
+
+```
+npm install angular-inview
 ```
 
 ## Setup
@@ -53,16 +59,16 @@ available in the expression:
 - `$inview` is a boolean value indicating if the DOM element is in view.
 If using this directive for infinite scrolling, you may want to use this like
 `<any in-view="$inview&&myLoadingFunction()"></any>`.
-- `$inviewpart` is undefined or a string either `top`, `bottom` or `both`
+- `$inviewpart` is undefined or a string either `top`, `bottom`, `both` or `neither`
 indicating which part of the DOM element is visible.
 - `$event` is the DOM event that triggered the check; the DOM element that
 changed its visibility status is passed as `$event.inViewTarget`
 (To use the old `$element` variable use version 1.3.x).
 
-An additional attribute `in-view-options` can be speficied with an object value
+An additional attribute `in-view-options` can be specified with an object value
 containing:
 
-- `offset`: a number indicating how much to move down (or up if negative) the top
+- `offset`: a number (in pixels) indicating how much to move down (or up if negative) the top position of the element. As of version 1.5.1, if the number is suffixed with `%` then the offset is applied as a percentage instead of pixels.
 position of the element for the purpose of inview testing;
 - `offsetTop` and `offsetBottom`: two numbers representing the top and bottom
 offset respectively; this may virtually change the height of the element for inview testing;
@@ -70,9 +76,19 @@ offset respectively; this may virtually change the height of the element for inv
 firing the in-view event until that number of millisecond is passed without a scrolling
 event happening.
 
+### Example
+
+The following triggers the `lineInView` when the line comes in view:
+
+```
+<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
+```
+
+See more examples in the [examples folder](https://github.com/thenikso/angular-inview/tree/master/examples).
+
 ### InViewContainer
 
-Use `in-view-container` when you have a scollable container that contains `in-view`
+Use `in-view-container` when you have a scrollable container that contains `in-view`
 elements. When an `in-view` element is inside such container, it will properly
 trigger callbacks when the container scrolls as well as when the window scrolls.
 
