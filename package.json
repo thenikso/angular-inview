@@ -7,16 +7,18 @@
     "example": "examples",
     "test": "test"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "docco": "^0.7.0",
+    "gh-pages": "^0.11.0",
+    "karma": "^0.12.24",
     "karma-chrome-launcher": "^0.1.12",
-    "karma-jasmine": "^0.2.3",
     "karma-coffee-preprocessor": "^0.2.1",
-    "karma": "^0.12.24"
+    "karma-jasmine": "^0.2.3"
   },
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start"
+    "test": "./node_modules/karma/bin/karma start",
+    "publish-docs": "docco angular-inview.coffee && gh-pages -d docs"
   },
   "repository": {
     "type": "git",

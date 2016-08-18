@@ -1,8 +1,10 @@
 # #Angular-Inview
 # - Author: [Nicola Peduzzi](https://github.com/thenikso)
 # - Repository: https://github.com/thenikso/angular-inview
-# - Install with: `bower install angular-inview`
-# - Version: **1.5.0**
+# - Install with:
+#   `npm install angular-inview` or
+#   `bower install angular-inview`
+# - Version: **1.5.7**
 
 'use strict'
 
