@@ -9,14 +9,14 @@ Check if a DOM element is or not in the browser current visible viewport.
 **This is a directive for AngularJS 1, support for Angular 2 is not in the works yet (PRs are welcome!)**
 
 > Version 2 of this directive uses a lightwight embedded reactive framework and is
-a complete revrite of v1 which can still be installed with `npm install angular-inview@1.5.7`.
+a complete revrite of v1
 
 ## Installation
 
 ### With npm
 
 ```
-npm install agular-inview@beta
+npm install agular-inview
 ```
 
 ### With bower
@@ -155,6 +155,21 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 	<div style="height: 300px" in-view="{expression using $inview}"></div>
 </div>
 ```
+
+## Migrate from v1
+
+Version 1 of this directive can still be installed with
+`npm install angular-inview@1.5.7`. If you already have v1 and want to
+upgrade to v2 here are some tips:
+
+- `throttle` option replaces `debounce`. You can just change the name. Notice that
+  the functioning has changed as well, a debounce waits until there are no more
+  events for the given amount of time before triggering; throttle instead stabilizes
+  the event triggering only once every amount of time. In practival terms this
+  should not affect negativelly your app.
+- `offset` and `viewportOffset` replace the old offset options in a more structured
+  and flexible way. `offsetTop: 100` becomes `offset: [100, 0, 0, 0]`.
+- `$inviewInfo.event` replaces `$event` in the expression.
 
 ## Contribute
 
