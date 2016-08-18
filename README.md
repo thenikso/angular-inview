@@ -101,10 +101,11 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 
 ## Contribute
 
-1. [Fork this repo](#fork-destination-box)
-2. Edit `angular-inview.js` and `angular-inview.spec.js` to add your feature
-3. Run `npm test` to check that all is good
-4. Create a [PR](https://github.com/thenikso/angular-inview/pulls)
+1. Fork this repo
+2. Setup your new repo with `npm install`
+3. Edit `angular-inview.js` and `angular-inview.spec.js` to add your feature
+4. Run `npm test` to check that all is good
+5. Create a [PR](https://github.com/thenikso/angular-inview/pulls)
 
 If you want to become a contributor with push access open an issue asking that
 or contact the author directly.
