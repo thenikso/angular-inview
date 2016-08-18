@@ -20,12 +20,6 @@ npm install agular-inview@beta
 bower install angular-inview
 ```
 
-or [npm](https://www.npmjs.com/):
-
-```
-npm install angular-inview
-```
-
 ## Setup
 
 In your document include this scripts:
