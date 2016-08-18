@@ -25,8 +25,10 @@
 <ul>
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
-<li>Install with: <code>bower install angular-inview</code></li>
-<li>Version: <strong>1.5.0</strong></li>
+<li>Install with:
+<code>npm install angular-inview</code> or
+<code>bower install angular-inview</code></li>
+<li>Version: <strong>1.5.7</strong></li>
 </ul>
 
             </div>
@@ -50,7 +52,7 @@ Use it in your Angular.js app by including the javascript and requireing it:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">'angular-inview'</span>, [])</pre></div></div>
+            <div class="content"><div class='highlight'><pre>angularInviewModule = angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">'angular-inview'</span>, [])</pre></div></div>
             
         </li>
         
@@ -129,7 +131,7 @@ The inView DOM element will be passed in <code>$event.inViewTarget</code>.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($event={}, $inview, $inviewpart)</span> -&gt;</span> scope.$apply<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($event={}, $inview, $inviewpart)</span> -&gt;</span> scope.$evalAsync<span class="hljs-function"> =&gt;</span>
 					$event.inViewTarget = element[<span class="hljs-number">0</span>]
 					inViewFunc scope,
 						<span class="hljs-string">'$event'</span>: $event
@@ -396,7 +398,7 @@ the directive for lazy loading.</p>
             
             <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> _windowEventsHandlerBinded
 	_windowEventsHandlerBinded = <span class="hljs-literal">yes</span>
-	angular.element(<span class="hljs-built_in">window</span>).bind <span class="hljs-string">'checkInView click ready scroll resize'</span>, windowEventsHandler
+	angular.element(<span class="hljs-built_in">window</span>).bind <span class="hljs-string">'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup'</span>, windowEventsHandler
 <span class="hljs-function"><span class="hljs-title">unbindWindowEvents</span> = -&gt;</span></pre></div></div>
             
         </li>
@@ -415,7 +417,7 @@ the directive for lazy loading.</p>
             <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> _windowEventsHandlerBinded
 	<span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> _windowInViewItems.length <span class="hljs-keyword">or</span> _containersControllers.length
 	_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
-	angular.element(<span class="hljs-built_in">window</span>).unbind <span class="hljs-string">'checkInView click ready scroll resize'</span>, windowEventsHandler</pre></div></div>
+	angular.element(<span class="hljs-built_in">window</span>).unbind <span class="hljs-string">'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup'</span>, windowEventsHandler</pre></div></div>
             
         </li>
         
@@ -434,7 +436,7 @@ the directive for lazy loading.</p>
             <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">triggerInViewCallback</span> = <span class="hljs-params">(event, item, inview, isTopVisible, isBottomVisible)</span> -&gt;</span>
 	<span class="hljs-keyword">if</span> inview
 		elOffsetTop = getBoundingClientRect(item.element[<span class="hljs-number">0</span>]).top + <span class="hljs-built_in">window</span>.pageYOffset
-		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span></pre></div></div>
+		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'neither'</span>) <span class="hljs-keyword">or</span> (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span></pre></div></div>
             
         </li>
         
@@ -584,8 +586,8 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		boundsTop = bounds.top + parseInt(item.offset?[<span class="hljs-number">0</span>] ? item.offset)
-		boundsBottom = bounds.bottom + parseInt(item.offset?[<span class="hljs-number">1</span>] ? item.offset)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>		boundsTop = bounds.top + <span class="hljs-keyword">if</span> offsetIsPercentage(item.offset) <span class="hljs-keyword">then</span> getOffsetFromPercentage(bounds, item.offset) <span class="hljs-keyword">else</span> parseInt(item.offset?[<span class="hljs-number">0</span>] ? item.offset)
+		boundsBottom = bounds.bottom + <span class="hljs-keyword">if</span> offsetIsPercentage(item.offset) <span class="hljs-keyword">then</span> getOffsetFromPercentage(bounds, item.offset) <span class="hljs-keyword">else</span> parseInt(item.offset?[<span class="hljs-number">1</span>] ? item.offset)</pre></div></div>
             
         </li>
         
@@ -627,6 +629,39 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
+              <p>Checks if the provided offset value is a percentage or not</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">offsetIsPercentage</span> = <span class="hljs-params">(offset)</span> -&gt;</span>
+	<span class="hljs-keyword">typeof</span> offset <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> offset.slice(-<span class="hljs-number">1</span>) <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Calculates the offset in pixels based on the percentage provided</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getOffsetFromPercentage</span> = <span class="hljs-params">(bounds, offsetPercentage)</span> -&gt;</span>
+	percentage = offsetPercentage.substring <span class="hljs-number">0</span>, offsetPercentage.length - <span class="hljs-number">1</span>
+	(bounds.bottom - bounds.top) *  (percentage / <span class="hljs-number">100</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
               <p>Returns the height of the window viewport</p>
 
             </div>
@@ -642,11 +677,11 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
         </li>
         
         
-        <li id="section-35">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Polyfill for <code>getBoundingClientRect</code></p>
 
@@ -671,11 +706,11 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
         </li>
         
         
-        <li id="section-36">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Debounce a function.</p>
 
@@ -690,19 +725,24 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
         </li>
         
         
-        <li id="section-37">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
-              <p>The main funciton to perform in-view checks on all items.</p>
+              <p>The main function to perform in-view checks on all items.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">windowCheckInView</span> = <span class="hljs-params">(event)</span> -&gt;</span>
 	i.customDebouncedCheck() <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> i.customDebouncedCheck?
-	checkInView (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> i.customDebouncedCheck?), <span class="hljs-literal">null</span>, event</pre></div></div>
+	checkInView (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> i.customDebouncedCheck?), <span class="hljs-literal">null</span>, event
+
+<span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> &amp;&amp; define.amd
+	define([<span class="hljs-string">'angular'</span>], angularInviewModule)
+<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">isnt</span> <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports
+	<span class="hljs-built_in">module</span>.exports = angularInviewModule</pre></div></div>
             
         </li>
         
