@@ -5,7 +5,7 @@
   "main": "angular-inview.js",
   "scripts": {
     "test": "karma start",
-    "publish-docs": "docco -o docs angular-inview.coffee && gh-pages -d docs"
+    "publish-docs": "docco -o docs angular-inview.js && gh-pages -d docs"
   },
   "repository": {
     "type": "git",
