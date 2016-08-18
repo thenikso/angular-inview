@@ -56,24 +56,66 @@ be evaluated. To actually check if the element is in view, the following data is
 available in the expression:
 
 - `$inview` is a boolean value indicating if the DOM element is in view.
-If using this directive for infinite scrolling, you may want to use this like
-`<any in-view="$inview&&myLoadingFunction()"></any>`.
-- `$inviewpart` is undefined or a string either `top`, `bottom`, `both` or `neither`
-indicating which part of the DOM element is visible.
-- `$event` is the DOM event that triggered the check; the DOM element that
-changed its visibility status is passed as `$event.inViewTarget`
-(To use the old `$element` variable use version 1.3.x).
+  If using this directive for infinite scrolling, you may want to use this like
+  `<any in-view="$inview&&myLoadingFunction()"></any>`.
+
+- `$inviewInfo` is an object containint extra info regarding the event
+
+  ```
+  {
+    changed: <boolean>,
+    event: <DOM event>,
+    element: <DOM element>,
+    elementRect: {
+      top: <number>,
+      left: <number>,
+      bottom: <number>,
+      right: <number>,
+    },
+    viewportRect: {
+      top: <number>,
+      left: <number>,
+      bottom: <number>,
+      right: <number>,
+    },
+    direction: { // if generateDirection option is true
+      vertical: <number>,
+      horizontal: <number>,
+    },
+    parts: { // if generateParts option is true
+      top: <boolean>,
+      left: <boolean>,
+      bottom: <boolean>,
+      right: <boolean>,
+    },
+  }
+  ```
 
 An additional attribute `in-view-options` can be specified with an object value
 containing:
 
-- `offset`: a number (in pixels) indicating how much to move down (or up if negative)
-  the top position of the element. As of version 1.5.1, if the number is suffixed
-  with `%` then the offset is applied as a percentage instead of pixels.
-  position of the element for the purpose of inview testing
-- `offsetTop` and `offsetBottom`: two numbers representing the top and bottom
-  offset respectively; this may virtually change the height of the element for
-  inview testing
+- `offset`: An expression returning an array of values to offset the element position.
+
+  Offsets are expressed as arrays of 4 values `[top, right, bottom, left]`.
+  Like CSS, you can also specify only 2 values `[top/bottom, left/right]`.
+
+  Values can be either a string with a percentage or numbers (in pixel).
+  Positive values are offsets outside the element rectangle and
+  negative values are offsets to the inside.
+
+  Example valid values for the offset are: `100`, `[200, 0]`,
+  `[100, 0, 200, 50]`, `'20%'`, `['50%', 30]`
+
+- `viewportOffset`: Like the element offset but appied to the viewport. You may
+  want to use this to shrink the virtual viewport effectivelly checking if your
+  element is visible (i.e.) in the bottom part of the screen `['-50%', 0, 0]`.
+
+- `generateDirection`: Indicate if the `direction` information should
+  be included in `$inviewInfo` (default false).
+
+- `generateParts`: Indicate if the `parts` information should
+  be included in `$inviewInfo` (default false).
+
 - `throttle`: a number indicating a millisecond value of throttle which will
   limit the in-view event firing rate to happen every that many milliseconds
 
