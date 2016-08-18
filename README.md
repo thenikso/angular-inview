@@ -3,12 +3,18 @@
 A directive to evaluate an expression if a DOM element is or not in the current
 visible browser viewport.
 
-The directive is inspired by the [jQuery.inview](https://github.com/zuk/jquery.inview)
-plugin. However this implementation has no dependency on jQuery.
+Version 2 of this directive uses a lightwight embedded reactive framework and is
+a complete revrite of v1.
 
 ## Intallation
 
-To install using [Bower](http://bower.io):
+### With npm
+
+```
+npm install agular-inview@beta
+```
+
+### With bower
 
 ```
 bower install angular-inview
@@ -75,15 +81,3 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 	<div style="height:300px" in-view="{expression using $inview}"></li>
 </div>
 ```
-
-## How to contribute
-
-1. Fork the repository and clone it to your machine
-2. Modify `angular-inview.coffee` and compile it with `coffee -cw angular-inview.coffee` (make sure that *coffeescript* is installed globally)
-3. Run `bower install`, `npm install` (make sure that *nodejs*, *npm* and *bower* are installed globally)
-4. Run tests by issuing: `karma start` (make sure, that *karma-cli* is installed globally)
-5. Commit your changes and create a PR
-
-## License
-
-MIT
