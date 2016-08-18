@@ -31,8 +31,8 @@ npm install angular-inview
 In your document include this scripts:
 
 ```
-<script src="/bower_components/angular/angular.js"></script>
-<script src="/bower_components/angular-inview/angular-inview.js"></script>
+<script src="/node_modules/angular/angular.js"></script>
+<script src="/node_modules/angular-inview/angular-inview.js"></script>
 ```
 
 In your AngularJS app, you'll need to import the `angular-inview` module:
@@ -68,15 +68,17 @@ changed its visibility status is passed as `$event.inViewTarget`
 An additional attribute `in-view-options` can be specified with an object value
 containing:
 
-- `offset`: a number (in pixels) indicating how much to move down (or up if negative) the top position of the element. As of version 1.5.1, if the number is suffixed with `%` then the offset is applied as a percentage instead of pixels.
-position of the element for the purpose of inview testing;
+- `offset`: a number (in pixels) indicating how much to move down (or up if negative)
+  the top position of the element. As of version 1.5.1, if the number is suffixed
+  with `%` then the offset is applied as a percentage instead of pixels.
+  position of the element for the purpose of inview testing
 - `offsetTop` and `offsetBottom`: two numbers representing the top and bottom
-offset respectively; this may virtually change the height of the element for inview testing;
-- `debounce`: a number indicating a millisecond value of debounce which will delay
-firing the in-view event until that number of millisecond is passed without a scrolling
-event happening.
+  offset respectively; this may virtually change the height of the element for
+  inview testing
+- `throttle`: a number indicating a millisecond value of throttle which will
+  limit the in-view event firing rate to happen every that many milliseconds
 
-### Example
+### Examples
 
 The following triggers the `lineInView` when the line comes in view:
 
@@ -84,7 +86,7 @@ The following triggers the `lineInView` when the line comes in view:
 <li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
 ```
 
-See more examples in the [examples folder](https://github.com/thenikso/angular-inview/tree/master/examples).
+**See more examples in the [`examples` folder](./examples).**
 
 ### InViewContainer
 
