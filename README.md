@@ -1,9 +1,12 @@
 # InView Directive for AngularJS
 
-A directive to evaluate an expression if a DOM element is or not in the current
-visible browser viewport.
+Check if a DOM element is or not in the browser current visible viewport.
 
-Version 2 of this directive uses a lightwight embedded reactive framework and is
+```html
+<div in-view="ctrl.myDivIsVisible = $inview" ng-class="{ isInView: ctrl.myDivIsVisible }"></div>
+```
+
+> Version 2 of this directive uses a lightwight embedded reactive framework and is
 a complete revrite of v1.
 
 ## Installation
@@ -24,7 +27,7 @@ bower install angular-inview
 
 In your document include this scripts:
 
-```
+```html
 <script src="/node_modules/angular/angular.js"></script>
 <script src="/node_modules/angular-inview/angular-inview.js"></script>
 ```
@@ -41,7 +44,7 @@ This module will define two directives: `in-view` and `in-view-container`.
 
 ### InView
 
-```
+```html
 <any in-view="{expression using $inview}" in-view-options="{object}"></any>
 ```
 
@@ -76,7 +79,7 @@ containing:
 
 The following triggers the `lineInView` when the line comes in view:
 
-```
+```html
 <li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
 ```
 
@@ -88,8 +91,8 @@ Use `in-view-container` when you have a scrollable container that contains `in-v
 elements. When an `in-view` element is inside such container, it will properly
 trigger callbacks when the container scrolls as well as when the window scrolls.
 
-```
+```html
 <div style="height: 150px; overflow-y: scroll; position: fixed;" in-view-container>
-	<div style="height:300px" in-view="{expression using $inview}"></li>
+	<div style="height:300px" in-view="{expression using $inview}"></div>
 </div>
 ```
