@@ -9,7 +9,7 @@ Check if a DOM element is or not in the browser current visible viewport.
 **This is a directive for AngularJS 1, support for Angular 2 is not in the works yet (PRs are welcome!)**
 
 > Version 2 of this directive uses a lightwight embedded reactive framework and is
-a complete revrite of v1.
+a complete revrite of v1 which can still be installed with `npm install angular-inview@1.5.7`.
 
 ## Installation
 
@@ -152,14 +152,14 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 
 ```html
 <div style="height: 150px; overflow-y: scroll; position: fixed;" in-view-container>
-	<div style="height:300px" in-view="{expression using $inview}"></div>
+	<div style="height: 300px" in-view="{expression using $inview}"></div>
 </div>
 ```
 
 ## Contribute
 
 1. Fork this repo
-2. Setup your new repo with `npm install`
+2. Setup your new repo with `npm install` and `npm install angular`
 3. Edit `angular-inview.js` and `angular-inview.spec.js` to add your feature
 4. Run `npm test` to check that all is good
 5. Create a [PR](https://github.com/thenikso/angular-inview/pulls)
