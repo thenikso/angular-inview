@@ -6,6 +6,8 @@ Check if a DOM element is or not in the browser current visible viewport.
 <div in-view="ctrl.myDivIsVisible = $inview" ng-class="{ isInView: ctrl.myDivIsVisible }"></div>
 ```
 
+**This is a directive for AngularJS 1, support for Angular 2 is not in the works yet (PRs are welcome!)**
+
 > Version 2 of this directive uses a lightwight embedded reactive framework and is
 a complete revrite of v1.
 
@@ -34,7 +36,7 @@ In your document include this scripts:
 
 In your AngularJS app, you'll need to import the `angular-inview` module:
 
-```
+```javascript
 angular.module('myModule', ['angular-inview']);
 ```
 
