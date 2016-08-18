@@ -53,20 +53,19 @@ describe("angular-inview", function() {
 
 		describe("informations object", function() {
 
-			it("should return an info object with relative informations", function(done) {
+			it("should return an info object with additional informations", function(done) {
 				makeTestForHtml(
-					'<div in-view="spy($inviewInfo)" in-view-options="{ generateParts: true }"></div>'
+					'<div in-view="spy($inviewInfo)"></div>'
 				)
 				.then(function (test) {
 					expect(test.spy.calls.count()).toBe(1);
 					var info = test.spy.calls.mostRecent().args[0];
 					expect(info.inView).toEqual(true);
-					expect(info.parts).toEqual({
-						top: true,
-						left: true,
-						bottom: true,
-						right: true
-					});
+					expect(info.changed).toEqual(true);
+					expect(info.elementRect).toBeDefined();
+					expect(info.viewportRect).toBeDefined();
+					expect(info.direction).not.toBeDefined();
+					expect(info.parts).not.toBeDefined();
 				})
 				.then(done);
 			});

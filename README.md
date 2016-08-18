@@ -91,6 +91,21 @@ available in the expression:
   }
   ```
 
+  - `changed` indicates if the inview value changed with this event
+  - `event` the DOM event that triggered the inview check
+  - `element` the DOM element subject of the inview check
+  - `elementRect` a rectangle with the virtual (considering offset) position of
+    the element used for the inview check
+  - `viewportRect` a rectangle with the virtual (considering offset) viewport
+    dimensions used for the inview check
+  - `direction` an indication of how the element has moved from the last event
+    relative to the viewport. Ie. if you scoll the page down by 100 pixels, the
+    value of `direction.vertical` will be `-100`
+  - `parts` an indication of which side of the element are fully visible. Ie. if
+    `parts.top=false` and `parts.bottom=true` it means that the bottom part of
+    the element is visible at the top of the viewport (but its top part is
+    hidden behind the browser bar)
+
 An additional attribute `in-view-options` can be specified with an object value
 containing:
 
