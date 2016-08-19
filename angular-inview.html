@@ -25,16 +25,14 @@
 <ul>
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
-<li>Install with:
-<code>npm install angular-inview</code> or
-<code>bower install angular-inview</code></li>
-<li>Version: <strong>1.5.7</strong></li>
+<li>Install with: <code>npm install angular-inview@beta</code></li>
+<li>Version: <strong>2.0.0</strong></li>
 </ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-<span class="hljs-string">'use strict'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-meta">'use strict'</span>;</pre></div></div>
             
         </li>
         
@@ -47,12 +45,12 @@
               </div>
               <p>An <a href="https://angularjs.org">angular.js</a> directive to evaluate an expression if
 a DOM element is or not in the current visible browser viewport.
-Use it in your Angular.js app by including the javascript and requireing it:</p>
+Use it in your AngularJS app by including the javascript and requireing it:</p>
 <p><code>angular.module(&#39;myApp&#39;, [&#39;angular-inview&#39;])</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>angularInviewModule = angular.<span class="hljs-built_in">module</span>(<span class="hljs-string">'angular-inview'</span>, [])</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> angularInviewModule = angular.module(<span class="hljs-string">'angular-inview'</span>, [])</pre></div></div>
             
         </li>
         
@@ -64,13 +62,13 @@ Use it in your Angular.js app by including the javascript and requireing it:</p>
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <h2 id="in-view-directive">in-view directive</h2>
-<p><strong>Usage</strong></p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">any</span> <span class="hljs-attribute">in-view</span>=<span class="hljs-value">"{expression}"</span> [<span class="hljs-attribute">in-view-options</span>=<span class="hljs-value">"{object}"</span><span class="hljs-value">]</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">any</span>&gt;</span>
+<h3 id="usage">Usage</h3>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">any</span> <span class="hljs-attr">in-view</span>=<span class="hljs-string">"{expression}"</span> [<span class="hljs-attr">in-view-options</span>=<span class="hljs-string">"{object}"</span>]&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">any</span>&gt;</span>
 </code></pre>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	.directive <span class="hljs-string">'inView'</span>, [<span class="hljs-string">'$parse'</span>, <span class="hljs-function"><span class="hljs-params">($parse)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>.directive(<span class="hljs-string">'inView'</span>, [<span class="hljs-string">'$parse'</span>, inViewDirective])</pre></div></div>
             
         </li>
         
@@ -81,12 +79,11 @@ Use it in your Angular.js app by including the javascript and requireing it:</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Evaluate the expression passet to the attribute <code>in-view</code> when the DOM
-element is visible in the viewport.</p>
+              <h2 id="in-view-container-directive">in-view-container directive</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">restrict</span>: <span class="hljs-string">'A'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>.directive(<span class="hljs-string">'inViewContainer'</span>, inViewContainerDirective);</pre></div></div>
             
         </li>
         
@@ -97,20 +94,12 @@ element is visible in the viewport.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>If the <code>in-view</code> element is contained in a scrollable view other than the
-window, that containing element should be <a href="#in-view-container-directive">marked as a container</a>.</p>
+              <h2 id="implementation">Implementation</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">require</span>: <span class="hljs-string">'?^inViewContainer'</span>
-		<span class="hljs-attribute">link</span>: <span class="hljs-function"><span class="hljs-params">(scope, element, attrs, containerController)</span> -&gt;</span>
-			<span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> attrs.inView
-			inViewFunc = $parse(attrs.inView)
-			item =
-				<span class="hljs-attribute">element</span>: element
-				<span class="hljs-attribute">wasInView</span>: <span class="hljs-literal">no</span>
-				<span class="hljs-attribute">offset</span>: <span class="hljs-number">0</span>
-				<span class="hljs-attribute">customDebouncedCheck</span>: <span class="hljs-literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inViewDirective</span> (<span class="hljs-params">$parse</span>) </span>{
+  <span class="hljs-keyword">return</span> {</pre></div></div>
             
         </li>
         
@@ -121,22 +110,14 @@ window, that containing element should be <a href="#in-view-container-directive"
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>In the callback expression, the following variables will be provided:</p>
-<ul>
-<li><code>$event</code>: the DOM event that triggered the inView callback.
-The inView DOM element will be passed in <code>$event.inViewTarget</code>.</li>
-<li><code>$inview</code>: boolean indicating if the element is in view</li>
-<li><code>$inviewpart</code>: string either ‘top’, ‘bottom’ or ‘both’</li>
-</ul>
+              <p>Evaluate the expression passet to the attribute <code>in-view</code> when the DOM
+element is visible in the viewport.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>				<span class="hljs-attribute">callback</span>: <span class="hljs-function"><span class="hljs-params">($event={}, $inview, $inviewpart)</span> -&gt;</span> scope.$evalAsync<span class="hljs-function"> =&gt;</span>
-					$event.inViewTarget = element[<span class="hljs-number">0</span>]
-					inViewFunc scope,
-						<span class="hljs-string">'$event'</span>: $event
-						<span class="hljs-string">'$inview'</span>: $inview
-						<span class="hljs-string">'$inviewpart'</span>: $inviewpart</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    restrict: <span class="hljs-string">'A'</span>,
+    <span class="hljs-built_in">require</span>: <span class="hljs-string">'?^^inViewContainer'</span>,
+    link: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inViewDirectiveLink</span> (<span class="hljs-params">scope, element, attrs, container</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -147,17 +128,36 @@ The inView DOM element will be passed in <code>$event.inViewTarget</code>.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>An additional <code>in-view-options</code> attribute can be specified to set offsets
-that will displace the inView calculation and a debounce to slow down updates
-via scrolling events.</p>
+              <p>in-view-options attribute can be specified with an object expression
+containing:</p>
+<ul>
+<li><code>offset</code>: An array of values to offset the element position.
+Offsets are expressed as arrays of 4 numbers [top, right, bottom, left].
+Like CSS, you can also specify only 2 numbers [top/bottom, left/right].
+Instead of numbers, some array elements can be a string with a percentage.
+Positive numbers are offsets outside the element rectangle and
+negative numbers are offsets to the inside.</li>
+<li><code>viewportOffset</code>: Like the element offset but appied to the viewport.</li>
+<li><code>generateDirection</code>: Indicate if the <code>direction</code> information should
+be included in <code>$inviewInfo</code> (default false).</li>
+<li><code>generateParts</code>: Indicate if the <code>parts</code> information should
+be included in <code>$inviewInfo</code> (default false).</li>
+<li><code>throttle</code>: Spcify a number of milliseconds by which filter the number
+of incoming events.</li>
+</ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> attrs.inViewOptions? <span class="hljs-keyword">and</span> options = scope.$eval(attrs.inViewOptions)
-				item.offset = options.offset || [options.offsetTop <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>, options.offsetBottom <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>]
-				<span class="hljs-keyword">if</span> options.debounce
-					item.customDebouncedCheck = debounce <span class="hljs-function"><span class="hljs-params">((event) -&gt; checkInView [item], element[<span class="hljs-number">0</span>], event)</span>, <span class="hljs-title">options</span>.<span class="hljs-title">debounce</span>
-</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> options = {};
+      <span class="hljs-keyword">if</span> (attrs.inViewOptions) {
+        options = scope.$<span class="hljs-built_in">eval</span>(attrs.inViewOptions);
+      }
+      <span class="hljs-keyword">if</span> (options.offset) {
+        options.offset = normalizeOffset(options.offset);
+      }
+      <span class="hljs-keyword">if</span> (options.viewportOffset) {
+        options.viewportOffset = normalizeOffset(options.viewportOffset);
+      }</pre></div></div>
             
         </li>
         
@@ -168,15 +168,11 @@ via scrolling events.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>A series of checks are set up to verify the status of the element visibility.</p>
+              <p>Build reactive chain from an initial event</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			performCheck = item.customDebouncedCheck ? containerController?.checkInView ? windowCheckInView
-			<span class="hljs-keyword">if</span> containerController?
-				containerController.addItem item
-			<span class="hljs-keyword">else</span>
-				addWindowInViewItem item</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> viewportEventSignal = signalSingle({ type: <span class="hljs-string">'initial'</span> })</pre></div></div>
             
         </li>
         
@@ -187,11 +183,11 @@ via scrolling events.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>This checks will be performed immediatly and when a relevant measure changes.</p>
+              <p>Merged with the window events</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			setTimeout performCheck</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      .merge(signalFromEvent(<span class="hljs-built_in">window</span>, <span class="hljs-string">'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup keydown'</span>))</pre></div></div>
             
         </li>
         
@@ -202,16 +198,13 @@ via scrolling events.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>When the element is removed, all the logic behind in-view is removed.
-One might want to use <code>in-view</code> in conjunction with <code>ng-if</code> when using
-the directive for lazy loading.</p>
+              <p>Merge with container’s events signal</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			scope.$<span class="hljs-literal">on</span> <span class="hljs-string">'$destroy'</span>,<span class="hljs-function"> -&gt;</span>
-				containerController?.removeItem item
-				removeWindowInViewItem item
-	]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (container) {
+        viewportEventSignal = viewportEventSignal.merge(container.eventsSignal);
+      }</pre></div></div>
             
         </li>
         
@@ -222,11 +215,13 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <h2 id="in-view-container-directive">in-view-container directive</h2>
+              <p>Throttle if option specified</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	.directive <span class="hljs-string">'inViewContainer'</span>,<span class="hljs-function"> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (options.throttle) {
+        viewportEventSignal = viewportEventSignal.throttle(options.throttle);
+      }</pre></div></div>
             
         </li>
         
@@ -237,12 +232,11 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Use this as an attribute or a class to mark a scrollable container holding
-<code>in-view</code> directives as children.</p>
+              <p>Map to viewport intersection and in-view informations</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">restrict</span>: <span class="hljs-string">'AC'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> inviewInfoSignal = viewportEventSignal</pre></div></div>
             
         </li>
         
@@ -253,21 +247,21 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>This directive will track child <code>in-view</code> elements.</p>
+              <p>Inview information structure contains:</p>
+<ul>
+<li><code>inView</code>: a boolean value indicating if the element is
+visible in the viewport;</li>
+<li><code>changed</code>: a boolean value indicating if the inview status
+changed after the last event;</li>
+<li><code>event</code>: the event that initiated the in-view check;</li>
+</ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">controller</span>: [<span class="hljs-string">'$element'</span>, <span class="hljs-function"><span class="hljs-params">($element)</span> -&gt;</span>
-			<span class="hljs-property">@items</span> = []
-			<span class="hljs-property">@addItem</span> = <span class="hljs-function"><span class="hljs-params">(item)</span> -&gt;</span>
-				<span class="hljs-property">@items</span>.push item
-			<span class="hljs-property">@removeItem</span> = <span class="hljs-function"><span class="hljs-params">(item)</span> -&gt;</span>
-				<span class="hljs-property">@items</span> = (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> i <span class="hljs-keyword">isnt</span> item)
-			<span class="hljs-property">@checkInView</span> = <span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span>
-				i.customDebouncedCheck() <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> i.customDebouncedCheck?
-				checkInView (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-property">@items</span> <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> i.customDebouncedCheck?), $element[<span class="hljs-number">0</span>], event
-			@
-		]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      .map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+        <span class="hljs-keyword">var</span> viewportRect;
+        <span class="hljs-keyword">if</span> (container) {
+          viewportRect = container.getViewportRect();</pre></div></div>
             
         </li>
         
@@ -278,17 +272,22 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Custom checks on child <code>in-view</code> elements will be triggered when the
-<code>in-view-container</code> scrolls.</p>
+              <p>TODO merge with actual window!</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">link</span>: <span class="hljs-function"><span class="hljs-params">(scope, element, attrs, controller)</span> -&gt;</span>
-			element.bind <span class="hljs-string">'scroll'</span>, controller.checkInView
-			trackInViewContainer controller
-			scope.$<span class="hljs-literal">on</span> <span class="hljs-string">'$destroy'</span>,<span class="hljs-function"> -&gt;</span>
-				element.unbind <span class="hljs-string">'scroll'</span>, controller.checkInView
-				untrackInViewContainer controller</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        } <span class="hljs-keyword">else</span> {
+          viewportRect = getViewportRect();
+        }
+        viewportRect = offsetRect(viewportRect, options.viewportOffset);
+        <span class="hljs-keyword">var</span> elementRect = offsetRect(element[<span class="hljs-number">0</span>].getBoundingClientRect(), options.offset);
+        <span class="hljs-keyword">var</span> info = {
+          inView: intersectRect(elementRect, viewportRect),
+          event: event,
+          element: element,
+          elementRect: elementRect,
+          viewportRect: viewportRect
+        };</pre></div></div>
             
         </li>
         
@@ -299,9 +298,19 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <h2 id="utilities">Utilities</h2>
+              <p>Add inview parts</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (options.generateParts &amp;&amp; info.inView) {
+          info.parts = {};
+          info.parts.top = elementRect.top &gt;= viewportRect.top;
+          info.parts.left = elementRect.left &gt;= viewportRect.left;
+          info.parts.bottom = elementRect.bottom &lt;= viewportRect.bottom;
+          info.parts.right = elementRect.right &lt;= viewportRect.right;
+        }
+        <span class="hljs-keyword">return</span> info;
+      })</pre></div></div>
             
         </li>
         
@@ -312,9 +321,11 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <h3 id="items-management">items management</h3>
+              <p>Add the changed information to the inview structure.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>      .scan({}, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">lastInfo, newInfo</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -325,23 +336,16 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>The collectin of all in-view items. Items are object with the structure:</p>
-<pre><code>{
-    <span class="hljs-attribute">element</span>: &lt;angular.element&gt;,
-    <span class="hljs-attribute">offset</span>: &lt;number&gt;,
-    <span class="hljs-attribute">wasInView</span>: &lt;bool&gt;,
-    <span class="hljs-attribute">callback</span>: &lt;funciton&gt;
-}
-</code></pre>
+              <p>Add inview direction info</p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>_windowInViewItems = []
-<span class="hljs-function"><span class="hljs-title">addWindowInViewItem</span> = <span class="hljs-params">(item)</span> -&gt;</span>
-	_windowInViewItems.push item
-	<span class="hljs-keyword">do</span> bindWindowEvents
-<span class="hljs-function"><span class="hljs-title">removeWindowInViewItem</span> = <span class="hljs-params">(item)</span> -&gt;</span>
-	_windowInViewItems = (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> i <span class="hljs-keyword">isnt</span> item)
-	<span class="hljs-keyword">do</span> unbindWindowEvents</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (options.generateDirection &amp;&amp; newInfo.inView &amp;&amp; lastInfo.elementRect) {
+          newInfo.direction = {
+            horizontal: newInfo.elementRect.left - lastInfo.elementRect.left,
+            vertical: newInfo.elementRect.top - lastInfo.elementRect.top
+          };
+        }</pre></div></div>
             
         </li>
         
@@ -352,17 +356,16 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
-              <p>List of containers controllers</p>
+              <p>Calculate changed flag</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>_containersControllers = []
-<span class="hljs-function"><span class="hljs-title">trackInViewContainer</span> = <span class="hljs-params">(controller)</span> -&gt;</span>
-	_containersControllers.push controller
-	<span class="hljs-keyword">do</span> bindWindowEvents
-<span class="hljs-function"><span class="hljs-title">untrackInViewContainer</span> = <span class="hljs-params">(container)</span> -&gt;</span>
-	_containersControllers = (c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers <span class="hljs-keyword">when</span> c <span class="hljs-keyword">isnt</span> container)
-	<span class="hljs-keyword">do</span> unbindWindowEvents</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        newInfo.changed =
+          newInfo.inView !== lastInfo.inView ||
+          !angular.equals(newInfo.parts, lastInfo.parts) ||
+          !angular.equals(newInfo.direction, lastInfo.direction);
+        <span class="hljs-keyword">return</span> newInfo;
+      })</pre></div></div>
             
         </li>
         
@@ -373,15 +376,11 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <h3 id="events-handler-management">Events handler management</h3>
+              <p>Filters only informations that should be forwarded to the callback</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
-<span class="hljs-function"><span class="hljs-title">windowEventsHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
-	c.checkInView(event) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> _containersControllers
-	windowCheckInView(event) <span class="hljs-keyword">if</span> _windowInViewItems.length
-<span class="hljs-function"><span class="hljs-title">bindWindowEvents</span> = -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      .filter(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">info</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -392,14 +391,13 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>The bind to window events will be added only if actually needed.</p>
+              <p>Don’t forward if no relevant infomation changed</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> _windowEventsHandlerBinded
-	_windowEventsHandlerBinded = <span class="hljs-literal">yes</span>
-	angular.element(<span class="hljs-built_in">window</span>).bind <span class="hljs-string">'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup'</span>, windowEventsHandler
-<span class="hljs-function"><span class="hljs-title">unbindWindowEvents</span> = -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (!info.changed) {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }</pre></div></div>
             
         </li>
         
@@ -410,14 +408,15 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>All the window bindings will be removed if no directive requires to be checked.</p>
+              <p>Don’t forward if not initially in-view</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> _windowEventsHandlerBinded
-	<span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> _windowInViewItems.length <span class="hljs-keyword">or</span> _containersControllers.length
-	_windowEventsHandlerBinded = <span class="hljs-literal">no</span>
-	angular.element(<span class="hljs-built_in">window</span>).unbind <span class="hljs-string">'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup'</span>, windowEventsHandler</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (info.event.type === <span class="hljs-string">'initial'</span> &amp;&amp; !info.inView) {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      });</pre></div></div>
             
         </li>
         
@@ -428,15 +427,19 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <h3 id="inview-checks">InView checks</h3>
-<p>This method will call the user defined callback with the proper parameters if neccessary.</p>
+              <p>Execute in-view callback</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">triggerInViewCallback</span> = <span class="hljs-params">(event, item, inview, isTopVisible, isBottomVisible)</span> -&gt;</span>
-	<span class="hljs-keyword">if</span> inview
-		elOffsetTop = getBoundingClientRect(item.element[<span class="hljs-number">0</span>]).top + <span class="hljs-built_in">window</span>.pageYOffset
-		inviewpart = (isTopVisible <span class="hljs-keyword">and</span> isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'neither'</span>) <span class="hljs-keyword">or</span> (isTopVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'top'</span>) <span class="hljs-keyword">or</span> (isBottomVisible <span class="hljs-keyword">and</span> <span class="hljs-string">'bottom'</span>) <span class="hljs-keyword">or</span> <span class="hljs-string">'both'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> inViewExpression = $parse(attrs.inView);
+      <span class="hljs-keyword">var</span> dispose = inviewInfoSignal.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">info</span>) </span>{
+        scope.$applyAsync(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          inViewExpression(scope, {
+            <span class="hljs-string">'$inview'</span>: info.inView,
+            <span class="hljs-string">'$inviewInfo'</span>: info
+          });
+        });
+      });</pre></div></div>
             
         </li>
         
@@ -447,19 +450,27 @@ the directive for lazy loading.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p>The callback will be called only if a relevant value has changed.
-However, if the element changed it’s position (for example if it has been
-pushed down by dynamically loaded content), the callback will be called anyway.</p>
+              <p>Dispose of reactive chain</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">unless</span> item.wasInView <span class="hljs-keyword">and</span> item.wasInView == inviewpart <span class="hljs-keyword">and</span> elOffsetTop == item.lastOffsetTop
-			item.lastOffsetTop = elOffsetTop
-			item.wasInView = inviewpart
-			item.callback event, <span class="hljs-literal">yes</span>, inviewpart
-	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> item.wasInView
-		item.wasInView = <span class="hljs-literal">no</span>
-		item.callback event, <span class="hljs-literal">no</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      scope.$on(<span class="hljs-string">'$destroy'</span>, dispose);
+    }
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inViewContainerDirective</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> {
+    restrict: <span class="hljs-string">'A'</span>,
+    controller: [<span class="hljs-string">'$element'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$element</span>) </span>{
+      <span class="hljs-keyword">this</span>.element = $element;
+      <span class="hljs-keyword">this</span>.eventsSignal = signalFromEvent($element, <span class="hljs-string">'scroll'</span>);
+      <span class="hljs-keyword">this</span>.getViewportRect = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> $element[<span class="hljs-number">0</span>].getBoundingClientRect();
+      };
+    }]
+  }
+}</pre></div></div>
             
         </li>
         
@@ -470,11 +481,64 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>The main function to check if the given items are in view relative to the provided container.</p>
+              <h2 id="utilities">Utilities</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">checkInView</span> = <span class="hljs-params">(items, container, event)</span> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportRect</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> result = {
+    top: <span class="hljs-number">0</span>,
+    left: <span class="hljs-number">0</span>,
+    width: <span class="hljs-built_in">window</span>.innerWidth,
+    right: <span class="hljs-built_in">window</span>.innerWidth,
+    height: <span class="hljs-built_in">window</span>.innerHeight,
+    bottom: <span class="hljs-built_in">window</span>.innerHeight
+  };
+  <span class="hljs-keyword">if</span> (result.height) {
+    <span class="hljs-keyword">return</span> result;
+  }
+  <span class="hljs-keyword">var</span> mode = <span class="hljs-built_in">document</span>.compatMode;
+  <span class="hljs-keyword">if</span> (mode === <span class="hljs-string">'CSS1Compat'</span>) {
+    result.width = result.right = <span class="hljs-built_in">document</span>.documentElement.clientWidth;
+    result.height = result.bottom = <span class="hljs-built_in">document</span>.documentElement.clientHeight;
+  } <span class="hljs-keyword">else</span> {
+    result.width = result.right = <span class="hljs-built_in">document</span>.body.clientWidth;
+    result.height = result.bottom = <span class="hljs-built_in">document</span>.body.clientHeight;
+  }
+  <span class="hljs-keyword">return</span> result;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">intersectRect</span> (<span class="hljs-params">r1, r2</span>) </span>{
+  <span class="hljs-keyword">return</span> !(r2.left &gt; r1.right ||
+           r2.right &lt; r1.left ||
+           r2.top &gt; r1.bottom ||
+           r2.bottom &lt; r1.top);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">normalizeOffset</span> (<span class="hljs-params">offset</span>) </span>{
+  <span class="hljs-keyword">if</span> (!angular.isArray(offset)) {
+    <span class="hljs-keyword">return</span> [offset, offset, offset, offset];
+  }
+  <span class="hljs-keyword">if</span> (offset.length == <span class="hljs-number">2</span>) {
+    <span class="hljs-keyword">return</span> offset.concat(offset);
+  }
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (offset.length == <span class="hljs-number">3</span>) {
+    <span class="hljs-keyword">return</span> offset.concat([offset[<span class="hljs-number">1</span>]]);
+  }
+  <span class="hljs-keyword">return</span> offset;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">offsetRect</span> (<span class="hljs-params">rect, offset</span>) </span>{
+  <span class="hljs-keyword">if</span> (!offset) {
+    <span class="hljs-keyword">return</span> rect;
+  }
+  <span class="hljs-keyword">var</span> offsetObject = {
+    top: isPercent(offset[<span class="hljs-number">0</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">0</span>]) * rect.height) : offset[<span class="hljs-number">0</span>],
+    right: isPercent(offset[<span class="hljs-number">1</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">1</span>]) * rect.width) : offset[<span class="hljs-number">1</span>],
+    bottom: isPercent(offset[<span class="hljs-number">2</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">2</span>]) * rect.height) : offset[<span class="hljs-number">2</span>],
+    left: isPercent(offset[<span class="hljs-number">3</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">3</span>]) * rect.width) : offset[<span class="hljs-number">3</span>]
+  };</pre></div></div>
             
         </li>
         
@@ -485,13 +549,23 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>It first calculate the viewport.</p>
+              <p>Note: ClientRect object does not allow its properties to be written to therefore a new object has to be created.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	viewport =
-		<span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>
-		<span class="hljs-attribute">bottom</span>: getViewportHeight()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">return</span> {
+    top: rect.top - offsetObject.top,
+    left: rect.left - offsetObject.left,
+    bottom: rect.bottom + offsetObject.bottom,
+    right: rect.right + offsetObject.right,
+    height: rect.height + offsetObject.top + offsetObject.bottom,
+    width: rect.width + offsetObject.left + offsetObject.right
+  };
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isPercent</span> (<span class="hljs-params">n</span>) </span>{
+  <span class="hljs-keyword">return</span> angular.isString(n) &amp;&amp; n.indexOf(<span class="hljs-string">'%'</span>) &gt; <span class="hljs-number">0</span>;
+}</pre></div></div>
             
         </li>
         
@@ -502,12 +576,11 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>Restrict viewport if a container is specified.</p>
+              <h2 id="quicksignal-frp">QuickSignal FRP</h2>
+<p>A quick and dirty implementation of Rx to have a streamlined code in the
+directives.</p>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">if</span> container <span class="hljs-keyword">and</span> container <span class="hljs-keyword">isnt</span> <span class="hljs-built_in">window</span>
-		bounds = getBoundingClientRect container</pre></div></div>
             
         </li>
         
@@ -518,13 +591,18 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>Shortcut to all item not in view if container isn’t itself.</p>
+              <h3 id="quicksignal">QuickSignal</h3>
+<ul>
+<li><code>didSubscribeFunc</code>: a function receiving a <code>subscriber</code> as described below</li>
+</ul>
+<p>Usage:
+    var mySignal = new QuickSignal(function(subscriber) { … })</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> bounds.top &gt; viewport.bottom <span class="hljs-keyword">or</span> bounds.bottom &lt; viewport.top
-			triggerInViewCallback(event, item, <span class="hljs-literal">false</span>) <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> items
-			<span class="hljs-keyword">return</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">QuickSignal</span> (<span class="hljs-params">didSubscribeFunc</span>) </span>{
+  <span class="hljs-keyword">this</span>.didSubscribeFunc = didSubscribeFunc;
+}</pre></div></div>
             
         </li>
         
@@ -535,12 +613,102 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Actual viewport restriction.</p>
+              <p>Subscribe to a signal and consume the steam of data.</p>
+<p>Returns a function that can be called to stop the signal stream of data and
+perform cleanup.</p>
+<p>A <code>subscriber</code> is a function that will be called when a new value arrives.
+a <code>subscriber.$dispose</code> property can be set to a function to be called uppon
+disposal. When setting the <code>$dispose</code> function, the previously set function
+should be chained.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		viewport.top = bounds.top <span class="hljs-keyword">if</span> bounds.top &gt; viewport.top
-		viewport.bottom = bounds.bottom <span class="hljs-keyword">if</span> bounds.bottom &lt; viewport.bottom</pre></div></div>
+            <div class="content"><div class='highlight'><pre>QuickSignal.prototype.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+  <span class="hljs-keyword">this</span>.didSubscribeFunc(subscriber);
+  <span class="hljs-keyword">var</span> dispose = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span> (subscriber.$dispose) {
+      subscriber.$dispose();
+      subscriber.$dispose = <span class="hljs-literal">null</span>;
+    }
+  }
+  <span class="hljs-keyword">return</span> dispose;
+}
+
+QuickSignal.prototype.map = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">f</span>) </span>{
+  <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">this</span>;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    subscriber.$dispose = s.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nextValue</span>) </span>{
+      subscriber(f(nextValue));
+    });
+  });
+};
+
+QuickSignal.prototype.filter = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">f</span>) </span>{
+  <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">this</span>;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    subscriber.$dispose = s.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nextValue</span>) </span>{
+      <span class="hljs-keyword">if</span> (f(nextValue)) {
+        subscriber(nextValue);
+      }
+    });
+  });
+};
+
+QuickSignal.prototype.scan = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">initial, scanFunc</span>) </span>{
+  <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">this</span>;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    <span class="hljs-keyword">var</span> last = initial;
+    subscriber.$dispose = s.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">nextValue</span>) </span>{
+      last = scanFunc(last, nextValue);
+      subscriber(last);
+    });
+  });
+}
+
+QuickSignal.prototype.merge = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">signal</span>) </span>{
+  <span class="hljs-keyword">return</span> signalMerge(<span class="hljs-keyword">this</span>, signal);
+};
+
+QuickSignal.prototype.throttle = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">threshhold</span>) </span>{
+  <span class="hljs-keyword">var</span> s = <span class="hljs-keyword">this</span>, last, deferTimer;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    <span class="hljs-keyword">var</span> chainDisposable = s.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">var</span> now = +<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>,
+          args = <span class="hljs-built_in">arguments</span>;
+      <span class="hljs-keyword">if</span> (last &amp;&amp; now &lt; last + threshhold) {
+        clearTimeout(deferTimer);
+        deferTimer = setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+          last = now;
+          subscriber.apply(<span class="hljs-literal">null</span>, args);
+        }, threshhold);
+      } <span class="hljs-keyword">else</span> {
+        last = now;
+        subscriber.apply(<span class="hljs-literal">null</span>, args);
+      }
+    });
+    subscriber.$dispose = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      clearTimeout(deferTimer);
+      <span class="hljs-keyword">if</span> (chainDisposable) chainDisposable();
+    };
+  });
+};
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">signalMerge</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> signals = <span class="hljs-built_in">arguments</span>;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    <span class="hljs-keyword">var</span> disposables = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = signals.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+      disposables.push(signals[i].subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        subscriber.apply(<span class="hljs-literal">null</span>, <span class="hljs-built_in">arguments</span>);
+      }));
+    }
+    subscriber.$dispose = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = disposables.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+        <span class="hljs-keyword">if</span> (disposables[i]) disposables[i]();
+      }
+    }
+  });
+}</pre></div></div>
             
         </li>
         
@@ -551,11 +719,28 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Calculate inview status for each item.</p>
+              <p>Returns a signal from DOM events of a target.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> items</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">signalFromEvent</span> (<span class="hljs-params">target, event</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    <span class="hljs-keyword">var</span> handler = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>{
+      subscriber(e);
+    };
+    <span class="hljs-keyword">var</span> el = angular.element(target);
+    el.on(event, handler);
+    subscriber.$dispose = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      el.off(event, handler);
+    };
+  });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">signalSingle</span> (<span class="hljs-params">value</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
+    subscriber(value);
+  });
+}</pre></div></div>
             
         </li>
         
@@ -566,183 +751,17 @@ pushed down by dynamically loaded content), the callback will be called anyway.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p>Get the bounding top and bottom of the element in the viewport.</p>
+              <p>Module loaders exports</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		element = item.element[<span class="hljs-number">0</span>]
-		bounds = getBoundingClientRect element</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-31">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
-              </div>
-              <p>Apply offset.</p>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+  define([<span class="hljs-string">'angular'</span>], angularInviewModule);
+} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports) {
+  <span class="hljs-built_in">module</span>.exports = angularInviewModule;
+}
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>		boundsTop = bounds.top + <span class="hljs-keyword">if</span> offsetIsPercentage(item.offset) <span class="hljs-keyword">then</span> getOffsetFromPercentage(bounds, item.offset) <span class="hljs-keyword">else</span> parseInt(item.offset?[<span class="hljs-number">0</span>] ? item.offset)
-		boundsBottom = bounds.bottom + <span class="hljs-keyword">if</span> offsetIsPercentage(item.offset) <span class="hljs-keyword">then</span> getOffsetFromPercentage(bounds, item.offset) <span class="hljs-keyword">else</span> parseInt(item.offset?[<span class="hljs-number">1</span>] ? item.offset)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-32">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
-              </div>
-              <p>Calculate parts in view.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>		<span class="hljs-keyword">if</span> boundsTop &lt; viewport.bottom <span class="hljs-keyword">and</span> boundsBottom &gt;= viewport.top
-			triggerInViewCallback(event, item, <span class="hljs-literal">true</span>, boundsBottom &gt; viewport.bottom, boundsTop &lt; viewport.top)
-		<span class="hljs-keyword">else</span>
-			triggerInViewCallback(event, item, <span class="hljs-literal">false</span>)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-33">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
-              </div>
-              <h3 id="utility-functions">Utility functions</h3>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-34">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
-              </div>
-              <p>Checks if the provided offset value is a percentage or not</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">offsetIsPercentage</span> = <span class="hljs-params">(offset)</span> -&gt;</span>
-	<span class="hljs-keyword">typeof</span> offset <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">and</span> offset.slice(-<span class="hljs-number">1</span>) <span class="hljs-keyword">is</span> <span class="hljs-string">'%'</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-35">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
-              </div>
-              <p>Calculates the offset in pixels based on the percentage provided</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getOffsetFromPercentage</span> = <span class="hljs-params">(bounds, offsetPercentage)</span> -&gt;</span>
-	percentage = offsetPercentage.substring <span class="hljs-number">0</span>, offsetPercentage.length - <span class="hljs-number">1</span>
-	(bounds.bottom - bounds.top) *  (percentage / <span class="hljs-number">100</span>)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-36">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
-              </div>
-              <p>Returns the height of the window viewport</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getViewportHeight</span> = -&gt;</span>
-	height = <span class="hljs-built_in">window</span>.innerHeight
-	<span class="hljs-keyword">return</span> height <span class="hljs-keyword">if</span> height
-	mode = <span class="hljs-built_in">document</span>.compatMode
-	<span class="hljs-keyword">if</span> mode <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> $?.support?.boxModel
-		height = <span class="hljs-keyword">if</span> mode <span class="hljs-keyword">is</span> <span class="hljs-string">'CSS1Compat'</span> <span class="hljs-keyword">then</span> <span class="hljs-built_in">document</span>.documentElement.clientHeight <span class="hljs-keyword">else</span> <span class="hljs-built_in">document</span>.body.clientHeight
-	height</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-37">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
-              </div>
-              <p>Polyfill for <code>getBoundingClientRect</code></p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getBoundingClientRect</span> = <span class="hljs-params">(element)</span> -&gt;</span>
-	<span class="hljs-keyword">return</span> element.getBoundingClientRect() <span class="hljs-keyword">if</span> element.getBoundingClientRect?
-	top = <span class="hljs-number">0</span>
-	el = element
-	<span class="hljs-keyword">while</span> el
-		top += el.offsetTop
-		el = el.offsetParent
-	parent = element.parentElement
-	<span class="hljs-keyword">while</span> parent
-		top -= parent.scrollTop <span class="hljs-keyword">if</span> parent.scrollTop?
-		parent = parent.parentElement
-	<span class="hljs-keyword">return</span> {
-		<span class="hljs-attribute">top</span>: top
-		<span class="hljs-attribute">bottom</span>: top + element.offsetHeight
-	}</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-38">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
-              </div>
-              <p>Debounce a function.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">debounce</span> = <span class="hljs-params">(f, t)</span> -&gt;</span>
-	timer = <span class="hljs-literal">null</span>
-	<span class="hljs-function"><span class="hljs-params">(args...)</span>-&gt;</span>
-		clearTimeout timer <span class="hljs-keyword">if</span> timer?
-		timer = setTimeout (<span class="hljs-function">-&gt;</span> f(args...)), (t ? <span class="hljs-number">100</span>)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-39">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
-              </div>
-              <p>The main function to perform in-view checks on all items.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">windowCheckInView</span> = <span class="hljs-params">(event)</span> -&gt;</span>
-	i.customDebouncedCheck() <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> i.customDebouncedCheck?
-	checkInView (i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> _windowInViewItems <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> i.customDebouncedCheck?), <span class="hljs-literal">null</span>, event
-
-<span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> &amp;&amp; define.amd
-	define([<span class="hljs-string">'angular'</span>], angularInviewModule)
-<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">isnt</span> <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports
-	<span class="hljs-built_in">module</span>.exports = angularInviewModule</pre></div></div>
+})();</pre></div></div>
             
         </li>
         
