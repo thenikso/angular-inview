@@ -1,4 +1,4 @@
-# InView Directive for AngularJS
+# InView Directive for AngularJS [![CircleCI](https://circleci.com/gh/thenikso/angular-inview.svg?style=svg)](https://circleci.com/gh/thenikso/angular-inview)
 
 Check if a DOM element is or not in the browser current visible viewport.
 
