@@ -267,7 +267,7 @@ describe("angular-inview", function() {
 
 		it("should trigger in-view when scrolling a container", function(done) {
 			makeTestForHtml(
-				'<div in-view-container style="height:100px; overflow:scroll">' +
+				'<div in-view-container style="height:30%; overflow:scroll">' +
 				'  <div in-view="spy($inview)"></div>' +
 				'  <div style="height:200%"></div>' +
 				'</div>'
