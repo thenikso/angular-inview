@@ -53,7 +53,9 @@ angularInviewModule = angular.module('angular-inview', [])
 			if attrs.inViewOptions? and options = scope.$eval(attrs.inViewOptions)
 				item.offset = options.offset || [options.offsetTop or 0, options.offsetBottom or 0]
 				if options.debounce
-					item.customDebouncedCheck = debounce ((event) -> checkInView [item], element[0], event), options.debounce
+					item.customDebouncedCheck = (container) ->
+						container = container || element
+						debounce(((event) -> checkInView [item], container[0], event), options.debounce)()
 			# A series of checks are set up to verify the status of the element visibility.
 			performCheck = item.customDebouncedCheck ? containerController?.checkInView ? windowCheckInView
 			if containerController?
@@ -83,7 +85,7 @@ angularInviewModule = angular.module('angular-inview', [])
 			@removeItem = (item) ->
 				@items = (i for i in @items when i isnt item)
 			@checkInView = (event) =>
-				i.customDebouncedCheck() for i in @items when i.customDebouncedCheck?
+				i.customDebouncedCheck($element) for i in @items when i.customDebouncedCheck?
 				checkInView (i for i in @items when not i.customDebouncedCheck?), $element[0], event
 			@
 		]
