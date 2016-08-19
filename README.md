@@ -170,6 +170,8 @@ upgrade to v2 here are some tips:
 - `offset` and `viewportOffset` replace the old offset options in a more structured
   and flexible way. `offsetTop: 100` becomes `offset: [100, 0, 0, 0]`.
 - `$inviewInfo.event` replaces `$event` in the expression.
+- `generateParts` in the options has now to be set to `true` to have
+  `$inviewInfo.parts` available.
 
 ## Contribute
 
