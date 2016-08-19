@@ -1,13 +1,9 @@
 {
 	"name": "angular-inview",
-	"version": "1.5.7",
+	"version": "2.0.0",
 	"main": "./angular-inview.js",
 	"dependencies": {
 		"angular": "~1"
-	},
-	"devDependencies": {
-		"jquery": "~2.1.1",
-		"angular-mocks": "~1"
 	},
 	"readmeFilename": "README.md",
 	"repository": {

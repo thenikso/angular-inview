@@ -1,33 +1,35 @@
 {
   "name": "angular-inview",
-  "version": "1.5.7",
-  "description": "AngularJS directive to check if a DOM element is in the browser viewport.",
+  "version": "2.0.0",
+  "description": "AngularJS directive to check if a DOM element is in the viewport",
   "main": "angular-inview.js",
-  "directories": {
-    "example": "examples",
-    "test": "test"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "docco": "^0.7.0",
-    "gh-pages": "^0.11.0",
-    "karma": "^0.12.24",
-    "karma-chrome-launcher": "^0.1.12",
-    "karma-coffee-preprocessor": "^0.2.1",
-    "karma-jasmine": "^0.2.3"
-  },
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start",
-    "publish-docs": "docco angular-inview.coffee && gh-pages -d docs"
+    "test": "karma start",
+    "publish-docs": "docco -o docs angular-inview.js && gh-pages -d docs"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thenikso/angular-inview.git"
   },
+  "keywords": [
+    "angualr",
+    "inview"
+  ],
   "author": "Nicola Peduzzi <thenikso@gmail.com> (http://nikso.net)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/thenikso/angular-inview/issues"
   },
-  "homepage": "https://github.com/thenikso/angular-inview"
+  "homepage": "https://github.com/thenikso/angular-inview#readme",
+  "peerDependencies": {
+    "angular": "^1.5.8"
+  },
+  "devDependencies": {
+    "docco": "^0.7.0",
+    "gh-pages": "^0.11.0",
+    "karma": "^0.12.24",
+    "karma-chrome-launcher": "^0.1.5",
+    "karma-jasmine": "~0.2",
+    "angular-mocks": "^1.5.8"
+  }
 }

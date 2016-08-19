@@ -44,7 +44,7 @@
 		<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart, $event)">This is test line #{{$index}}</li>
 	</ul>
 
-	<script src="../bower_components/angular/angular.js"></script>
+	<script src="../node_modules/angular/angular.js"></script>
 	<script src="../angular-inview.js"></script>
 	<script type="text/javascript">
 	angular.module('basicApp', ['angular-inview']).controller('basicCtrl', function basicCtrl ($scope, $sce) {

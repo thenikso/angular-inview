@@ -4,6 +4,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>angular-inview container example</title>
 	<style type="text/css">
+	html, body {
+		height: 100%;
+	}
+
 	#hud {
 		background: white;
 		border: 1px solid gray;
@@ -55,7 +59,7 @@
 		<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
 	</ul>
 
-	<script src="../bower_components/angular/angular.js"></script>
+	<script src="../node_modules/angular/angular.js"></script>
 	<script src="../angular-inview.js"></script>
 	<script type="text/javascript">
 	angular.module('basicApp', ['angular-inview']).controller('basicCtrl', function basicCtrl ($scope, $sce) {

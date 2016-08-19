@@ -1,37 +1,42 @@
-# InView Directive for AngularJS
+# InView Directive for AngularJS [![CircleCI](https://circleci.com/gh/thenikso/angular-inview.svg?style=svg)](https://circleci.com/gh/thenikso/angular-inview)
 
-A directive to evaluate an expression if a DOM element is or not in the current
-visible browser viewport.
+Check if a DOM element is or not in the browser current visible viewport.
 
-The directive is inspired by the [jQuery.inview](https://github.com/zuk/jquery.inview)
-plugin. However this implementation has no dependency on jQuery.
+```html
+<div in-view="ctrl.myDivIsVisible = $inview" ng-class="{ isInView: ctrl.myDivIsVisible }"></div>
+```
+
+**This is a directive for AngularJS 1, support for Angular 2 is not in the works yet (PRs are welcome!)**
+
+> Version 2 of this directive uses a lightwight embedded reactive framework and is
+a complete revrite of v1
 
 ## Installation
 
-To install using [Bower](http://bower.io):
-
-```
-bower install angular-inview
-```
-
-or [npm](https://www.npmjs.com/):
+### With npm
 
 ```
 npm install angular-inview
+```
+
+### With bower
+
+```
+bower install angular-inview
 ```
 
 ## Setup
 
 In your document include this scripts:
 
-```
-<script src="/bower_components/angular/angular.js"></script>
-<script src="/bower_components/angular-inview/angular-inview.js"></script>
+```html
+<script src="/node_modules/angular/angular.js"></script>
+<script src="/node_modules/angular-inview/angular-inview.js"></script>
 ```
 
 In your AngularJS app, you'll need to import the `angular-inview` module:
 
-```
+```javascript
 angular.module('myModule', ['angular-inview']);
 ```
 
@@ -41,7 +46,7 @@ This module will define two directives: `in-view` and `in-view-container`.
 
 ### InView
 
-```
+```html
 <any in-view="{expression using $inview}" in-view-options="{object}"></any>
 ```
 
@@ -51,34 +56,93 @@ be evaluated. To actually check if the element is in view, the following data is
 available in the expression:
 
 - `$inview` is a boolean value indicating if the DOM element is in view.
-If using this directive for infinite scrolling, you may want to use this like
-`<any in-view="$inview&&myLoadingFunction()"></any>`.
-- `$inviewpart` is undefined or a string either `top`, `bottom`, `both` or `neither`
-indicating which part of the DOM element is visible.
-- `$event` is the DOM event that triggered the check; the DOM element that
-changed its visibility status is passed as `$event.inViewTarget`
-(To use the old `$element` variable use version 1.3.x).
+  If using this directive for infinite scrolling, you may want to use this like
+  `<any in-view="$inview&&myLoadingFunction()"></any>`.
+
+- `$inviewInfo` is an object containint extra info regarding the event
+
+  ```
+  {
+    changed: <boolean>,
+    event: <DOM event>,
+    element: <DOM element>,
+    elementRect: {
+      top: <number>,
+      left: <number>,
+      bottom: <number>,
+      right: <number>,
+    },
+    viewportRect: {
+      top: <number>,
+      left: <number>,
+      bottom: <number>,
+      right: <number>,
+    },
+    direction: { // if generateDirection option is true
+      vertical: <number>,
+      horizontal: <number>,
+    },
+    parts: { // if generateParts option is true
+      top: <boolean>,
+      left: <boolean>,
+      bottom: <boolean>,
+      right: <boolean>,
+    },
+  }
+  ```
+
+  - `changed` indicates if the inview value changed with this event
+  - `event` the DOM event that triggered the inview check
+  - `element` the DOM element subject of the inview check
+  - `elementRect` a rectangle with the virtual (considering offset) position of
+    the element used for the inview check
+  - `viewportRect` a rectangle with the virtual (considering offset) viewport
+    dimensions used for the inview check
+  - `direction` an indication of how the element has moved from the last event
+    relative to the viewport. Ie. if you scoll the page down by 100 pixels, the
+    value of `direction.vertical` will be `-100`
+  - `parts` an indication of which side of the element are fully visible. Ie. if
+    `parts.top=false` and `parts.bottom=true` it means that the bottom part of
+    the element is visible at the top of the viewport (but its top part is
+    hidden behind the browser bar)
 
 An additional attribute `in-view-options` can be specified with an object value
 containing:
 
-- `offset`: a number (in pixels) indicating how much to move down (or up if negative) the top position of the element. As of version 1.5.1, if the number is suffixed with `%` then the offset is applied as a percentage instead of pixels.
-position of the element for the purpose of inview testing;
-- `offsetTop` and `offsetBottom`: two numbers representing the top and bottom
-offset respectively; this may virtually change the height of the element for inview testing;
-- `debounce`: a number indicating a millisecond value of debounce which will delay
-firing the in-view event until that number of millisecond is passed without a scrolling
-event happening.
+- `offset`: An expression returning an array of values to offset the element position.
 
-### Example
+  Offsets are expressed as arrays of 4 values `[top, right, bottom, left]`.
+  Like CSS, you can also specify only 2 values `[top/bottom, left/right]`.
+
+  Values can be either a string with a percentage or numbers (in pixel).
+  Positive values are offsets outside the element rectangle and
+  negative values are offsets to the inside.
+
+  Example valid values for the offset are: `100`, `[200, 0]`,
+  `[100, 0, 200, 50]`, `'20%'`, `['50%', 30]`
+
+- `viewportOffset`: Like the element offset but appied to the viewport. You may
+  want to use this to shrink the virtual viewport effectivelly checking if your
+  element is visible (i.e.) in the bottom part of the screen `['-50%', 0, 0]`.
+
+- `generateDirection`: Indicate if the `direction` information should
+  be included in `$inviewInfo` (default false).
+
+- `generateParts`: Indicate if the `parts` information should
+  be included in `$inviewInfo` (default false).
+
+- `throttle`: a number indicating a millisecond value of throttle which will
+  limit the in-view event firing rate to happen every that many milliseconds
+
+### Examples
 
 The following triggers the `lineInView` when the line comes in view:
 
-```
+```html
 <li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
 ```
 
-See more examples in the [examples folder](https://github.com/thenikso/angular-inview/tree/master/examples).
+**See more examples in the [`examples` folder](./examples).**
 
 ### InViewContainer
 
@@ -86,20 +150,36 @@ Use `in-view-container` when you have a scrollable container that contains `in-v
 elements. When an `in-view` element is inside such container, it will properly
 trigger callbacks when the container scrolls as well as when the window scrolls.
 
-```
+```html
 <div style="height: 150px; overflow-y: scroll; position: fixed;" in-view-container>
-	<div style="height:300px" in-view="{expression using $inview}"></li>
+	<div style="height: 300px" in-view="{expression using $inview}"></div>
 </div>
 ```
 
-## How to contribute
+## Migrate from v1
 
-1. Fork the repository and clone it to your machine
-2. Modify `angular-inview.coffee` and compile it with `coffee -cw angular-inview.coffee` (make sure that *coffeescript* is installed globally)
-3. Run `bower install`, `npm install` (make sure that *nodejs*, *npm* and *bower* are installed globally)
-4. Run tests by issuing: `karma start` (make sure, that *karma-cli* is installed globally)
-5. Commit your changes and create a PR
+Version 1 of this directive can still be installed with
+`npm install angular-inview@1.5.7`. If you already have v1 and want to
+upgrade to v2 here are some tips:
 
-## License
+- `throttle` option replaces `debounce`. You can just change the name. Notice that
+  the functioning has changed as well, a debounce waits until there are no more
+  events for the given amount of time before triggering; throttle instead stabilizes
+  the event triggering only once every amount of time. In practival terms this
+  should not affect negativelly your app.
+- `offset` and `viewportOffset` replace the old offset options in a more structured
+  and flexible way. `offsetTop: 100` becomes `offset: [100, 0, 0, 0]`.
+- `$inviewInfo.event` replaces `$event` in the expression.
+- `generateParts` in the options has now to be set to `true` to have
+  `$inviewInfo.parts` available.
 
-MIT
+## Contribute
+
+1. Fork this repo
+2. Setup your new repo with `npm install` and `npm install angular`
+3. Edit `angular-inview.js` and `angular-inview.spec.js` to add your feature
+4. Run `npm test` to check that all is good
+5. Create a [PR](https://github.com/thenikso/angular-inview/pulls)
+
+If you want to become a contributor with push access open an issue asking that
+or contact the author directly.
