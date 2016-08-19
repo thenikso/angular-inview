@@ -62,7 +62,7 @@ function inViewDirective ($parse) {
       var viewportEventSignal = signalSingle({ type: 'initial' })
 
       // Merged with the window events
-      .merge(signalFromEvent(window, 'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup'))
+      .merge(signalFromEvent(window, 'checkInView click ready wheel mousewheel DomMouseScroll MozMousePixelScroll resize scroll touchmove mouseup keydown'))
 
       // Merge with container's events signal
       if (container) {
