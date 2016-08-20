@@ -8,8 +8,8 @@ Check if a DOM element is or not in the browser current visible viewport.
 
 **This is a directive for AngularJS 1, support for Angular 2 is not in the works yet (PRs are welcome!)**
 
-> Version 2 of this directive uses a lightwight embedded reactive framework and is
-a complete rewrite of v1
+> Version 2 of this directive uses a lightwight embedded reactive framework and
+it is a complete rewrite of v1
 
 ## Installation
 
@@ -38,6 +38,14 @@ In your AngularJS app, you'll need to import the `angular-inview` module:
 
 ```javascript
 angular.module('myModule', ['angular-inview']);
+```
+
+Or with a module loader setup like Webpack/Babel you can do:
+
+```javascript
+import angularInview from 'angular-inview';
+
+angular.module('myModule', [angularInview.name]);
 ```
 
 ## Usage
@@ -134,16 +142,6 @@ containing:
 - `throttle`: a number indicating a millisecond value of throttle which will
   limit the in-view event firing rate to happen every that many milliseconds
 
-### Examples
-
-The following triggers the `lineInView` when the line comes in view:
-
-```html
-<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
-```
-
-**See more examples in the [`examples` folder](./examples).**
-
 ### InViewContainer
 
 Use `in-view-container` when you have a scrollable container that contains `in-view`
@@ -155,6 +153,16 @@ trigger callbacks when the container scrolls as well as when the window scrolls.
 	<div style="height: 300px" in-view="{expression using $inview}"></div>
 </div>
 ```
+
+## Examples
+
+The following triggers the `lineInView` when the line comes in view:
+
+```html
+<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart)">This is test line #{{$index}}</li>
+```
+
+**See more examples in the [`examples` folder](./examples).**
 
 ## Migrate from v1
 
