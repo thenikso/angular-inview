@@ -41,7 +41,7 @@
 	</div>
 
 	<ul id="lines">
-		<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewpart, $event)">This is test line #{{$index}}</li>
+		<li ng-repeat="t in testLines" in-view="lineInView($index, $inview, $inviewInfo)" in-view-options="{ generateParts: true }">This is test line #{{$index}}</li>
 	</ul>
 
 	<script src="../node_modules/angular/angular.js"></script>
@@ -54,13 +54,19 @@
 			$scope.testLines.push(i);
 		};
 		$scope.inviewLogs = [];
-		$scope.lineInView = function(index, inview, inviewpart, event) {
+		$scope.lineInView = function(index, inview, inviewInfo) {
 			var inViewReport = inview ? '<strong>enters</strong>' : '<strong>exit</strong>';
+			var inviewpart = [];
+			for (var p in inviewInfo.parts) {
+				if (inviewInfo.parts[p]) {
+					inviewpart.push(p);
+				}
+			}
+			inviewpart = inviewpart.length % 4 === 0 ? 'all' : inviewpart.join(', ');
 			if (typeof(inviewpart) != 'undefined') {
-				inViewReport = '<strong>' + inviewpart + '</strong> part ' + inViewReport;
+				inViewReport = '<strong>' + inviewpart + '</strong> parts ' + inViewReport;
 			}
 			$scope.inviewLogs.unshift({ id: logId++, message: $sce.trustAsHtml('Line <em>#' + index + '</em>: ' + inViewReport) });
-			console.log(event);
 			return false;
 		}
 	});
