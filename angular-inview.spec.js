@@ -245,19 +245,34 @@ describe("angular-inview", function() {
 
 		it("should accept a `throttle` option", function(done) {
 			makeTestForHtml(
-				'<div in-view="spy($inview)"  in-view-options="{ throttle: 200 }"></div>' +
+				'<div in-view="spy($inview)" style="height:100px" in-view-options="{ throttle: 200 }"></div>' +
 				'<div style="height:200%"></div>'
 			)
 			.then(function (test) {
-				expect(test.spy.calls.count()).toBe(0);
+				expect(test.spy.calls.count()).toBe(1);
+				expect(test.spy.calls.mostRecent().args[0]).toBe(true);
 				return test;
 			})
-			.then(lazyWait(200))
+			.then(lazyScrollTo(200))
+			.then(lazyWait(100))
 			.then(function (test) {
 				expect(test.spy.calls.count()).toBe(1);
-				expect(test.spy).toHaveBeenCalledWith(true);
 				return test;
 			})
+			.then(lazyScrollTo(0))
+			.then(lazyWait(100))
+			.then(function (test) {
+				expect(test.spy.calls.count()).toBe(1);
+				return test;
+			})
+			.then(lazyScrollTo(200))
+			.then(lazyWait(100))
+			.then(function (test) {
+				expect(test.spy.calls.count()).toBe(2);
+				expect(test.spy.calls.mostRecent().args[0]).toBe(false);
+				return test;
+			})
+			.then(lazyScrollTo(0))
 			.then(done);
 		});
 

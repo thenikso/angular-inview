@@ -45,8 +45,8 @@ function inViewDirective ($parse) {
       //     be included in `$inviewInfo` (default false).
       //   - `generateParts`: Indicate if the `parts` information should
       //     be included in `$inviewInfo` (default false).
-      //   - `throttle`: Spcify a number of milliseconds by which filter the number
-      //     of incoming events.
+      //   - `throttle`: Specify a number of milliseconds by which to limit the
+      //     number of incoming events.
       var options = {};
       if (attrs.inViewOptions) {
         options = scope.$eval(attrs.inViewOptions);
@@ -367,7 +367,7 @@ function signalFromEvent (target, event) {
 
 function signalSingle (value) {
   return new QuickSignal(function (subscriber) {
-    subscriber(value);
+    setTimeout(function() { subscriber(value); });
   });
 }
 
