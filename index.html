@@ -26,7 +26,7 @@
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
 <li>Install with: <code>npm install angular-inview@beta</code></li>
-<li>Version: <strong>2.0.0</strong></li>
+<li>Version: <strong>2.1.0</strong></li>
 </ul>
 
             </div>
@@ -142,8 +142,8 @@ negative numbers are offsets to the inside.</li>
 be included in <code>$inviewInfo</code> (default false).</li>
 <li><code>generateParts</code>: Indicate if the <code>parts</code> information should
 be included in <code>$inviewInfo</code> (default false).</li>
-<li><code>throttle</code>: Spcify a number of milliseconds by which filter the number
-of incoming events.</li>
+<li><code>throttle</code>: Specify a number of milliseconds by which to limit the
+number of incoming events.</li>
 </ul>
 
             </div>
@@ -738,7 +738,7 @@ QuickSignal.prototype.throttle = <span class="hljs-function"><span class="hljs-k
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">signalSingle</span> (<span class="hljs-params">value</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> QuickSignal(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">subscriber</span>) </span>{
-    subscriber(value);
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{ subscriber(value); });
   });
 }</pre></div></div>
             
