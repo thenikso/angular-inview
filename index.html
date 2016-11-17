@@ -26,7 +26,7 @@
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
 <li>Install with: <code>npm install angular-inview@beta</code></li>
-<li>Version: <strong>2.1.0</strong></li>
+<li>Version: <strong>2.2.0</strong></li>
 </ul>
 
             </div>
@@ -281,8 +281,9 @@ changed after the last event;</li>
         }
         viewportRect = offsetRect(viewportRect, options.viewportOffset);
         <span class="hljs-keyword">var</span> elementRect = offsetRect(element[<span class="hljs-number">0</span>].getBoundingClientRect(), options.offset);
+        <span class="hljs-keyword">var</span> isVisible = !!(element[<span class="hljs-number">0</span>].offsetWidth || element[<span class="hljs-number">0</span>].offsetHeight || element[<span class="hljs-number">0</span>].getClientRects().length);
         <span class="hljs-keyword">var</span> info = {
-          inView: intersectRect(elementRect, viewportRect),
+          inView: isVisible &amp;&amp; intersectRect(elementRect, viewportRect),
           event: event,
           element: element,
           elementRect: elementRect,
