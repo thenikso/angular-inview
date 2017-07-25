@@ -11,7 +11,8 @@
 // Use it in your AngularJS app by including the javascript and requireing it:
 //
 // `angular.module('myApp', ['angular-inview'])`
-var angularInviewModule = angular.module('angular-inview', [])
+var moduleName = 'angular-inview';
+angular.module(moduleName, [])
 
 // ## in-view directive
 //
@@ -374,9 +375,9 @@ function signalSingle (value) {
 
 // Module loaders exports
 if (typeof define === 'function' && define.amd) {
-  define(['angular'], angularInviewModule);
+  define(['angular'], moduleName);
 } else if (typeof module !== 'undefined' && module && module.exports) {
-  module.exports = angularInviewModule;
+  module.exports = moduleName;
 }
 
 })();
