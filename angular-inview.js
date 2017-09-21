@@ -359,9 +359,9 @@ function signalFromEvent (target, event) {
       subscriber(e);
     };
     var el = angular.element(target);
-    el.on(event, handler);
+    el[0].addEventListener(event, handler, true);
     subscriber.$dispose = function () {
-      el.off(event, handler);
+      el[0].removeEventListener(event, handler, true);
     };
   });
 }
