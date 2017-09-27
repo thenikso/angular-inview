@@ -2,7 +2,7 @@
 // - Author: [Nicola Peduzzi](https://github.com/thenikso)
 // - Repository: https://github.com/thenikso/angular-inview
 // - Install with: `npm install angular-inview@beta`
-// - Version: **2.1.0**
+// - Version: **2.3.1**
 (function() {
 'use strict';
 
