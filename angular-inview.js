@@ -94,8 +94,9 @@ function inViewDirective ($parse) {
         }
         viewportRect = offsetRect(viewportRect, options.viewportOffset);
         var elementRect = offsetRect(element[0].getBoundingClientRect(), options.offset);
+        var isVisible = !!(element[0].offsetWidth || element[0].offsetHeight || element[0].getClientRects().length);
         var info = {
-          inView: intersectRect(elementRect, viewportRect),
+          inView: isVisible && intersectRect(elementRect, viewportRect),
           event: event,
           element: element,
           elementRect: elementRect,
