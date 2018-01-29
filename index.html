@@ -26,7 +26,7 @@
 <li>Author: <a href="https://github.com/thenikso">Nicola Peduzzi</a></li>
 <li>Repository: <a href="https://github.com/thenikso/angular-inview">https://github.com/thenikso/angular-inview</a></li>
 <li>Install with: <code>npm install angular-inview@beta</code></li>
-<li>Version: <strong>2.2.0</strong></li>
+<li>Version: <strong>2.3.1</strong></li>
 </ul>
 
             </div>
@@ -50,7 +50,8 @@ Use it in your AngularJS app by including the javascript and requireing it:</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> angularInviewModule = angular.module(<span class="hljs-string">'angular-inview'</span>, [])</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> moduleName = <span class="hljs-string">'angular-inview'</span>;
+angular.module(moduleName, [])</pre></div></div>
             
         </li>
         
@@ -116,8 +117,8 @@ element is visible in the viewport.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    restrict: <span class="hljs-string">'A'</span>,
-    <span class="hljs-built_in">require</span>: <span class="hljs-string">'?^^inViewContainer'</span>,
-    link: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inViewDirectiveLink</span> (<span class="hljs-params">scope, element, attrs, container</span>) </span>{</pre></div></div>
+    <span class="hljs-attr">require</span>: <span class="hljs-string">'?^^inViewContainer'</span>,
+    <span class="hljs-attr">link</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inViewDirectiveLink</span> (<span class="hljs-params">scope, element, attrs, container</span>) </span>{</pre></div></div>
             
         </li>
         
@@ -172,7 +173,7 @@ number of incoming events.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> viewportEventSignal = signalSingle({ type: <span class="hljs-string">'initial'</span> })</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> viewportEventSignal = signalSingle({ <span class="hljs-attr">type</span>: <span class="hljs-string">'initial'</span> })</pre></div></div>
             
         </li>
         
@@ -281,13 +282,12 @@ changed after the last event;</li>
         }
         viewportRect = offsetRect(viewportRect, options.viewportOffset);
         <span class="hljs-keyword">var</span> elementRect = offsetRect(element[<span class="hljs-number">0</span>].getBoundingClientRect(), options.offset);
-        <span class="hljs-keyword">var</span> isVisible = !!(element[<span class="hljs-number">0</span>].offsetWidth || element[<span class="hljs-number">0</span>].offsetHeight || element[<span class="hljs-number">0</span>].getClientRects().length);
         <span class="hljs-keyword">var</span> info = {
-          inView: isVisible &amp;&amp; intersectRect(elementRect, viewportRect),
-          event: event,
-          element: element,
-          elementRect: elementRect,
-          viewportRect: viewportRect
+          <span class="hljs-attr">inView</span>: intersectRect(elementRect, viewportRect),
+          <span class="hljs-attr">event</span>: event,
+          <span class="hljs-attr">element</span>: element,
+          <span class="hljs-attr">elementRect</span>: elementRect,
+          <span class="hljs-attr">viewportRect</span>: viewportRect
         };</pre></div></div>
             
         </li>
@@ -343,8 +343,8 @@ changed after the last event;</li>
             
             <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (options.generateDirection &amp;&amp; newInfo.inView &amp;&amp; lastInfo.elementRect) {
           newInfo.direction = {
-            horizontal: newInfo.elementRect.left - lastInfo.elementRect.left,
-            vertical: newInfo.elementRect.top - lastInfo.elementRect.top
+            <span class="hljs-attr">horizontal</span>: newInfo.elementRect.left - lastInfo.elementRect.left,
+            <span class="hljs-attr">vertical</span>: newInfo.elementRect.top - lastInfo.elementRect.top
           };
         }</pre></div></div>
             
@@ -462,8 +462,8 @@ changed after the last event;</li>
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">inViewContainerDirective</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> {
-    restrict: <span class="hljs-string">'A'</span>,
-    controller: [<span class="hljs-string">'$element'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$element</span>) </span>{
+    <span class="hljs-attr">restrict</span>: <span class="hljs-string">'A'</span>,
+    <span class="hljs-attr">controller</span>: [<span class="hljs-string">'$element'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$element</span>) </span>{
       <span class="hljs-keyword">this</span>.element = $element;
       <span class="hljs-keyword">this</span>.eventsSignal = signalFromEvent($element, <span class="hljs-string">'scroll'</span>);
       <span class="hljs-keyword">this</span>.getViewportRect = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
@@ -489,12 +489,12 @@ changed after the last event;</li>
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getViewportRect</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">var</span> result = {
-    top: <span class="hljs-number">0</span>,
-    left: <span class="hljs-number">0</span>,
-    width: <span class="hljs-built_in">window</span>.innerWidth,
-    right: <span class="hljs-built_in">window</span>.innerWidth,
-    height: <span class="hljs-built_in">window</span>.innerHeight,
-    bottom: <span class="hljs-built_in">window</span>.innerHeight
+    <span class="hljs-attr">top</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">left</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-built_in">window</span>.innerWidth,
+    <span class="hljs-attr">right</span>: <span class="hljs-built_in">window</span>.innerWidth,
+    <span class="hljs-attr">height</span>: <span class="hljs-built_in">window</span>.innerHeight,
+    <span class="hljs-attr">bottom</span>: <span class="hljs-built_in">window</span>.innerHeight
   };
   <span class="hljs-keyword">if</span> (result.height) {
     <span class="hljs-keyword">return</span> result;
@@ -535,10 +535,10 @@ changed after the last event;</li>
     <span class="hljs-keyword">return</span> rect;
   }
   <span class="hljs-keyword">var</span> offsetObject = {
-    top: isPercent(offset[<span class="hljs-number">0</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">0</span>]) * rect.height) : offset[<span class="hljs-number">0</span>],
-    right: isPercent(offset[<span class="hljs-number">1</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">1</span>]) * rect.width) : offset[<span class="hljs-number">1</span>],
-    bottom: isPercent(offset[<span class="hljs-number">2</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">2</span>]) * rect.height) : offset[<span class="hljs-number">2</span>],
-    left: isPercent(offset[<span class="hljs-number">3</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">3</span>]) * rect.width) : offset[<span class="hljs-number">3</span>]
+    <span class="hljs-attr">top</span>: isPercent(offset[<span class="hljs-number">0</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">0</span>]) * rect.height) : offset[<span class="hljs-number">0</span>],
+    <span class="hljs-attr">right</span>: isPercent(offset[<span class="hljs-number">1</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">1</span>]) * rect.width) : offset[<span class="hljs-number">1</span>],
+    <span class="hljs-attr">bottom</span>: isPercent(offset[<span class="hljs-number">2</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">2</span>]) * rect.height) : offset[<span class="hljs-number">2</span>],
+    <span class="hljs-attr">left</span>: isPercent(offset[<span class="hljs-number">3</span>]) ? (<span class="hljs-built_in">parseFloat</span>(offset[<span class="hljs-number">3</span>]) * rect.width) : offset[<span class="hljs-number">3</span>]
   };</pre></div></div>
             
         </li>
@@ -555,12 +555,12 @@ changed after the last event;</li>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">return</span> {
-    top: rect.top - offsetObject.top,
-    left: rect.left - offsetObject.left,
-    bottom: rect.bottom + offsetObject.bottom,
-    right: rect.right + offsetObject.right,
-    height: rect.height + offsetObject.top + offsetObject.bottom,
-    width: rect.width + offsetObject.left + offsetObject.right
+    <span class="hljs-attr">top</span>: rect.top - offsetObject.top,
+    <span class="hljs-attr">left</span>: rect.left - offsetObject.left,
+    <span class="hljs-attr">bottom</span>: rect.bottom + offsetObject.bottom,
+    <span class="hljs-attr">right</span>: rect.right + offsetObject.right,
+    <span class="hljs-attr">height</span>: rect.height + offsetObject.top + offsetObject.bottom,
+    <span class="hljs-attr">width</span>: rect.width + offsetObject.left + offsetObject.right
   };
 }
 
@@ -757,9 +757,9 @@ QuickSignal.prototype.throttle = <span class="hljs-function"><span class="hljs-k
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
-  define([<span class="hljs-string">'angular'</span>], angularInviewModule);
+  define([<span class="hljs-string">'angular'</span>], moduleName);
 } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> !== <span class="hljs-string">'undefined'</span> &amp;&amp; <span class="hljs-built_in">module</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports) {
-  <span class="hljs-built_in">module</span>.exports = angularInviewModule;
+  <span class="hljs-built_in">module</span>.exports = moduleName;
 }
 
 })();</pre></div></div>
