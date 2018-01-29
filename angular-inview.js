@@ -360,9 +360,9 @@ function signalFromEvent (target, event) {
       subscriber(e);
     };
     var el = angular.element(target);
-    el.on(event, handler);
+    event.split(' ').map(e => el[0].addEventListener(e, handler, true));
     subscriber.$dispose = function () {
-      el.off(event, handler);
+      event.split(' ').map(e => el[0].removeEventListener(e, handler, true));
     };
   });
 }
