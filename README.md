@@ -45,7 +45,7 @@ Or with a module loader setup like Webpack/Babel you can do:
 ```javascript
 import angularInview from 'angular-inview';
 
-angular.module('myModule', [angularInview.name]);
+angular.module('myModule', [angularInview]);
 ```
 
 ## Usage
