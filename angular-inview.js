@@ -28,7 +28,7 @@ angular.module(moduleName, [])
 // ## Implementation
 function inViewDirective ($parse) {
   return {
-    // Evaluate the expression passet to the attribute `in-view` when the DOM
+    // Evaluate the expression passed to the attribute `in-view` when the DOM
     // element is visible in the viewport.
     restrict: 'A',
     require: '?^^inViewContainer',
