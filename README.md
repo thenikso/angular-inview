@@ -59,7 +59,7 @@ This module will define two directives: `in-view` and `in-view-container`.
 ```
 
 The `in-view` attribute must contain a valid [AngularJS expression](http://docs.angularjs.org/guide/expression)
-to work. When the DOM element enter or exits the viewport, the expression will
+to work. When the DOM element enters or exits the viewport, the expression will
 be evaluated. To actually check if the element is in view, the following data is
 available in the expression:
 
@@ -67,7 +67,7 @@ available in the expression:
   If using this directive for infinite scrolling, you may want to use this like
   `<any in-view="$inview&&myLoadingFunction()"></any>`.
 
-- `$inviewInfo` is an object containint extra info regarding the event
+- `$inviewInfo` is an object containing extra info regarding the event
 
   ```
   {
@@ -114,8 +114,7 @@ available in the expression:
     the element is visible at the top of the viewport (but its top part is
     hidden behind the browser bar)
 
-An additional attribute `in-view-options` can be specified with an object value
-containing:
+An additional attribute `in-view-options` can be specified with an object value containing:
 
 - `offset`: An expression returning an array of values to offset the element position.
 
