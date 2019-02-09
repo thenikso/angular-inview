@@ -22,10 +22,10 @@
   },
   "homepage": "https://github.com/thenikso/angular-inview#readme",
   "peerDependencies": {
-    "angular": "^1.5.8"
+    "angular": ">=1.0.0 < 2.0.0"
   },
   "devDependencies": {
-    "angular": "^1.5.8",
+    "angular": ">=1.0.0 < 2.0.0",
     "angular-mocks": "1.6.8",
     "docco": "^0.7.0",
     "gh-pages": "^0.11.0",
